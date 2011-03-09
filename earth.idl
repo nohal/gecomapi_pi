@@ -1,0 +1,1766 @@
+/// \file earth.idl
+///
+/// This is the IDL source file for the Google Earth COM API. It contains
+/// the necessary interfaces and enums for third party applications to query
+/// and control the Google Earth application.
+///
+/// The main interface that represents the Google Earth application is
+/// \ref IApplicationGE.
+
+/// \mainpage
+///
+/// <br>
+///
+/// \section intro Introduction
+///
+/// This document describes the features of the
+/// <a href="http://www.earth.google.com">Google Earth</a> COM API. The Google
+/// Earth COM API allows third party applications to query information from and
+/// send commands to Google Earth. Through \ref IApplicationGE, applications
+/// can query the current viewport, control the 3D viewpoint, use KML features,
+/// and more.
+///
+/// This Google Earth COM API documentation
+/// package includes:
+/// \li This documentation
+/// \li <a href="http://services.google.com/earth/earth.idl">earth.idl</a> -
+/// the original IDL for COM interface and documentation
+///
+/// \section registration COM Registration
+///
+/// Before you  can interface a 3rd party application with Google Earth through
+/// the COM API, you must install Google Earth on the computer where
+/// you intend to run the 3rd party application. The Google Earth COM interface is registered
+/// as part of the Google Earth installation process.
+///
+/// If, for some reason, you need to register the Google Earth COM API
+/// again, execute <tt>GoogleEarth.exe</tt> with <tt>"/RegServer"</tt> as a command
+/// line argument.
+/// <br>For instance, assuming <tt>GoogleEarth.exe</tt> is located in
+/// <tt>C:\\Program Files\\Google\\Google Earth</tt>, use the following command line
+/// to register Google Earth's COM API:
+/// <p><tt>"C:\Program Files\Google\Google Earth\googleearth.exe"
+/// /RegServer</tt></p>
+/// <p>To unregister the Google Earth COM API, use the following command:</p>
+/// <p><tt>"C:\Program Files\Google\Google Earth\googleearth.exe"
+/// /UnregServer</tt></p>
+///
+/// \section sample Sample Code
+/// This code is not yet available.
+///
+/// \section compatibility Note About Backwards Compatibility
+///
+/// In all likelihood, future versions of the Google Earth COM API will be fully backwards compatible with the
+/// current version.
+///
+/// For users using the deprecated (and undocumented) <tt>KH</tt> version of the COM
+/// interface, the deprecated API is currently both binary and source code
+/// backwards compatible except for a special case mentioned below. However,
+/// the deprecated <tt>KH</tt> may be unsupported in the future. 
+/// Therefore, be sure to write new code and update old code 
+/// using the supported <tt>GE</tt> interface.
+///
+/// The special case that the deprecated <tt>KH</tt> interface is not currently
+/// backwards compatible is where the third party source code uses the
+/// \c \#import directive to access the API. In which case, the third party
+/// binaries still work, but you must update the source code in one of the
+/// following ways:
+/// \li Replace the \c \#import directive with the appropriate \c \#include
+/// using the IDL-generated files, or
+/// \li Use the new \c \GE API instead of the deprecated <tt>KH</tt> API
+/// (recommended).
+///
+/// \note The current <tt>GE</tt> API contains different interface and function names
+/// that the original <tt>KH</tt> API. Importantly, all functions and properties now
+/// start with an upper case character.
+import "oaidl.idl";
+import "ocidl.idl";
+
+cpp_quote("#include <winerror.h>")
+// Google Earth COM API specific error codes.
+/// Invalid (e.g. uninitialized) or deleted feature.
+cpp_quote("#define E_INVALID_OR_DELETED_FEATURE     MAKE_HRESULT(SEVERITY_ERROR,    FACILITY_ITF, 0x8001)")
+/// Google Earth Application not initialized.
+/// \see IApplicationGE::IsInitialized
+cpp_quote("#define E_APPLICATION_UNINITIALIZED      MAKE_HRESULT(SEVERITY_ERROR,    FACILITY_ITF, 0x8002)")
+/// Camera teleported to destination view.
+cpp_quote("#define S_TELEPORTED                     MAKE_HRESULT(SEVERITY_SUCCESS,  FACILITY_ITF, 0x8003)")
+/// Feature has no view.
+cpp_quote("#define E_FEATURE_HAS_NO_VIEW            MAKE_HRESULT(SEVERITY_ERROR,    FACILITY_ITF, 0x8004)")
+/// Exceeded maximum number of uses within a certain time period.
+cpp_quote("#define E_USAGE_LIMIT_EXCEEDED           MAKE_HRESULT(SEVERITY_ERROR,    FACILITY_ITF, 0x8005)")
+/// Requested variable is not finite.
+cpp_quote("#define E_INFINITE_NUMBER                MAKE_HRESULT(SEVERITY_ERROR,    FACILITY_ITF, 0x8006)")
+
+	interface ITimeGE;
+	interface ITimeIntervalGE;
+	interface ICameraInfoGE;
+	interface ITourControllerGE;
+	interface ISearchControllerGE;
+	interface IAnimationControllerGE;
+	interface IViewExtentsGE;
+	interface IFeatureGE;
+	interface IFeatureCollectionGE;
+	interface IPointOnTerrainGE;
+	interface IApplicationGE;
+
+	/// \enum AltitudeModeGE
+	/// \brief Defines the altitude's reference origin for the focus point.
+	///
+	/// \see FocusPointAltitudeMode
+	typedef [ uuid(ECF071D1-75F4-4F61-A5D9-D96EEAF5EC1D), v1_enum ] enum {
+		/// Sets the altitude of the element relative to the actual ground
+		/// elevation of a particular location. If the ground elevation of a
+		/// location is exactly at sea level and the altitude for a point is
+		/// set to 9 meters, then the placemark elevation is 9 meters with this
+		/// mode. However, if the same placemark is set over a location where
+		/// the ground elevation is 10 meters above sea level, then the
+		/// elevation of the placemark is 19 meters.
+		RelativeToGroundAltitudeGE = 1,
+		/// Sets the altitude of the element relative to sea level, regardless
+		/// of the actual elevation of the terrain beneath the element. For
+		/// example, if you set the altitude of a placemark to 10 meters with
+		/// an absolute altitude mode, the placemark will appear to be at
+		/// ground level if the terrain beneath is also 10 meters above sea
+		/// level. If the terrain is 3 meters above sea level, the placemark
+		/// will appear elevated above the terrain by 7 meters. A typical use
+		/// of this mode is for aircraft placement.
+		AbsoluteAltitudeGE = 2
+	} AltitudeModeGE;
+
+	/// \brief This represents a date and time.
+	///
+	/// This interface is used to represent a date and time inside Google Earth.
+	/// The time is given in a certain time zone, specified by \ref TimeZone.
+	/// It could be converted to different time zones with \ref ConvertToZone.
+	///
+	/// Associated GUIDs:
+	/// \li <tt>IID_ITimeGE = {0xE39391AE,0x51C0,0x4FBD, {0x90,0x42,0xF9,0xC5,0xB6,0x09,0x44,0x45}};</tt>
+	/// \li <tt>CLSID_TimeGE = {0x1AEDB68D,0x18A7,0x4CA9, {0xB4,0x1B,0x3C,0xE7,0xE5,0x9F,0xAB,0x24}};</tt>
+	///
+	/// \see ITimeIntervalGE
+	[
+		object,
+		uuid(E39391AE-51C0-4FBD-9042-F9C5B6094445),
+		dual,
+		helpstring("ITimeGE Interface"),
+		pointer_default(unique)
+	]
+	interface ITimeGE : IDispatch
+	{
+		/// \enum TimeTypeGE
+		/// \brief Possible types of time.
+		///
+		/// These are the possible representations of time.
+		typedef [ v1_enum ] enum {
+			/// Represents negative infinity.
+			TimeNegativeInfinityGE = -1,
+			/// Represents a finite point in time.
+			TimeFiniteGE = 0,
+			/// Represents positive infinity.
+			TimePositiveInfinityGE = 1
+		} TimeTypeGE;
+		/// \brief Type of time (infinite or finite).
+		///
+		/// Use to check if time represents negative/positive infinity or
+		/// a finite point in time.
+		///
+		/// \retval ERROR_WRITE_PROTECT Data is write protected and cannot be
+		/// changed.
+		[propget, id(1), helpstring("property Type")]
+		HRESULT Type([out, retval] TimeTypeGE *pType);
+		[propput, id(1), helpstring("property Type")]
+		HRESULT Type([in] TimeTypeGE type);
+		/// \brief Year.
+		///
+		/// Example: 2007
+		///
+		/// \retval E_INFINITE_NUMBER \ref Type is not \c TimeFiniteGE
+		/// \retval ERROR_WRITE_PROTECT Data is write protected and cannot be
+		/// changed.
+		[propget, id(2), helpstring("property Year")]
+		HRESULT Year([out, retval] int *pYear);
+		[propput, id(2), helpstring("property Year")]
+		HRESULT Year([in] int year);
+		/// \brief Month.
+		///
+		/// Valid values: 1 (January) through 12 (December).
+		///
+		/// \retval E_INFINITE_NUMBER \ref Type is not \c TimeFiniteGE
+		/// \retval ERROR_WRITE_PROTECT Data is write protected and cannot be
+		/// changed.
+		[propget, id(3), helpstring("property Month")]
+		HRESULT Month([out, retval] int *pMonth);
+		[propput, id(3), helpstring("property Month")]
+		HRESULT Month([in] int month);
+		/// \brief Day.
+		///
+		/// Valid values: 1 through 28-31.
+		///
+		/// \retval E_INFINITE_NUMBER \ref Type is not \c TimeFiniteGE
+		/// \retval ERROR_WRITE_PROTECT Data is write protected and cannot be
+		/// changed.
+		[propget, id(4), helpstring("property Day")]
+		HRESULT Day([out, retval] int *pDay);
+		[propput, id(4), helpstring("property Day")]
+		HRESULT Day([in] int day);
+		/// \brief Hour.
+		///
+		/// Valid values: 0 through 23.
+		///
+		/// \retval E_INFINITE_NUMBER \ref Type is not \c TimeFiniteGE
+		/// \retval ERROR_WRITE_PROTECT Data is write protected and cannot be
+		/// changed.
+		[propget, id(5), helpstring("property Hour")]
+		HRESULT Hour([out, retval] int *pHour);
+		[propput, id(5), helpstring("property Hour")]
+		HRESULT Hour([in] int hour);
+		/// \brief Minute.
+		///
+		/// Valid values: 0 through 59.
+		///
+		/// \retval E_INFINITE_NUMBER \ref Type is not \c TimeFiniteGE
+		/// \retval ERROR_WRITE_PROTECT Data is write protected and cannot be
+		/// changed.
+		[propget, id(6), helpstring("property Minute")]
+		HRESULT Minute([out, retval] int *pMinute);
+		[propput, id(6), helpstring("property Minute")]
+		HRESULT Minute([in] int minute);
+		/// \brief Second
+		///
+		/// Valid values: 0 through 59.
+		///
+		/// \retval E_INFINITE_NUMBER \ref Type is not \c TimeFiniteGE
+		/// \retval ERROR_WRITE_PROTECT Data is write protected and cannot be
+		/// changed.
+		[propget, id(7), helpstring("property Second")]
+		HRESULT Second([out, retval] int *pSecond);
+		[propput, id(7), helpstring("property Second")]
+		HRESULT Second([in] int second);
+		/// \brief TimeZone.
+		///
+		/// Represented by a double in hours in respect to UTC (GMT 0).
+		/// Can be a fraction for time zones that do not have an integer
+		/// offset in hours from UTC.
+		///
+		/// Examples:
+		/// \li Eastern Time (GMT -05:00): \c -5.0
+		/// \li Newfoundland (GMT -03:30): \c -3.5
+		/// \li Tehran (GMT +03:30): \c 3.5
+		/// \li Vladivostok (GMT +10:00): \c 10.0
+		///
+		/// \retval ERROR_WRITE_PROTECT data is write protected and cannot be
+		/// changed.
+		[propget, id(8), helpstring("property TimeZone")]
+		HRESULT TimeZone([out, retval] double *pTimeZone);
+		[propput, id(8), helpstring("property TimeZone")]
+		HRESULT TimeZone([in] double timeZone);
+		/// \brief Creates a writeable clone.
+		///
+		/// Useful when reading from read-only instance.
+		[id(9), helpstring("method Clone")]
+		HRESULT Clone([out, retval] ITimeGE **pTime);
+		/// \brief Coverts time to a different time zone.
+		///
+		/// Converts from old time zone to a new specified zone and returns
+		/// the result as a new (writable) instance of \ref ITimeGE.
+		///
+		/// \param timeZone New time zone to convert time to. This format is
+		/// explained in \ref TimeZone.
+		/// \param pTime Output converted time.
+		///
+		/// \retval S_OK Successfully converted time.
+		/// \retval (other) Appropriate error code.
+		[id(10), helpstring("method ConvertToZone")]
+		HRESULT ConvertToZone(
+			[in] double timeZone, [out, retval] ITimeGE **pTime);
+	};
+	/// \brief This represents a (<tt>beginTime</tt>, <tt>endTime</tt>)
+	/// interval of time.
+	///
+	/// Associated GUIDs:
+	/// \li <tt>IID_ITimeIntervalGE = {0xD794FE36,0x10B1,0x4E7E, {0x95,0x9D,0x96,0x38,0x79,0x4D,0x2A,0x1B}};</tt>
+	/// \li <tt>CLSID_TimeIntervalGE = {0x42DF0D46,0x7D49,0x4AE5, {0x8E,0xF6,0x9C,0xA6,0xE4,0x1E,0xFE,0xC1}};</tt>
+	[
+		object,
+		uuid(D794FE36-10B1-4E7E-959D-9638794D2A1B),
+		dual,
+		helpstring("ITimeIntervalGE Interface"),
+		pointer_default(unique)
+	]
+	interface ITimeIntervalGE : IDispatch
+	{
+		/// \brief Beginning time of interval.
+		///
+		/// If interval is read-only, any mutators on \ref BeginTime will return
+		/// ERROR_WRITE_PROTECT. Otherwise, any changes made to \ref BeginTime
+		/// are immediatey reflected in interval.
+		[propget, id(1), helpstring("property BeginTime")]
+		HRESULT BeginTime([out, retval] ITimeGE **pTime);
+		/// \brief Ending time of interval.
+		///
+		/// If interval is read-only, any mutators on \ref BeginTime will return
+		/// ERROR_WRITE_PROTECT. Otherwise, any changes made to \ref BeginTime
+		/// are immediatey reflected in interval.
+		[propget, id(2), helpstring("property EndTime")]
+		HRESULT EndTime([out, retval] ITimeGE **pTime);
+	};
+	/// \brief This interface describes a particular camera view as a focus
+	/// point on the earth and orientation of the camera view relative to that
+	/// focus point.
+	/// 
+	/// \note Modifying one or more properties of an \ref ICameraInfoGE will
+ 	/// \b not change the current camera in Google Earth. You need to call
+	/// \ref IApplicationGE::SetCamera to change the current camera in the
+	/// Google Earth application.
+	///
+	/// Associated GUIDs:
+	/// \li <tt>IID_ICameraInfoGE = {0x08D46BCD,0xAF56,0x4175, {0x99,0x9E,0x6D,0xDC,0x37,0x71,0xC6,0x4E}};</tt>
+	/// \li <tt>CLSID_CameraInfoGE = {0x645EEE5A,0xBD51,0x4C05, {0xA6,0xAF,0x6F,0x2C,0xF8,0x95,0x0A,0xAB}};</tt>
+	///
+	/// \see IApplicationGE::GetCamera, IApplicationGE::SetCamera
+	[
+		object,
+		uuid(08D46BCD-AF56-4175-999E-6DDC3771C64E),
+		dual,
+		helpstring("ICameraInfoGE Interface"),
+		pointer_default(unique)
+	]
+	interface ICameraInfoGE : IDispatch
+	{
+		/// \brief Latitude of the focus point on the Earth in degrees.
+		///
+		/// Valid values range between \c -90 (South Pole) and \c 90
+		/// (North Pole).
+		///
+		/// \see FocusPointLongitude
+		[propget, id(1), helpstring("property FocusPointLatitude")]
+		HRESULT FocusPointLatitude([out, retval] double *pLat);
+		[propput, id(1), helpstring("property FocusPointLatitude")]
+		HRESULT FocusPointLatitude([in] double lat);
+		/// \brief Longitude of focus point on the Earth in degrees.
+		///
+		/// Valid values range between \c -180 and \c 180, \c 0 being the
+		/// longitude of the Prime Meridian.
+		///
+		/// \see FocusPointLatitude
+		[propget, id(2), helpstring("property FocusPointLongitude")]
+		HRESULT FocusPointLongitude([out, retval] double *pLon);
+		[propput, id(2), helpstring("property FocusPointLongitude")]
+		HRESULT FocusPointLongitude([in] double lon);
+		/// \brief Altitude of focus point in meters in respect to altitude
+		/// mode's reference origin.
+		///
+		/// The altitude's reference origin is defined by the
+		/// \ref FocusPointAltitudeMode.
+		///
+		/// \see FocusPointAltitudeMode
+		[propget, id(3), helpstring("property FocusPointAltitude")]
+		HRESULT FocusPointAltitude([out, retval] double *pAlt);
+		[propput, id(3), helpstring("property FocusPointAltitude")]
+		HRESULT FocusPointAltitude([in] double alt);
+		/// \brief Camera's altitude mode.
+		///
+		/// Defines the altitude's reference origin for the focus point.
+		///
+		/// \see AltitudeModeGE, FocusPointAltitude
+		[propget, id(4), helpstring("property AltitudeModeGE")]
+		HRESULT FocusPointAltitudeMode([out, retval] AltitudeModeGE *pAltMode);
+		[propput, id(4), helpstring("property AltitudeModeGE")]
+		HRESULT FocusPointAltitudeMode([in] AltitudeModeGE altMode);
+		/// \brief Distance between camera and focus point in meters.
+		///
+		/// Valid values are positive.
+		///
+		/// This is how far the camera is from focus point. The orientation
+		/// of the camera in respect ot the focus point is given by \ref Tilt
+		/// and \ref Azimuth.
+		///
+		/// \see Tilt, Azimuth
+		[propget, id(5), helpstring("property Range")]
+		HRESULT Range([out, retval] double *pRange);
+		[propput, id(5), helpstring("property Range")]
+		HRESULT Range([in] double range);
+		/// \brief Camera's tilt angle in degrees.
+		///
+		/// Valid values are between \c 0 and \c 90.
+		///
+		/// A tilt angle of \c 0 means the camera is directly on top of the
+		/// focus point and looking straight down. A tilt angle of \c 90 degrees
+		/// means the camera would be looking horizontally towards the focus
+		/// point. In many cases, however, setting such a high tilt angle is
+		/// not possible because it would cause the camera to collide with
+		/// terrain.
+		///
+		/// \see Range, Azimuth
+		[propget, id(6), helpstring("property Tilt")]
+		HRESULT Tilt([out, retval] double *pTilt);
+		[propput, id(6), helpstring("property Tilt")]
+		HRESULT Tilt([in] double tilt);
+		/// \brief Camera's azimuth in degrees.
+		///
+		/// Valid values are between \c -180 and \c 180.
+		///
+		/// An azimuth of \c 0 means the North Pole is towards the 
+		/// top of the screen for that particular camera, i.e. the camera is
+		/// looking "towards" the North Pole. An azimuth of \c 180 means the
+		/// camera is looking towards the South Pole.
+		///
+		/// \see Range, Tilt
+		[propget, id(7), helpstring("property Azimuth")]
+		HRESULT Azimuth([out, retval] double *pAzimuth);
+		[propput, id(7), helpstring("property Azimuth")]
+		HRESULT Azimuth([in] double azimuth);
+	};
+
+	/// \brief This contains the tour options and controls.
+	/// 
+	/// Use this interface to retrieve and control tour and set its options
+	/// that define its behavior.
+	///
+	/// To get an instance of \ref ITourControllerGE, call
+	/// IApplicationGE::TourController.
+	///
+	/// \note This interface always reflects the current state of the
+	/// application's tour, even if changes occur after creation.
+	///
+	/// Associated GUIDs:
+	/// \li <tt>IID_ITourControllerGE = {0xD08577E0,0x365E,0x4216, {0xB1,0xA4,0x19,0x35,0x3E,0xAC,0x16,0x02}};</tt>
+	/// \li <tt>CLSID_TourControllerGE = {0x77C4C807,0xE257,0x43AD, {0xBB,0x3F,0x7C,0xA8,0x87,0x60,0xBD,0x29}};</tt>
+	///
+	/// \see IApplicationGE::TourController
+	[
+		object,
+		uuid(D08577E0-365E-4216-B1A4-19353EAC1602),
+		dual,
+		helpstring("ITourControllerGE Interface"),
+		pointer_default(unique)
+	]
+	interface ITourControllerGE : IDispatch
+	{
+		/// \brief Plays or pauses tour of features.
+		///
+		/// Starts a tour if no tour is playing, or pauses the
+		/// currently playing tour.
+		///
+		/// Plays tour depending on feature options and on which feature
+		/// within "Search Results" or "Places" is currently highlighted:
+		/// \li If a \c folder is highlighted, plays tour of all its descendant
+		/// features.
+		/// \li If a \c path is highlighted, plays tour of path only.
+		/// \li If any other \c feature is selected, application reacts in
+		/// some non-crashing undefined behavior subject to change.
+		/// \li If \c feature is not from "Search Results" or "Places",
+		/// application reacts in some non-crashing undefined behavior subject
+		/// to change.
+		///
+		/// \retval S_OK Successfully started playing or paused tour.
+		/// \retval (other) Appropriate error code.
+		///
+		/// \see Stop, IFeatureGE::Highlight
+		[id(1), helpstring("method PlayOrPause")]
+		HRESULT PlayOrPause();
+		/// \brief Stops currently playing tour.
+		///
+		/// Does nothing if no tour is currently playing.
+		///
+		/// \retval S_OK Successfully stopped tour.
+		/// \retval (other) Appropriate error code.
+		///
+		/// \see PlayOrPause
+		[id(2), helpstring("method Stop")]
+		HRESULT Stop();
+		/// \brief Camera speed for tours.
+		///
+		/// Valid values range between \c 0.001 and \c 5.0 inclusive.
+		[propget, id(3), helpstring("property Speed")]
+		HRESULT Speed([out, retval] double *pSpeed);
+		[propput, id(3), helpstring("property Speed")]
+		HRESULT Speed([in] double speed);
+		/// \brief Pause delay in seconds during each tour stop.
+		///
+		/// Valid values range between \c 0.0 and \c 60.0 inclusive.
+		[propget, id(4), helpstring("property PauseDelay")]
+		HRESULT PauseDelay([out, retval] double *pPauseDelay);
+		[propput, id(4), helpstring("property PauseDelay")]
+		HRESULT PauseDelay([in] double pauseDelay);
+		/// \brief Number of tour cycles to peform before stopping.
+		///
+		/// Valid values are non-negative integers. If the value is \c 0 or
+		/// greater than \c 9999, then tour cycles infinitely.
+		[propget, id(5), helpstring("property Cycles")]
+		HRESULT Cycles([out, retval] int *pCycles);
+		[propput, id(5), helpstring("property Cycles")]
+		HRESULT Cycles([in] int cycles);
+	};
+
+	/// \brief This contains search options and controls.
+	/// 
+	/// Use this interface to control searches and their results.
+	/// 
+	/// To get an instance of \ref ISearchControllerGE, call
+	/// IApplicationGE::SearchController.
+	///
+	/// \note This interface always reflects the current state of the
+	/// application's search, even if changes occur after creation.
+	///
+	/// Associated GUIDs:
+	/// \li <tt>IID_ISearchControllerGE = {0x524E5B0F,0xD593,0x45A6, {0x9F,0x87,0x1B,0xAE,0x7D,0x33,0x83,0x73}};</tt>
+	/// \li <tt>CLSID_SearchControllerGE = {0xA4F65992,0x5738,0x475B, {0x9C,0x16,0xCF,0x10,0x2B,0xCD,0xE1,0x53}};</tt>
+	///
+	/// \see IApplicationGE::TourController
+	[
+		object,
+		uuid(524E5B0F-D593-45A6-9F87-1BAE7D338373),
+		dual,
+		helpstring("ISearchControllerGE Interface"),
+		pointer_default(unique)
+	]
+	interface ISearchControllerGE : IDispatch
+	{
+		/// \brief Performs a regular search.
+		///
+		/// Performs a search given a search string. This search string may
+		/// represent a location, driving directions, businesses, or anything
+		/// else possible through Google Earth's regular search box.
+		///
+		/// There is a limit on the number of searches within a certain time
+		/// period. When this limit is exceeded, the function returns
+		/// E_USAGE_LIMIT_EXCEEDED, and the search is not performed. This
+		/// restriction is subject to change.
+		///
+		/// \note This function may return before search is actually complete,
+		/// which means that \ref GetResults might not immediately reflect
+		/// very recent searches made. Use \ref IsSearchInProgress to check if
+		/// there is a search in progress.
+		///
+		/// \param searchString string containing search parameters. Could
+		/// contain special keywords such as "near", "from:", "to:", etc.
+		///
+		/// \retval S_OK Successfully performing search. Returns successfully
+		/// even if search will not yield any results.
+		/// \retval E_USAGE_LIMIT_EXCEEDED Exceeded maximum number of searches
+		/// within a certain time period.
+		/// \retval (other) Appropriate error code.
+		///
+		/// \see IsSearchInProgress, GetResults
+		[id(1), helpstring("method Search")]
+		HRESULT Search([in] BSTR searchString);
+		/// \brief Checks if there is any search currently in progress.
+		///
+		/// Useful for knowing when search is complete after calling \ref Search
+		/// and before calling \ref GetResults.
+		///
+		/// \param inProgress output boolean representing whether or not a
+		/// search is in progress.
+		///
+		/// \retval S_OK Successfully retrieved value for \a inProgress.
+		/// \retval (other) Appropriate error code.
+		[id(2), helpstring("method IsSearchInProgress")]
+		HRESULT IsSearchInProgress([out, retval] BOOL *inProgress);
+		/// \brief Retrieves search results.
+		///
+		/// Retrieves the collection of features in the search results.
+		///
+		/// \note Searches may take a few moments to complete, which means
+		/// that \ref GetResults might not immediately reflect very recent
+		/// searches made. Use \ref IsSearchInProgress to check if
+		/// there is a search in progress.
+		///
+		/// \param pResults retrieved collection of results. If function returns
+		/// succesfully, results may be returned as an empty collection, but
+		/// never NULL.
+		///
+		/// \retval S_OK Successfully retrieved features.
+		/// \retval (other) Appropriate error code.
+		///
+		/// \see Search, IsSearchInProgress,
+		/// IApplicationGE::GetMyPlaces,
+		/// IApplicationGE::GetTemporaryPlaces,
+		/// IApplicationGE::GetLayersDatabases
+		[id(3), helpstring("method GetResults")]
+		HRESULT GetResults([out, retval] IFeatureCollectionGE **pResults);
+		/// \brief Clears all search results.
+		///
+		/// Clears all the features from search results.
+		///
+		/// \retval S_OK Successfully cleared search results.
+		/// \retval (other) Appropriate error code.
+		///
+		/// \see Search
+		[id(4), helpstring("method ClearResults")]
+		HRESULT ClearResults();
+	};
+
+	/// \brief This contains animation options and controls.
+	/// 
+	/// Use this interface to control animation.
+	/// To get an instance of \ref IAnimationControllerGE, call
+	/// IApplicationGE::AnimationController.
+	///
+	/// \note This interface always reflects the current state of the
+	/// application's animation, even if changes occur after creation.
+	///
+	/// Associated GUIDs:
+	/// \li <tt>IID_IAnimationControllerGE = {0xBE5E5F15,0x8EC4,0x4dCC, {0xB4,0x8D,0x99,0x57,0xD2,0xDE,0x4D,0x05}};</tt>
+	/// \li <tt>CLSID_AnimationControllerGE = {0x1A239250,0xB650,0x4B63, {0xB4,0xCF,0x7F,0xCC,0x4D,0xC0,0x7D,0xC6}};</tt>
+	///
+	/// \see IApplicationGE::TourController
+	[
+		object,
+		uuid(BE5E5F15-8EC4-4dCC-B48D-9957D2DE4D05),
+		dual,
+		helpstring("IAnimationControllerGE Interface"),
+		pointer_default(unique)
+	]
+	interface IAnimationControllerGE : IDispatch
+	{
+		/// \brief Starts playing animation.
+		///
+		/// Plays animation with current settings if available.
+		///
+		/// \retval S_OK Successfully playing animation.
+		/// \retval (other) Appropriate error code.
+		///
+		/// \see Pause
+		[id(1), helpstring("method Play")]
+		HRESULT Play();
+		/// \brief Pauses current animation.
+		///
+		/// Pauses animation if one is playing.
+		///
+		/// \retval S_OK Successfully paused animation.
+		/// \retval (other) Appropriate error code.
+		///
+		/// \see Play
+		[id(2), helpstring("method Pause")]
+		HRESULT Pause();
+		/// \brief Full time interval of animation.
+		///
+		/// May be affected by other animation settings such as if it is
+		/// restricted to a certain folder.
+		///
+		/// \see CurrentTimeInterval
+		[propget, id(3), helpstring("property SliderTimeInterval")]
+		HRESULT SliderTimeInterval([out, retval] ITimeIntervalGE **pInterval);
+		/// \brief Current time interval of animation.
+		///
+		/// This is the subset of \ref SliderTimeInterval that is currently active.
+		/// This time interval is continuously shifted during animation.
+		///
+		/// \retval E_INVALIDARG trying to set a time interval with end time
+		/// before begin time.
+		///
+		/// \see SliderTimeInterval
+		[propget, id(4), helpstring("property CurrentTimeInterval")]
+		HRESULT CurrentTimeInterval([out, retval] ITimeIntervalGE **pInterval);
+		[propput, id(4), helpstring("property CurrentTimeInterval")]
+		HRESULT CurrentTimeInterval([in] ITimeIntervalGE *interval);
+	};
+
+	/// \brief The is used to describe the
+	/// parameters of a view as a latitude/longitude bounding box.
+	///
+	/// This representation is a coarse approximation of what is visible in 
+	/// the 3D view of a Google Earth application. It does not describe the
+	/// orientation (azimuth) or tilt angle of the current view.
+	///
+	/// Associated GUIDs:
+	/// \li <tt>IID_IViewExtentsGE = {0x865AB2C1,0x38C5,0x492B, {0x8B,0x71,0xAC,0x73,0xF5,0xA7,0xA4,0x3D}};</tt>
+	/// \li <tt>CLSID_ViewExtentsGE = {0xD93BF052,0xFC68,0x4DB6, {0xA4,0xF8,0xA4,0xDC,0x9B,0xEE,0xB1,0xC0}};</tt>
+	[
+		object,
+		uuid(865AB2C1-38C5-492B-8B71-AC73F5A7A43D),
+		dual,
+		helpstring("IViewExtentsGE Interface"),
+		pointer_default(unique)
+	]
+	interface IViewExtentsGE : IDispatch
+	{
+		/// \brief North boundary (maximum latitude) in degrees.
+		[propget, id(1), helpstring("property North")]
+		HRESULT North([out, retval] double *pVal);
+		/// \brief South boundary (minimum latitude) in degrees.
+		[propget, id(2), helpstring("property South")]
+		HRESULT South([out, retval] double *pVal);
+		/// \brief East boundary (maximum longitude) in degrees.
+		[propget, id(3), helpstring("property East")]
+		HRESULT East([out, retval] double *pVal);
+		/// \brief West boundary (minimum longitude) in degrees.
+		[propget, id(4), helpstring("property West")]
+		HRESULT West([out, retval] double *pVal);
+	};
+	
+	/// \brief This is a basic representation of a KML feature.
+	///
+	/// Use the IFeatureGE interface to 
+	/// describes KML represented by an item in the
+	/// "Places" and "Layers" panels in the Google Earth application.
+ 	/// This includes placemarks, overlays, folders, documents, network links,
+	/// and streamed layers.
+	///
+	/// Associated GUIDs:
+	/// \li <tt>IID_IFeatureGE = {0x92547B06,0x0007,0x4820, {0xB7,0x6A,0xC8,0x4E,0x40,0x2C,0xA7,0x09}};</tt>
+	/// \li <tt>CLSID_FeatureGE = {0xCBD4FB70,0xF00B,0x4963, {0xB2,0x49,0x4B,0x05,0x6E,0x6A,0x98,0x1A}};</tt>
+	[
+		object,
+		uuid(92547B06-0007-4820-B76A-C84E402CA709),
+		dual,
+		helpstring("IFeatureGE Interface"),
+		pointer_default(unique)
+	]
+	interface IFeatureGE : IDispatch
+	{
+		/// \brief Feature's name.
+		///
+		/// The (non-unique) name string of the feature. Features with no name
+		/// are represented by the empty string.
+		///
+		/// \see IApplicationGE::GetFeatureByName
+		[propget, id(1), helpstring("property Name")]
+		HRESULT Name([out, retval] BSTR *name);
+		/// \brief Whether or not feature is visible.
+		///
+		/// This basically indicates whether the corresponding item is
+		/// checked or unchecked on the UI.
+		///
+		/// For example, if the "roads" feature is visible, then its
+		/// corresponding UI checkbox will be checked and roads will show up on
+		/// the Earth.
+		///
+		/// \note Changing the visibility of a folder forces a change in
+		/// visibility for all its children. If a folder is partially visible
+		/// (i.e. some of its children are visible and some are not), then the
+		/// folder is considered "visible".
+		///
+		/// \see GetChildren
+		[propget, id(2), helpstring("property Visibility")]
+		HRESULT Visibility([out, retval] BOOL *pVal);
+		[propput, id(2), helpstring("property Visibility")]
+		HRESULT Visibility([in] BOOL newVal);
+		/// \brief Whether or not feature has a view.
+		///
+		/// This indicates whether or not it is possible to "fly" to that
+		/// feature. Typically, placemarks have a view, while folders,
+		/// documents, and streamed layers do not have a view.
+		///
+		/// This method is useful to know whether or not it is possible to use
+		/// this feature as an argument to \ref IApplicationGE::SetFeatureView.
+		///
+		/// \see IApplicationGE::SetFeatureView.
+		[propget, id(3), helpstring("property HasView")]
+		HRESULT HasView([out, retval] BOOL *pVal);
+		/// \brief Whether or not feature is currently highlighted on the UI.
+		///
+		/// This property corresponds to whether or not this feature is
+		/// currently selected on the UI. To select this feature, use
+		/// \ref Highlight.
+		///
+		/// \see Highlight
+		[propget, id(4), helpstring("property Highlighted")]
+		HRESULT Highlighted([out, retval] BOOL *pVal);
+		/// \brief Highlights feature on the UI.
+		///
+		/// Sets feature as the current selected on the UI. Useful for various
+		/// situations such as for playing tours.
+		///
+		/// \retval S_OK Successfully highlighted feature.
+		/// \retval (other) Appropriate error code.
+		///
+		/// \see Highlighted
+		[id(5), helpstring("method Highlight")]
+		HRESULT Highlight();
+		/// \brief Retrieves feature's parent feature.
+		///
+		/// Finds the parent feature (if any) that contains this feature. Useful
+		/// for traversing features.
+		///
+		/// \param pParent output parent feature. Set to \c NULL if feature has
+		/// no parent.
+		///
+		/// \retval S_OK pParent was properly set to feature's parent or to
+		/// \c NULL if feature has no parent.
+		/// \retval (other) appropriate error code (e.g. problems creating
+		/// feature object).
+		///
+		/// \see GetChildren
+		[id(6), helpstring("method GetParent")]
+		HRESULT GetParent([out, retval] IFeatureGE **pParent);
+		/// \brief Retrieves children as a collection of features.
+		///
+		/// Finds feature's children and returns them in form of an
+		/// \ref IFeatureCollectionGE. Useful for traversing features.
+		///
+		/// \param pChildren output enum representing the sequence of feature's
+		/// children.
+		/// <br><br>If function returns successfully, this is never
+		/// \c NULL. However, it may represent an empty sequence if feature:
+		/// \li has no children (e.g. is a placemark or empty folder), or
+		/// \li is non-expandable (i.e. has children that cannot be shown
+		/// or are unvailable).
+		///
+		/// \retval S_OK \a pChildren was successfully populated
+		/// \retval (other) appropriate error code (e.g. problems creating
+		/// enum object).
+		///
+		/// \see GetParent
+		[id(7), helpstring("method GetChildren")]
+		HRESULT GetChildren([out, retval] IFeatureCollectionGE **pChildren);
+		/// \brief Time interval of feature's availability.
+		///
+		/// The (beginTime, endTime) time interval of when the feature is
+		/// available (e.g. visible). Represented as a read-only deep copy
+		/// (i.e. properties will return ERROR_WRITE_PROTECT at any attempt
+		/// to change them).
+		[propget, id(8), helpstring("property TimeInterval")]
+		HRESULT TimeInterval([out, retval] ITimeIntervalGE **pInterval);
+	};
+
+	/// \brief This is a collection of features.
+	///
+	/// Represents a shallow snapshot of a collection of features. Stores
+	/// references to the features at the time of creation. If those features
+	/// change after the collection has been created, the collection still
+	/// contains the modified features. If a feature within the collection
+	/// is deleted, the collection still returns a corresponding feature
+	/// of which its methods always fail with \c E_INVALID_OR_DELETED_FEATURE.
+	///
+	/// This collection is compatible with \b JavaScript, \b Visual \b Basic,
+	/// and \b VBScript.
+	///
+	/// Example code in \b JavaScript: <br>
+	/// <tt>
+	/// var featureCollection = ...; <i>\htmlonly // \endhtmlonly initialize to
+	/// refer to collection object</i><br>
+	/// var enum = new Enumerator(featureCollection);<br>
+	/// for (; !enum.atEnd(); enum.moveNext())<br>
+	///	\htmlonly &nbsp \endhtmlonly var feature = e.item();<br>
+	/// \htmlonly &nbsp \endhtmlonly doSomething(feature);<br>
+	/// }
+	/// </tt>
+	///
+	/// Example code in \b Visual \b Basic and \b VBScript: <br>
+	/// <tt>
+	/// Dim featureCollection = ... <i>' initialize to refer to collection
+	/// object</i><br>
+	/// For Each feature In featureCollection<br>
+	/// \htmlonly &nbsp \endhtmlonly DoSomething feature<br>
+	/// Next
+	/// </tt>
+	///
+	/// \note This is a one-based index collection, which means the first
+	/// element's index is \c 1, and the last element's index is equal to
+	/// the collection's \ref Count.
+	///
+	/// Associated GUIDs:
+	/// \li <tt>IID_IFeatureCollectionGE = {0x851D25E7,0x785F,0x4DB7, {0x95,0xF9,0xA0,0xEF,0x7E,0x83,0x6C,0x44}};</tt>
+	/// \li <tt>CLSID_FeatureCollectionGE = {0x9059C329,0x4661,0x49B2, {0x99,0x84,0x87,0x53,0xC4,0x5D,0xB7,0xB9}};</tt>
+	[
+		object,
+		uuid(851D25E7-785F-4DB7-95F9-A0EF7E836C44),
+		dual,
+		helpstring("IFeatureCollectionGE Interface"),
+		pointer_default(unique)
+	]
+	interface IFeatureCollectionGE : IDispatch
+	{
+		[propget, id(DISPID_NEWENUM), helpstring("property _NewEnum")]
+		HRESULT _NewEnum([out, retval] IUnknown** ppUnk);
+
+		/// \brief Retrieves an item from the collection.
+		///
+		/// Retrieves item with the given one-based index: the first
+		/// element's index is \c 1, and the last element's index is equal to
+		/// the collection's \ref Count.
+		///
+		/// \param index one-based index for the desired element. Valid inputs
+		/// are between \c 1 and \ref Count inclusive.
+		///
+		/// \see Count
+		[propget, id(DISPID_VALUE), helpstring("property Item")]
+		HRESULT Item([in] long index, [out, retval] IFeatureGE **pFeature);
+		/// \brief Number of features in the collection.
+		///
+		/// \see Item
+		[propget, id(1), helpstring("property Count")]
+		HRESULT Count([out, retval] long *count);
+	};
+
+	/// \brief This is the return interface for
+	///
+	/// \ref IApplicationGE::GetPointOnTerrainFromScreenCoords
+	///
+	/// Contains information of a point on terrain and other related information
+	/// retrieved from \ref IApplicationGE::GetPointOnTerrainFromScreenCoords.
+	///
+	/// Associated GUIDs:
+	/// \li <tt>IID_IPointOnTerrainGE = {0xF4F7B301,0x7C59,0x4851, {0xBA,0x97,0xC5,0x1F,0x11,0x0B,0x59,0x0F}};</tt>
+	/// \li <tt>CLSID_PointOnTerrainGE = {0x1796A329,0x04C1,0x4C07, {0xB2,0x8E,0xE4,0xA8,0x07,0x93,0x5C,0x06}};</tt>
+	[
+		object,
+		uuid(F4F7B301-7C59-4851-BA97-C51F110B590F),
+		dual,
+		helpstring("IPointOnTerrainGE Interface"),
+		pointer_default(unique)
+	]
+	interface IPointOnTerrainGE  : IDispatch
+	{
+		/// \brief Latitude  of point in degrees.
+		///
+		/// Valid values: -90 degrees to +90 degrees.
+		[propget, id(1), helpstring("property Latitude")]
+		HRESULT Latitude([out, retval] double *pLat);
+		/// \brief Longitude of point in degrees.
+		///
+		/// Valid values: -180 degrees to +180 degrees.
+		[propget, id(2), helpstring("property Longitude")]
+		HRESULT Longitude([out, retval] double *pLon);
+		/// \brief Altitude of point in meters.
+		///
+		/// If \ref ZeroElevationExaggeration is \c true, then this is always
+		/// zero.
+		///
+		/// \see ZeroElevationExaggeration
+		[propget, id(3), helpstring("property Altitude")]
+		HRESULT Altitude([out, retval] double *pAlt);
+		/// \brief Indicates if the represented point was projected on to the
+		/// globe's horizon.
+		///
+		/// This occurs when the intersection request did not intersect the
+		/// globe.
+		[propget, id(4), helpstring("ProjectedOntoGlobe")]
+		HRESULT ProjectedOntoGlobe([out, retval] BOOL *pProjected);
+		/// \brief Indicates if the exaggeration elevation is zero.
+		///
+		/// If <tt>true</tt>, then \ref Altitude is always returned as zero.
+		///
+		/// \see Altitude
+		[propget, id(5), helpstring("ZeroElevationExaggeration")]
+		HRESULT ZeroElevationExaggeration([out, retval] BOOL *pZeroExag);
+	};
+
+	/// \brief This is the main entry point to the Google Earth COM
+	/// API.
+	///
+	/// This interface can be used to query and control the Google Earth
+	/// application from an external application.
+	///
+	/// Associated GUIDs:
+	/// \li <tt>IID_IApplicationGE = {0x2830837B,0xD4E8,0x48C6, {0xB6,0xEE,0x04,0x63,0x33,0x72,0xAB,0xE4}};</tt>
+	/// \li <tt>CLSID_ApplicationGE = {0x8097D7E9,0xDB9E,0x4AEF, {0x9B,0x28,0x61,0xD8,0x2A,0x1D,0xF7,0x84}};</tt>
+	[
+		object,
+		uuid(2830837B-D4E8-48C6-B6EE-04633372ABE4),
+		dual,
+		helpstring("IApplicationGE Interface"),
+		pointer_default(unique)
+	]
+	interface IApplicationGE : IDispatch
+	{
+		/// \brief Returns the current camera view in the running instance of
+		/// Google Earth.
+		///
+		/// \note After the function returns, \a pCamera is not updated if the
+		/// Google Earth camera view changes.
+		///
+		/// \param considerTerrain Takes terrain into account when computing
+		/// focus point when no explicit focus point is defined.
+		/// <br>If \c true and no explicit focus point is defined,
+		/// then automatically computes focus point by intersecting the terrain
+		/// in front of the camera. This option is more accurate but is more
+		/// computationally expensive.
+		/// <br>If \c false and no explicit focus point is defined,
+		/// then automatically computes focus point by intersecting a spherical
+		/// representation of the Earth in front of the camera. This option is
+		/// less computationally expensive but less accurate.
+		/// \param pCamera The returned ICameraInfoGE instance.
+		///
+		/// \retval S_OK Successfully retrieved camera.
+		/// \retval E_APPLICATION_UNINITIALIZED Google Earth is not
+		/// initialized. See \ref IsInitialized.
+		/// \retval (other) Appropriate error code (e.g. problems creating
+		/// camera object).
+		///
+		/// \see SetCamera, ICameraInfoGE
+		[id(1), helpstring("method GetCamera")]
+		HRESULT GetCamera([in] BOOL considerTerrain,
+						  [out, retval] ICameraInfoGE **pCamera);
+		/// \brief Flies to the specified camera view at the specified speed.
+		///
+		/// Interpolates the camera position and orientation from the current
+		/// configuration to the one specified by \a camera. The camera motion
+		/// speed is given by \a speed.
+		///
+		/// \param camera The camera view to fly to.
+		/// \param speed Speed factor to use. Overrides autopilot speed.
+		/// Value must be greater than \c 0. If greater than or equal to \c 5.0,
+		/// the camera will immediately be set without any transition. This mode
+		/// is called 'teleport'.
+		///
+		/// \retval S_OK Successfully set camera.
+		/// \retval S_TELEPORTED Given \a Speed is greater than or equal to
+		/// \c 5.0, in which case application's camera was teleported to the
+		/// destination view.
+		/// \retval E_INVALIDARG Invalid argument(s) (e.g. speed
+		/// is not more than zero).
+		/// \retval E_APPLICATION_UNINITIALIZED Google Earth is not
+		/// initialized. See \ref IsInitialized.
+		/// \retval (other) Appropriate error code.
+		///
+		/// \see SetCameraParams, GetCamera, ICameraInfoGE
+		[id(2), helpstring("method SetCamera")]
+		HRESULT SetCamera([in] ICameraInfoGE *camera, [in] double speed);
+		/// \brief Flies to the specified camera without requiring an
+		/// \ref ICameraInfoGE instance.
+		///
+		/// This is provided for performance reasons.
+		///
+		/// This is an optimized way of setting the camera rather than using
+		/// \ref SetCamera since it requires a much smaller number of COM calls.
+		///
+		/// \param lat Latitude in degrees. Between \c -90 and \c 90.
+		/// \param lon Longitude in degrees. Between \c -180 and \c 180.
+		/// \param alt Altitude in meters.
+		/// \param altMode Altitude mode that defines altitude reference origin.
+		/// \param range Distance between focus point and camera in meters.
+		/// \param tilt Tilt angle in degrees. Between \c 0 and \c 90.
+		/// \param azimuth Azimuth angle in degrees.
+		/// \param speed Speed factor to use. Overrides autopilot speed.
+		/// Value must be greater than \c 0. If greater than or equal to \c 5.0,
+		/// the camera will immediately be set without any transition. This mode
+		/// is called 'teleport'.
+		///
+		/// \retval S_OK Successfully set camera.
+		/// \retval S_TELEPORTED Given \a speed is grater than or equal to
+		/// \c 5.0, in which case application's camera was teleported to the
+		/// destination view.
+		/// \retval E_INVALIDARG invalid argument(s) (e.g. speed
+		/// is not more than zero).
+		/// \retval E_APPLICATION_UNINITIALIZED Google Earth is not
+		/// initialized. See \ref IsInitialized.
+		/// \retval (other) Appropriate error code.
+		///
+		/// \see SetCamera, ICameraInfoGE
+		[id(3), helpstring("method SetCameraParams")]
+		HRESULT SetCameraParams([in] double lat, [in] double lon,
+								[in] double alt, [in] AltitudeModeGE altMode,
+								[in] double range, [in] double tilt,
+								[in] double azimuth, [in] double speed);
+		/// \brief Current streaming percentage.
+		///
+		/// Represented as a value between \c 0 and \c 100. The value \c 100
+		/// means streaming for the current view is complete.
+		[propget, id(4), helpstring("property StreamingProgressPercentage")]
+		HRESULT StreamingProgressPercentage([out, retval] long *pVal);
+		/// \brief Takes low quality black and white screen shot
+		/// of the current camera view.
+		///
+		/// This image is not meant to  be used for rapid capture and degrades
+		/// in quality if used frequently.
+		///
+		/// \param fileName Full path JPG filename of output screen shot.
+		/// \param quality Quality factor of output image. Lowest quality is
+		/// \c 0 and highest quality is \c 100. Input quality is always clamped
+		/// to (\c 0, \c 100) inclusive.
+		///
+		/// \retval S_OK Successfully saved screen shot.
+		/// \retval (other) Appropriate error code.
+		[id(5), helpstring("method SaveScreenShot")]
+		HRESULT SaveScreenShot([in] BSTR fileName, [in] long quality);
+		/// \brief Schedules a KML file to be loaded in Google Earth.
+		///
+		/// \param fileName The full path name of the file to be loaded, with
+		/// forward slashes '/' as the directory delimiter character.
+		/// If possible, the application will fly to the view of the
+		/// feature(s) that were created after opening that file.
+		/// \param suppressMessages If <tt>true</tt>, ignores all common KML loading
+		/// dialog boxes warnings and errors, and chooses the default option
+		/// for each one.
+		/// For example, this function ignores confirmations to reload a
+		/// previously loaded KML file and losing unsaved changes.
+		/// This function will not ignore dialog boxes with critical errors
+		/// such as when core libraries cannot be loaded.
+		///
+		/// \retval S_OK File scheduled to be loaded. If there is a problem
+		/// with the file data (e.g. corrupted data), this method returns
+		/// \c S_OK even if the file is not succesfully loaded.
+		/// \retval (other) Appropriate error code.
+		///
+		/// \see LoadKmlData
+		[id(6), helpstring("method OpenKmlFile")]
+		HRESULT OpenKmlFile([in] BSTR fileName, [in] BOOL suppressMessages);
+		/// \brief Loads KML into Google Earth.
+		///
+		/// This loads KML data from a string as opposed to loading from a file.
+		///
+		/// \param kmlData String containing KML data. This must contain valid
+		/// KML data.
+		///
+		/// \retval S_OK Successfully loaded KML data.
+		/// \retval (other) Appropriate error code.
+		///
+		/// /see OpenKmlFile
+		[id(7), helpstring("method LoadKmlData")]
+		HRESULT LoadKmlData([in] BSTR *kmlData);
+		/// \brief Autopilot speed used for flying to features.
+		///
+		/// This is the speed factor Google Earth uses when automatically
+		/// flying to features after loading them, or when the user
+		/// double-clicks on a placemark.  Valid values are between
+		/// \c 0.0 and \c 5.0. A value of \c 1.0 yields quite fast
+		/// transitions.
+		/// A value of \c 5.0 sets the autopilot in teleport mode,
+		/// which means double clicking on a placemark will immediately
+		/// fly to that placemark's view, with no transition between the
+		/// current view and the target view.
+		///
+		/// The autopilot speed is not taken into account in the \ref SetCamera
+		/// method and all its other forms (such as \ref SetCameraParams),
+		/// since all of them take in a \c speed argument which overrides the
+		/// default autopilot speed.
+		///
+		/// \see SetCamera, SetCameraParams
+		[propget, id(8), helpstring("property AutoPilotSpeed")]
+		HRESULT AutoPilotSpeed([out, retval] double *pVal);
+		[propput, id(8), helpstring("property AutoPilotSpeed")]
+		HRESULT AutoPilotSpeed([in] double newVal);
+		/// \brief Current view extents as an \ref IViewExtentsGE instance.
+                ///
+		/// The latitude/longitude bounding box as a coarse
+		/// approximation of what is visible in the 3D viewer of Google Earth.
+                ///
+		[propget, id(9), helpstring("property ViewExtents")]
+		HRESULT ViewExtents([out, retval] IViewExtentsGE **pVal);
+		/// \brief Retrieves a feature matching a given name.
+		///
+		/// Returns the first feature with the given \a name by searching in the
+		/// "Search Results", "Places", and "Layers" panels and returning
+		/// it as a \ref IFeatureGE.
+		///
+		/// \note A name is not necessarily unique, so another option
+		/// is to use \ref GetFeatureByHref, which some features support.
+		///
+		/// \param name Feature name to be retrieved
+		/// \param pFeature Output feature. If there is more than one feature
+		/// with given name, returns first instance. If no features exist with
+		/// given name, returns \c NULL.
+		///
+		/// \retval S_OK Successfully found zero or more features. Set
+		/// \a pFeature to \c NULL or to the first feature.
+		/// \retval (other) Appropriate error code.
+		///
+		/// \see GetFeatureByHref, IFeatureGE::Name
+		[id(10), helpstring("method GetFeatureByName")]
+		HRESULT GetFeatureByName([in] BSTR name,
+								 [out, retval] IFeatureGE **pFeature);
+		/// \brief Returns the feature with a given \a href.
+		///
+		/// Searches for feature in the Places and Layers panels and returns
+		/// it as a \ref IFeatureGE.
+		///
+		/// \a href is case sensitive and uses forward slashes '/' as the
+		/// directory delimiter.
+		///
+		/// \a href is in the format: <tt>FileName\#FeatureID</tt>
+		///
+		/// For example, if you have a KML file <tt>C:/simple.kml</tt>, with the
+		/// following placemark:
+		/// <br><tt>\<Placemark id="SomeID"\></tt>
+		///
+		/// then the corresponding \a href would be:
+		/// <br><tt>C:/simple.kml\#SomeID</tt>
+		///
+		/// Although not all features have \a hrefs, an \a href is a unique
+		/// identifier (unlike a \c name).
+		///
+		/// \param href String that identifies feature as explained above.
+		/// \param pFeature Output feature matching given \a href. If no
+		/// feature is found matching \a href, then it is set to \c NULL.
+		///
+		/// \retval S_OK Successfully found zero or one feature. Set
+		/// \a pFeature to \c NULL or to the appropriate feature.
+		/// \retval (other) Appropriate error code.
+		///
+		/// \see GetFeatureByName
+		[id(11), helpstring("method GetFeatureByHref")]
+		HRESULT GetFeatureByHref([in] BSTR href,
+								 [out, retval] IFeatureGE **pFeature);
+		/// \brief Flies to the view of the given feature at the specified
+		/// speed.
+		///
+		/// This method fails if the specified feature has no view.
+		///
+		/// \see SetCamera, IFeatureGE::HasView
+		///
+		/// \param feature Destination feature to fly camera.
+		/// \param speed Speed factor to use. Overrides autopilot speed.
+		/// Value must be greater than \c 0.
+		///
+		/// \retval S_OK Successfully flying camera.
+		/// \retval E_INVALIDARG Invalid argument(s).
+		/// \retval E_INVALID_OR_DELETED_FEATURE \a Feature represents an
+		/// invalid or deleted feature.
+		/// \retval E_FEATURE_HAS_NO_VIEW Feature has no view.
+		/// \retval (other) Appropriate error code.
+		///
+		/// \see SetCamera, IFeatureGE::HasView
+		[id(12), helpstring("method SetFeatureView")]
+		HRESULT SetFeatureView([in] IFeatureGE *feature, [in] double speed);
+		/// \brief Returns point on terrain from screen coordinates.
+		///
+		/// This method allows an external application to query the geolocation
+		/// and terrain altitude of a point in the 3D viewpoint identified
+		/// by its normalized screen coordinates (\c screen_x, \c screen_y),
+		/// ranging from (\c -1, \c -1) to (\c +1, \c +1) inclusive.
+		/// <br>Here are some examples:
+		/// \li (\c -1, \c -1) - bottom left hand corner of the screen.
+		/// \li (\c 0,\c 0) - center of the screen.
+		/// \li (\c 1, \c 1) - top right hand corner of the screen.
+		///
+		/// To convert from pixel coordinates to these normalized screen
+		/// coordinates, it may be helpful to use \ref GetRenderHwnd and
+		/// retrieve the render window's position and dimensions for these
+		/// computations.
+		///
+		/// The coordinates of the point on terrain are returned in
+		/// as a \ref IPointOnTerrainGE.
+		///
+		/// If the input screen coordinates do not intersect with the globe,
+		/// then this function returns the projected point on the globe's
+		/// horizon and with the \ref IPointOnTerrainGE::ProjectedOntoGlobe set
+		/// to \c true.
+		///
+		/// The \ref IPointOnTerrainGE::Altitude is set in the following way:
+		/// \li if \ref ElevationExaggeration is non-zero, then
+		/// \ref IPointOnTerrainGE::Altitude is set to be the terrain's
+		/// true altitude and
+		/// \ref IPointOnTerrainGE::ZeroElevationExaggeration is set to false,
+		/// or
+		/// \li if \ref ElevationExaggeration is zero, then 
+		/// \ref IPointOnTerrainGE::Altitude is set to zero and
+		/// \ref IPointOnTerrainGE::ZeroElevationExaggeration is set to true.
+		///
+		/// \param screen_x Normalized screen position along the x axis.
+		/// Valid range is from \c -1 (left hand side of the screen) to \c +1
+		/// (right hand side of the screen). Values outside the valid range are
+		/// clamped.
+		/// \param screen_y Normalized screen position along the y axis.
+		/// Valid range is from -1 (bottom of the screen) to +1 (top of the
+		/// screen). Values outside the valid range are
+		/// clamped.
+		/// \param pPoint Retrieved point. See details above.
+		///
+		/// \retval S_OK Successfully retrieved point.
+		/// \retval (other) Appropriate error code.
+		///
+		/// \see GetRenderHwnd
+		[id(13), helpstring("method GetPointOnTerrainFromScreenCoords")]
+		HRESULT GetPointOnTerrainFromScreenCoords(
+			[in] double screen_x, [in] double screen_y,
+			[out, retval] IPointOnTerrainGE **pPoint);
+		/// \enum AppTypeGE
+		/// \brief The application type of Google Earth (EC, Pro, Plus or
+		/// Free)
+		///
+		/// \see VersionAppType
+		typedef [ v1_enum ] enum { 
+			/// Google Earth Enterprise Client
+			EnterpriseClientGE = 0, 
+			/// Google Earth Pro.
+			ProGE = 1, 
+			/// Google Earth Plus.
+			PlusGE = 2,
+			/// Google Earth Free.
+			FreeGE = 5, 
+			/// Unknown (error).
+			UnknownGE = 0xFF } AppTypeGE;
+		/// \brief The application's version major number.
+		///
+		/// Google Earth versions are in the following format:<br>
+		/// <tt> major.minor.build appType </tt>
+		///
+		/// In the example <tt>4.0.1693 Free</tt>, \c major is \c 4.
+		///
+		/// \see VersionMinor, VersionBuild, VersionAppType
+		[propget, id(14), helpstring("property VersionMajor")]
+		HRESULT VersionMajor([out, retval] int *major);
+		/// \brief The application's version minor number.
+		///
+		/// Google Earth versions are in the following format:<br>
+		/// <tt> major.minor.build appType </tt>
+		///
+		/// In the example <tt>4.0.1693 Free</tt>, \c minor is \c 0.
+		///
+		/// \see VersionMajor, VersionBuild, VersionAppType
+		[propget, id(15), helpstring("property VersionMinor")]
+		HRESULT VersionMinor([out, retval] int *minor);
+		/// \brief The application's build number.
+		///
+		/// Google Earth versions are in the following format:<br>
+		/// <tt> major.minor.build appType </tt>
+		///
+		/// In the example <tt>4.0.1693 Free</tt>, \c build is \c 1693.
+		///
+		/// \see VersionMajor, VersionMinor, VersionAppType
+		[propget, id(16), helpstring("property VersionBuild")]
+		HRESULT VersionBuild([out, retval] int *build);
+		/// \brief Google Earth's application type.
+		///
+		/// Google Earth versions are in the following format:<br>
+		/// <tt> major.minor.build appType </tt>
+		///
+		/// In the example <tt>4.0.1693 Free</tt>, \c AppType is \c FreeGE.
+		///
+		/// \see VersionMajor, VersionMinor, VersionBuild
+		[propget, id(17), helpstring("property VersionAppTye")]
+		HRESULT VersionAppType([out, retval] AppTypeGE *appType);
+		/// \brief Indicates if Google Earth has logged in or not.
+		///
+		/// When the application is initialized, the user has access to most
+		/// functionality but may or may not be connected to the data server.
+		/// To check if the application is connected to the data server, use
+		/// \ref IsOnline instead.
+		///
+		/// \param isInitialized Output status.
+		///
+		/// \retval S_OK Successfully retrieved status.
+		/// \retval (other) Appropriate error code.
+		///
+		/// \see Online, Login, Logout
+		[id(18), helpstring("method IsInitialized")]
+		HRESULT IsInitialized([out, retval] BOOL *isInitialized);
+		/// \brief Returns whether the application is connected to the data
+		/// server or not. 
+		///
+		/// If the application is connected to the server, then Google Earth
+		/// uses the server's Layers databases. Otherwise, it uses
+		/// local cached Layers databases.
+		///
+		/// \param isOnline Output status.
+		///
+		/// \retval S_OK Successfully retrieved status.
+		/// \retval (other) Appropriate error code.
+		///
+		/// \see Online, Login, Logout
+		[id(19), helpstring("method IsOnline")]
+		HRESULT IsOnline([out, retval] BOOL *isOnline);
+		/// \brief Logs into the default default session if the application is logged
+		/// out.
+		///
+		/// This function attempts to do two things:
+		/// <ul>
+		/// <li> Initializes the application, in which case \ref IsInitialized
+		/// becomes \c TRUE.
+		/// <li> Attempts to connect to default server, and
+		///   <ul>
+		///   <li> If successful, \ref IsOnline becomes \c TRUE and
+		///   application uses server's Layers databases.
+		///   <li> If unsuccessful, \ref IsOnline becomes \c FALSE and
+		///   application uses local cached Layer databases.
+		///   </ul>
+		/// </ul>
+		///
+		/// \note Logging in may take a few moments after this function
+		/// returns.
+		///
+		/// \retval S_OK Function tries to log in. Use \ref IsInitialized and
+		/// \ref IsOnline after a few moments to figure out more detailed
+		/// results.
+		/// \retval S_FALSE Application was already logged in.
+		/// \retval E_APPLICATION_UNINITIALIZED Google Earth Application is not
+		/// initialized. See \ref IsInitialized.
+		///
+		/// \see Logout, IsInitialized, IsOnline
+		[id(20), helpstring("method Login")]
+		HRESULT Login();
+		/// \brief Logs out of the current session if the application is logged in.
+		///
+		/// This forces both \ref IsInitialized and \ref IsOnline to be
+		/// \c FALSE.
+		///
+		/// \retval S_OK Successfully logged out.
+		/// \retval E_APPLICATION_UNINITIALIZED Google Earth Application is not
+		/// initialized. See \ref IsInitialized.
+		/// \retval (other) Appropriate error code.
+		///
+		/// \see Login, IsInitialized, IsOnline
+		[id(21), helpstring("method Logout")] HRESULT Logout();
+		/// \brief Displays the description balloon for a given feature.
+		///
+		/// Shows the description balloon for a feature that has a view.
+		/// This method fails if the specified feature has no view.
+		/// \see IFeatureGE::HasView
+		///
+		/// \note Turning on the description balloon for a feature may turn
+		/// off the description balloons for other features.
+		///
+		/// \param feature The feature for which the description balloon appears.
+		///
+		/// \retval S_OK Successfully turned on description balloon for feature.
+		/// \retval E_INVALID_OR_DELETED_FEATURE \a feature represents an
+		/// invalid or deleted feature.
+		/// \retval E_FEATURE_HAS_NO_VIEW Feature has no view.
+		/// \retval (other) Appropriate error code.
+		///
+		/// \see HideDescriptionBalloons
+		[id(22), helpstring("method ShowDescriptionBalloon")]
+		HRESULT ShowDescriptionBalloon([in] IFeatureGE *feature);
+		/// \brief Hides all visible description balloons.
+		///
+		/// Turns off any visible description balloons for all features.
+		///
+		/// \retval S_OK Successfully hid all description balloons.
+		/// \retval (other) Appropriate error code.
+		///
+		/// \see ShowDescriptionBalloon
+		[id(23), helpstring("method HideDescriptionBalloons")]
+		HRESULT HideDescriptionBalloons();
+		/// \brief Retrieves currently highlighted feature (i.e. with focus).
+		///
+		/// \param pFeature Output highlighted feature. If no feature is
+		/// highlighted, this is set to \c NULL.
+		///
+		/// \retval S_OK Successfully set \a pFeature to highlighted feature
+		/// or set it to \c NULL if none is higlighted.
+		/// \retval (other) Appropriate error code.
+		///
+		/// \see IFeatureGE::Highlighted, IFeatureGE::Highlighted
+		[id(24), helpstring("method GetHighlightedFeature")]
+		HRESULT GetHighlightedFeature([out, retval] IFeatureGE **pFeature);
+		/// \brief Retrieves My Places folder.
+		///
+		/// \param pMyPlaces Output feature for My Places folder.
+		/// If folder is unavailable, this is set to \c NULL.
+		///
+		/// \retval S_OK Successfully set \a pMyPlaces to My Places folder
+		/// or set it to \c NULL if My Places is unavailable.
+		/// \retval (other) Appropriate error code.
+		///
+		/// \see GetTemporaryPlaces, GetLayersDatabases,
+		/// ISearchControllerGE::GetResults
+		[id(25), helpstring("method GetMyPlaces")]
+		HRESULT GetMyPlaces([out, retval] IFeatureGE **pMyPlaces);
+		/// \brief Retrieves Temporary Places folder.
+		///
+		/// \param pTemporaryPlaces Output feature for Temporary Places.
+		/// folder. If folder is unavailable, this is set to \c NULL.
+		///
+		/// \retval S_OK Successfully set \a pTemporaryPlaces to Temporary
+		/// Places folder or set it to \c NULL if Temporary Places is
+		/// unavailable.
+		/// \retval (other) Appropriate error code.
+		///
+		/// \see GetMyPlaces, GetLayersDatabases,
+		/// ISearchControllerGE::GetResults
+		[id(26), helpstring("method GetTemporaryPlaces")]
+		HRESULT GetTemporaryPlaces([out, retval] IFeatureGE **pTemporaryPlaces);
+		/// \brief Retrieves databases from the layers list.
+		///
+		/// Returns the layers databases as a collection of features. This
+		/// allows for traversal of all available layers features.
+		///
+		/// \param pDatabases Output enum of database features.
+		///
+		/// \retval S_OK Successfully retrieved databases.
+		/// \retval (other) Appropriate error code (e.g. problems creating
+		/// enum object).
+		///
+		/// \see GetMyPlaces, GetTemporaryPlaces,
+		/// ISearchControllerGE::GetResults
+		[id(27), helpstring("method GetLayersDatabases")]
+		HRESULT GetLayersDatabases(
+			[out, retval] IFeatureCollectionGE **pDatabases);
+		/// \brief Terrain elevation exaggeration.
+		///
+		/// Valid values are between \c 0 and \c 3 inclusive. This amplifies the
+		/// altitude of the terrain by a given factor.
+		///
+		/// \note If exaggeration is \c 0,
+		/// \ref GetPointOnTerrainFromScreenCoords always returns an
+		/// \a altitude of \c 0.
+		///
+		/// Examples:
+		/// \li a value of \c 0 displays a flat terrain,
+		/// \li a value of \c 1 (default) displays the terrain at true altitude,
+		/// and
+		/// \li a value of \c 3 displays the terrain at three times the true
+		/// altitude.
+		[propget, id(28), helpstring("property ElevationExaggeration")]
+		HRESULT ElevationExaggeration([out, retval] double *pExaggeration);
+		[propput, id(28), helpstring("property ElevationExaggeration")]
+		HRESULT ElevationExaggeration([in] double exaggeration);
+		/// \brief Returns Windows handle for Google Earth's main window.
+		///
+		/// This is useful for resizing and positioning the Google Earth
+		/// window.
+		///
+		/// \param hwnd Output window handle for Google Earth.
+		///
+		/// \retval S_OK Succesfully retrieved window handle.
+		/// \retval (other) Appropriate error code.
+		///
+		/// \see GetRenderHwnd
+		[id(29), helpstring("method GetMainHwnd")]
+		HRESULT GetMainHwnd([out, retval] OLE_HANDLE *hwnd);
+		/// \brief Tour controller for the application.
+		/// Contains tour options and controls.
+		///
+		/// \see SearchController, AnimationController
+		[propget, id(30), helpstring("property TourController")]
+		HRESULT TourController(
+			[out, retval] ITourControllerGE **pTourController);
+		/// \brief Search controller for the application.
+		/// Contains search options and controls.
+		///
+		/// \see TourController, AnimationController
+		[propget, id(31), helpstring("property SearchController")]
+		HRESULT SearchController(
+			[out, retval] ISearchControllerGE **pSearchController);
+		/// \brief Animation controller for the application.
+		/// Contains animation options and controls.
+		///
+		/// \see SearchController, TourController
+		[propget, id(32), helpstring("property AnimationController")]
+		HRESULT AnimationController(
+			[out, retval] IAnimationControllerGE **pAnimationController);
+		/// \brief Returns Windows handle for Google Earth's render window.
+		///
+		/// This is useful for:
+		/// \li Getting and setting render window dimensions. Needed for
+		/// converting between pixel coordinates and screen coordinates.
+		/// Also helpful for resizing the window for screenshots or videos.
+		/// \li Drawing things on top of the render window.
+		/// \li Other things requiring Win32 functions.
+		///
+		/// \param hwnd Output window handle for render window.
+		///
+		/// \retval S_OK Succesfully retrieved window handle.
+		/// \retval (other) Appropriate error code.
+		///
+		/// \see GetMainHwnd
+		[id(33), helpstring("method GetRenderHwnd")]
+		HRESULT GetRenderHwnd([out, retval] OLE_HANDLE *hwnd);
+	};
+
+
+// The following is deprecated and should not be used or documented.
+	[
+		object,
+		uuid(45F89E39-7A46-4CA4-97E3-8C5AA252531C),
+		dual,
+		helpstring("IKHViewInfo Interface"),
+		pointer_default(unique)
+	]
+	interface IKHViewInfo : IDispatch // Deprecated.
+	{
+		[propget, id(1), helpstring("property latitude")] HRESULT latitude([out, retval] double *pLat);
+		[propput, id(1), helpstring("property latitude")] HRESULT latitude([in] double lat);
+		[propget, id(2), helpstring("property longitude")] HRESULT longitude([out, retval] double *pLon);
+		[propput, id(2), helpstring("property longitude")] HRESULT longitude([in] double lon);
+		[propget, id(3), helpstring("property range")] HRESULT range([out, retval] double *pRange);
+		[propput, id(3), helpstring("property range")] HRESULT range([in] double range);
+		[propget, id(4), helpstring("property tilt")] HRESULT tilt([out, retval] double *pTilt);
+		[propput, id(4), helpstring("property tilt")] HRESULT tilt([in] double tilt);
+		[propget, id(5), helpstring("property azimuth")] HRESULT azimuth([out, retval] double *pAzimuth);
+		[propput, id(5), helpstring("property azimuth")] HRESULT azimuth([in] double azimuth);
+	};
+
+	[
+		object,
+		uuid(D05D6E91-72DA-4654-B8A7-BCBD3B87E3B6),
+		dual,
+		helpstring("IKHViewExtents Interface"),
+		pointer_default(unique)
+	]
+	interface IKHViewExtents : IDispatch // Deprecated.
+	{
+		[propget, id(1), helpstring("property north")] HRESULT north([out, retval] double *pVal);
+		[propget, id(2), helpstring("property south")] HRESULT south([out, retval] double *pVal);
+		[propget, id(3), helpstring("property east")] HRESULT east([out, retval] double *pVal);
+		[propget, id(4), helpstring("property west")] HRESULT west([out, retval] double *pVal);
+	};
+	
+	[
+		object,
+		uuid(07F46615-1857-40CF-9AA9-872C9858E769),
+		dual,
+		helpstring("IKHFeature Interface"),
+		pointer_default(unique)
+	]
+	interface IKHFeature : IDispatch // Deprecated.
+	{
+		[propget, id(1), helpstring("property visibility")] HRESULT visibility([out, retval] BOOL *pVal);
+		[propput, id(1), helpstring("property visibility")] HRESULT visibility([in] BOOL newVal);
+		[propget, id(2), helpstring("property hasView")] HRESULT hasView([out, retval] BOOL *pVal);
+	};
+
+	[
+		object,
+		uuid(80A43F86-E2CD-4671-A7FA-E5627B519711),
+		dual,
+		helpstring("IKHInterface Interface"),
+		pointer_default(unique)
+	]
+	interface IKHInterface : IDispatch // Deprecated.
+	{
+		[id(2), helpstring("property currentView")] HRESULT currentView([in] BOOL terrain, [out, retval] IKHViewInfo **pView);
+		[propget, id(3), helpstring("property streamingProgressPercentage")] HRESULT streamingProgressPercentage([out, retval] long *pVal);
+		[id(4), helpstring("method SaveScreenShot")] HRESULT SaveScreenShot([in] BSTR fileName, [in] long quality);
+		[id(5), helpstring("method OpenFile")] HRESULT OpenFile([in] BSTR fileName);
+		[id(6), helpstring("method QuitApplication")] HRESULT QuitApplication();
+		[id(7), helpstring("method SetRenderWindowSize")] HRESULT SetRenderWindowSize(long width, long height);
+		[propget, id(9), helpstring("property autopilotSpeed")] HRESULT autopilotSpeed([out, retval] double *pVal);
+		[propput, id(9), helpstring("property autopilotSpeed")] HRESULT autopilotSpeed([in] double newVal);
+		[propget, id(10), helpstring("property currentViewExtents")] HRESULT currentViewExtents([out, retval] IKHViewExtents **pVal);
+		[id(11), helpstring("method setView")] HRESULT setView([in] IKHViewInfo *view, [in] BOOL terrain, [in] double speed);
+		[id(12), helpstring("method LoadKml")] HRESULT LoadKml([in] BSTR *kmlData);
+		[id(13), helpstring("method getFeatureByName")] HRESULT getFeatureByName([in] BSTR name, [out, retval] IKHFeature **pFeature);
+		[id(14), helpstring("method setViewParams")] HRESULT setViewParams([in] double lat, [in] double lon, [in] double range, [in] double tilt, [in] double azimuth, [in] BOOL terrain, [in] double speed);
+		[id(15), helpstring("method setFeatureView")] HRESULT setFeatureView([in] IKHFeature *feature, [in] double speed);
+		[id(16), helpstring("method getPointOnTerrainFromScreenCoords")] HRESULT getPointOnTerrainFromScreenCoords([in] double screen_x, [in] double screen_y, [out, retval] SAFEARRAY(double) *coords);
+		typedef [ v1_enum ] enum { 
+			GE_EC = 0, 
+			GE_Pro = 1, 
+			GE_Plus = 2,
+			GE_LT = 3, 
+			GE_NV = 4, 
+			GE_Free = 5, 
+			UNKNOWN = 0xFF 
+		} AppType;
+		[id(17), helpstring("method getCurrentVersion")] HRESULT getCurrentVersion([out] int *major, [out] int *minor, [out] int *build, [out] AppType *appType);
+		[id(18), helpstring("method isClientInitialized")] HRESULT isClientInitialized([out] int *isInitialized);
+	};
+
+[
+	uuid(3476FAB2-687F-4EA6-9AC2-88D72DC7D7FC),
+	version(1.0),
+	helpstring("Earth 1.0 Type Library")
+]
+library EARTHLib
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+	[
+		uuid(8097D7E9-DB9E-4AEF-9B28-61D82A1DF784),
+		helpstring("ApplicationGE Class")
+	]
+	coclass ApplicationGE
+	{
+		[default] interface IApplicationGE;
+	};
+	[
+		uuid(1AEDB68D-18A7-4CA9-B41B-3CE7E59FAB24),
+		helpstring("TimeGE Class")
+	]
+	coclass TimeGE
+	{
+		[default] interface ITimeGE;
+	};
+	[
+		uuid(42DF0D46-7D49-4AE5-8EF6-9CA6E41EFEC1),
+		helpstring("TimeIntervalGE Class")
+	]
+	coclass TimeIntervalGE
+	{
+		[default] interface ITimeIntervalGE;
+	};
+	[
+		uuid(645EEE5A-BD51-4C05-A6AF-6F2CF8950AAB),
+		helpstring("CameraInfoGE Class")
+	]
+	coclass CameraInfoGE
+	{
+		[default] interface ICameraInfoGE;
+	};
+	[
+		uuid(D93BF052-FC68-4DB6-A4F8-A4DC9BEEB1C0),
+		helpstring("ViewExtentsGE Class")
+	]
+	coclass ViewExtentsGE
+	{
+		[default] interface IViewExtentsGE;
+	};
+	[
+		uuid(77C4C807-E257-43AD-BB3F-7CA88760BD29),
+		helpstring("TourControllerGE Class")
+	]
+	coclass TourControllerGE
+	{
+		[default] interface ITourControllerGE;
+	};
+	[
+		uuid(A4F65992-5738-475B-9C16-CF102BCDE153),
+		helpstring("SearchControllerGE Class")
+	]
+	coclass SearchControllerGE
+	{
+		[default] interface ISearchControllerGE;
+	};
+	[
+		uuid(1A239250-B650-4B63-B4CF-7FCC4DC07DC6),
+		helpstring("AnimationControllerGE Class")
+	]
+	coclass AnimationControllerGE
+	{
+		[default] interface IAnimationControllerGE;
+	};
+	[
+		uuid(CBD4FB70-F00B-4963-B249-4B056E6A981A),
+		helpstring("FeatureGE Class")
+	]
+	coclass FeatureGE
+	{
+		[default] interface IFeatureGE;
+	};
+	[
+		uuid(9059C329-4661-49B2-9984-8753C45DB7B9),
+		helpstring("FeatureCollectionGE class")
+	]
+	coclass FeatureCollectionGE
+	{
+		[default] interface IFeatureCollectionGE;
+	};
+	[
+		uuid(1796A329-04C1-4C07-B28E-E4A807935C06),
+		helpstring("PointOnTerrainGE class")
+	]
+	coclass PointOnTerrainGE
+	{
+		[default] interface IPointOnTerrainGE;
+	};
+
+// The following are deprecated and should not be used or documented.
+	[
+		uuid(AFD07A5E-3E20-4D77-825C-2F6D1A50BE5B),
+		helpstring("KHInterface Class")
+	]
+	coclass KHInterface // Deprecated.
+	{
+		[default] interface IKHInterface;
+	};
+	[
+		uuid(A2D4475B-C9AA-48E2-A029-1DB829DACF7B),
+		helpstring("KHViewInfo Class")
+	]
+	coclass KHViewInfo // Deprecated.
+	{
+		[default] interface IKHViewInfo;
+	};
+	[
+		uuid(63E6BE14-A742-4EEA-8AF3-0EC39F10F850),
+		helpstring("KHViewExtents Class")
+	]
+	coclass KHViewExtents // Deprecated.
+	{
+		[default] interface IKHViewExtents;
+	};
+	[
+		uuid(B153D707-447A-4538-913E-6146B3FDEE02),
+		helpstring("KHFeature Class")
+	]
+	coclass KHFeature // Deprecated.
+	{
+		[default] interface IKHFeature;
+	};
+};
