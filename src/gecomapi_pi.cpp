@@ -101,15 +101,6 @@ int gecomapi_pi::Init(void)
 
       ApplyConfig();
 
-      if (NULL != m_pgecomapi_window->app)
-      {
-            m_pgecomapi_window->GEClose();
-      }
-      else
-      {
-            m_pgecomapi_window->GEInitialize();
-      }
-
       return (WANTS_OVERLAY_CALLBACK |
            WANTS_CURSOR_LATLON       |
            WANTS_TOOLBAR_CALLBACK    |
@@ -215,7 +206,10 @@ void gecomapi_pi::OnToolbarToolCallback(int id)
       }
       else
       {
-            m_pgecomapi_window->GEInitialize();
+            if (pane.IsShown())
+            {
+                  m_pgecomapi_window->GEInitialize();
+            }
       }
 }
 

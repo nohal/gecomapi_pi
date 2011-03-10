@@ -44,12 +44,9 @@ class gecomapi_pi;
 class GEUIDialog: public wxWindow
 {
       public:
-
             GEUIDialog(wxWindow *pparent, wxWindowID id, wxAuiManager *auimgr, int tbitem);
 
             ~GEUIDialog( );
-
-            void CreateControls();
 
             void SetCursorLatLon(double lat, double lon);
             void SetBoatLatLon(double lat, double lon);
@@ -77,9 +74,6 @@ class GEUIDialog: public wxWindow
 
             double            m_hotspot_lat, m_hotspot_lon;
             double            m_camera_range, m_camera_azimuth;
-
-            //GoogleEarth
-            ICameraInfoGE    *camera;
 
             wxAuiManager     *m_pauimgr;
             int               m_toolbar_item_id;

@@ -62,41 +62,38 @@ GEUIDialog::GEUIDialog(wxWindow *pparent, wxWindowID id, wxAuiManager *auimgr, i
       app = NULL;
 
       m_bgeisuseable = false;
-      CoUninitialize();
+
+      GEInitialize();
 }
 
 GEUIDialog::~GEUIDialog( )
 {
 }
 
-void GEUIDialog::CreateControls()
-{
-      GEResize();
-      GEMoveCamera();
-}
-
 void GEUIDialog::GEInitialize()
 {
-      CoInitialize(NULL);
-      HRESULT	hr;
+      if (NULL == app && !m_bgeisuseable) 
+      {
+            CoInitialize(NULL);
+            HRESULT	hr;
 
-      hr = CoCreateInstance(
-		CLSID_ApplicationGE,
-		0,
-		CLSCTX_LOCAL_SERVER,
-		IID_IApplicationGE,
-		reinterpret_cast<LPVOID *>( &app ));
-	if ( FAILED( hr )) {
-		//cerr << "cannot create IApplicationGE" << endl;
-		//return -1;
-	}
-      long	is_initialized;
-      do {
-	      is_initialized = app->IsInitialized();
-      } while ( is_initialized == 0 );
-
-      m_bgeisuseable = true;
-      GEAttachWindow();
+            hr = CoCreateInstance(
+		      CLSID_ApplicationGE,
+		      0,
+		      CLSCTX_LOCAL_SERVER,
+		      IID_IApplicationGE,
+		      reinterpret_cast<LPVOID *>( &app ));
+	      if ( FAILED( hr )) {
+		      //cerr << "cannot create IApplicationGE" << endl;
+		      //return -1;
+	      }
+            long	is_initialized;
+            do {
+	            is_initialized = app->IsInitialized();
+            } while ( is_initialized == 0 );
+            m_bgeisuseable = true;
+            GEAttachWindow();
+      }
 }
 
 void GEUIDialog::GEAttachWindow()
@@ -133,17 +130,21 @@ void GEUIDialog::GEMoveCamera()
 {
       if(NULL != app && m_bgeisuseable)
       {
-            app->raw_GetCamera(false, &camera);
-            OLE_HANDLE hwnd = app->GetMainHwnd();
+            //app->raw_GetCamera(false, &camera);
+            //camera->PutFocusPointLatitude(m_hotspot_lat);
+            //camera->PutFocusPointLongitude(m_hotspot_lon);
+            //camera->PutAzimuth(m_camera_azimuth); //north up
+            //camera->PutFocusPointAltitude(0.0); //focus point on sea level
+            //camera->PutRange(m_camera_range); //camera 1000 meters high
+            //camera->PutTilt(0.0); //camera directly over a focus point
+            //app->raw_SetCamera(camera, 1.0); //1.0 - how fast the camera gets there
 
-            app->raw_GetCamera(false, &camera);
-            camera->PutFocusPointLatitude(m_hotspot_lat);
-            camera->PutFocusPointLongitude(m_hotspot_lon);
-            camera->PutAzimuth(m_camera_azimuth); //north up
-            camera->PutFocusPointAltitude(0.0); //focus point on sea level
-            camera->PutRange(m_camera_range); //camera 1000 meters high
-            camera->PutTilt(0.0); //camera directly over a focus point
-            app->raw_SetCamera(camera, 1.0); //1.0 - how fast the camera gets there
+            try 
+            {
+            app->SetCameraParams(m_hotspot_lat, m_hotspot_lon, 0.0, AbsoluteAltitudeGE, m_camera_range, 0.0, m_camera_azimuth, 1.0);
+            }
+            catch(...) {
+            }
       }
 }
 
@@ -165,12 +166,12 @@ void GEUIDialog::SetBoatLatLon(double lat, double lon)
 
 void GEUIDialog::SetViewPort(double lat, double lon, double geo_height, double geo_width, double rotation)
 {
-      m_camera_range = geo_width / 2 * 60 * 1852; //TODO: maybe decide which axis is better to use...
+      //Lets compute a range. To make it easy, we will just look from the distance equal to half the chart viewport width at the centerpoint...
+      m_camera_range = geo_width / 2 * 60 * 1852; //TODO: maybe decide which axis is better to use to set it to fit the same area to the window...
       m_camera_azimuth = rotation;
       m_hotspot_lon = lon;
       m_hotspot_lat = lat;
       
-
       GEMoveCamera();
 }
 
@@ -184,7 +185,7 @@ void GEUIDialog::OnShow(wxShowEvent& event)
 void GEUIDialog::GEClose()
 {
 //is all of the following needed?
-      if (NULL != app) 
+      if (NULL != app && m_bgeisuseable) 
       {
             m_bgeisuseable = false;
             SendMessage((HWND) LongToHandle(app->GetMainHwnd()), WM_COMMAND, WM_QUIT, 0);
