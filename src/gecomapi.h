@@ -53,6 +53,7 @@ class GEUIDialog: public wxWindow
 
             void SetCursorLatLon(double lat, double lon);
             void SetBoatLatLon(double lat, double lon);
+            void SetViewPort(double lat, double lon, double geo_height, double geo_width, double rotation);
 
             void SetWindowWidth(int width);
 
@@ -74,7 +75,8 @@ class GEUIDialog: public wxWindow
             wxWindow         *pParent;
             gecomapi_pi      *pPlugIn;
 
-            double            m_cursor_lat, m_cursor_lon;
+            double            m_hotspot_lat, m_hotspot_lon;
+            double            m_camera_range, m_camera_azimuth;
 
             //GoogleEarth
             ICameraInfoGE    *camera;

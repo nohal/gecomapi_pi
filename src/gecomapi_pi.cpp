@@ -117,7 +117,8 @@ int gecomapi_pi::Init(void)
            WANTS_CONFIG              |
            WANTS_NMEA_EVENTS         |
            WANTS_NMEA_SENTENCES      |
-           USES_AUI_MANAGER
+           USES_AUI_MANAGER          |
+           WANTS_ONPAINT_VIEWPORT
             );      
 }
 
@@ -237,6 +238,14 @@ void gecomapi_pi::UpdateAuiStatus(void)
       SetToolbarItemState(m_toolbar_item_id, pane.IsShown());
 }
 
+void gecomapi_pi::SetCurrentViewPort(PlugIn_ViewPort &vp)
+{
+      if(m_iWhatToFollow == GECOMAPI_FOLLOW_VIEW && m_pgecomapi_window)
+      {
+            m_pgecomapi_window->SetViewPort(vp.clat, vp.clon, vp.lat_max - vp.lat_min, vp.lon_max - vp.lon_min, vp.rotation);
+      }
+}
+
 void gecomapi_pi::SetPositionFix(PlugIn_Position_Fix &pfix)
 {
       if(m_iWhatToFollow == GECOMAPI_FOLLOW_BOAT && m_pgecomapi_window)
@@ -261,7 +270,7 @@ bool gecomapi_pi::LoadConfig(void)
             wxString config;
 
             pConf->Read( _T("WindowWidth"), &m_iWindowWidth, 300 );
-            pConf->Read( _T("WhatToFollow"), &m_iWhatToFollow, 1 ); //1-Cursor, 2-boat, 3-View
+            pConf->Read( _T("WhatToFollow"), &m_iWhatToFollow, GECOMAPI_FOLLOW_VIEW ); //1-Cursor, 2-boat, 3-View
             
             return true;
       }
@@ -277,7 +286,7 @@ bool gecomapi_pi::SaveConfig(void)
       {
             pConf->SetPath( _T( "/PlugIns/GoogleEarth" ) );
             pConf->Write( _T( "WindowWidth" ), m_iWindowWidth );
-            pConf->Write( _T( "WindowWidth" ), m_iWhatToFollow );
+            pConf->Write( _T( "WhatToFollow" ), m_iWhatToFollow );
 
             return true;
       }

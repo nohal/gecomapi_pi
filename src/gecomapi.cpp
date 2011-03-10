@@ -137,11 +137,11 @@ void GEUIDialog::GEMoveCamera()
             OLE_HANDLE hwnd = app->GetMainHwnd();
 
             app->raw_GetCamera(false, &camera);
-            camera->PutFocusPointLatitude(m_cursor_lat);
-            camera->PutFocusPointLongitude(m_cursor_lon);
-            camera->PutAzimuth(0.0); //north up
+            camera->PutFocusPointLatitude(m_hotspot_lat);
+            camera->PutFocusPointLongitude(m_hotspot_lon);
+            camera->PutAzimuth(m_camera_azimuth); //north up
             camera->PutFocusPointAltitude(0.0); //focus point on sea level
-            camera->PutRange(1000.0); //camera 1000 meters high
+            camera->PutRange(m_camera_range); //camera 1000 meters high
             camera->PutTilt(0.0); //camera directly over a focus point
             app->raw_SetCamera(camera, 1.0); //1.0 - how fast the camera gets there
       }
@@ -149,16 +149,27 @@ void GEUIDialog::GEMoveCamera()
 
 void GEUIDialog::SetCursorLatLon(double lat, double lon)
 {
-      m_cursor_lon = lon;
-      m_cursor_lat = lat;
+      m_hotspot_lon = lon;
+      m_hotspot_lat = lat;
 
       GEMoveCamera();
 }
 
 void GEUIDialog::SetBoatLatLon(double lat, double lon)
 {
-      m_cursor_lon = lon;
-      m_cursor_lat = lat;
+      m_hotspot_lon = lon;
+      m_hotspot_lat = lat;
+
+      GEMoveCamera();
+}
+
+void GEUIDialog::SetViewPort(double lat, double lon, double geo_height, double geo_width, double rotation)
+{
+      m_camera_range = geo_width / 2 * 60 * 1852; //TODO: maybe decide which axis is better to use...
+      m_camera_azimuth = rotation;
+      m_hotspot_lon = lon;
+      m_hotspot_lat = lat;
+      
 
       GEMoveCamera();
 }

@@ -42,7 +42,7 @@
 #define     PLUGIN_VERSION_MINOR    1
 
 #define     MY_API_VERSION_MAJOR    1
-#define     MY_API_VERSION_MINOR    2
+#define     MY_API_VERSION_MINOR    4
 
 #define GECOMAPI_TOOL_POSITION -1          // Request default positioning of toolbar tool
 
@@ -89,6 +89,7 @@ public:
 //    The optional plug-in method overlays
       void SetPositionFix(PlugIn_Position_Fix &pfix);
       void UpdateAuiStatus(void);
+      void SetCurrentViewPort(PlugIn_ViewPort &vp);
 
 //    Other public methods
       
