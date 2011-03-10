@@ -2,7 +2,7 @@
  * $Id: gecomapi_pi.cpp,v 1.0 2011/02/26 01:54:37 nohal Exp $
  *
  * Project:  OpenCPN
- * Purpose:  Google Earth Plugin
+ * Purpose:  GoogleEarth Plugin
  * Author:   Pavel Kalian
  *
  ***************************************************************************
@@ -68,30 +68,69 @@ gecomapi_pi::gecomapi_pi(void *ppimgr)
 {
       // Create the PlugIn icons
       initialize_images();
+
+      m_pgecomapi_window = NULL;
 }
 
 int gecomapi_pi::Init(void)
 {
-      m_pGEDialog = NULL;
+      mPriPosition = 99;
+
+      m_pgecomapi_window = NULL;
 
       AddLocaleCatalog( _T("opencpn-gecomapi_pi") );
 
       //    Get a pointer to the opencpn display canvas, to use as a parent for the POI Manager dialog
       m_parent_window = GetOCPNCanvasWindow();
 
+      m_pauimgr = GetFrameAuiManager();
+
+      //    Get a pointer to the opencpn configuration object
+      m_pconfig = GetOCPNConfigObject();
+
+      //    And load the configuration items
+      LoadConfig();
+
       //    This PlugIn needs a toolbar icon
       m_toolbar_item_id  = InsertPlugInTool(_T(""), _img_gecomapi, _img_gecomapi, wxITEM_CHECK,
-            _("Google Earth"), _T(""), NULL, GECOMAPI_TOOL_POSITION, 0, this);
+            _("GoogleEarth"), _T(""), NULL, GECOMAPI_TOOL_POSITION, 0, this);
+
+      m_pgecomapi_window = new GEUIDialog(GetOCPNCanvasWindow(), wxID_ANY, m_pauimgr, m_toolbar_item_id);
+      m_pauimgr->AddPane(m_pgecomapi_window, wxAuiPaneInfo().Name(_T("GoogleEarth")).Caption(_("GoogleEarth")).CaptionVisible(true).Float().FloatingPosition(0,0).TopDockable(false).BottomDockable(false).Show(false).CloseButton(false));
+      m_pauimgr->Update();
+
+      ApplyConfig();
+
+      if (NULL != m_pgecomapi_window->app)
+      {
+            m_pgecomapi_window->GEClose();
+      }
+      else
+      {
+            m_pgecomapi_window->GEInitialize();
+      }
 
       return (WANTS_OVERLAY_CALLBACK |
            WANTS_CURSOR_LATLON       |
            WANTS_TOOLBAR_CALLBACK    |
-           INSTALLS_TOOLBAR_TOOL
+           INSTALLS_TOOLBAR_TOOL     |
+           WANTS_CONFIG              |
+           WANTS_NMEA_EVENTS         |
+           WANTS_NMEA_SENTENCES      |
+           USES_AUI_MANAGER
             );      
 }
 
 bool gecomapi_pi::DeInit(void)
 {
+      if(m_pgecomapi_window)
+      {
+            m_pauimgr->DetachPane(m_pgecomapi_window);
+            m_pgecomapi_window->GEClose();
+            m_pgecomapi_window->Close();
+            m_pgecomapi_window->Destroy();
+      }
+
       return true;
 }
 
@@ -122,25 +161,25 @@ wxBitmap *gecomapi_pi::GetPlugInBitmap()
 
 wxString gecomapi_pi::GetCommonName()
 {
-      return _("GECOMAPI");
+      return _("GoogleEarth");
 }
 
 
 wxString gecomapi_pi::GetShortDescription()
 {
-      return _("Google Earth PlugIn for OpenCPN");
+      return _("GoogleEarth PlugIn for OpenCPN");
 }
 
 wxString gecomapi_pi::GetLongDescription()
 {
-      return _("Google Earth PlugIn for OpenCPN\nConquers the world");
+      return _("GoogleEarth PlugIn for OpenCPN\nConquers the world");
 }
 
 void gecomapi_pi::SetCursorLatLon(double lat, double lon)
 {
-      if(m_pGEDialog)
+      if(m_iWhatToFollow == GECOMAPI_FOLLOW_CURSOR && m_pgecomapi_window)
       {
-            m_pGEDialog->SetCursorLatLon(lat, lon);
+            m_pgecomapi_window->SetCursorLatLon(lat, lon);
       }
 }
 
@@ -156,22 +195,101 @@ int gecomapi_pi::GetToolbarToolCount(void)
 
 void gecomapi_pi::OnToolbarToolCallback(int id)
 {
-      // show the Google Earth dialog
-      if(NULL == m_pGEDialog)
-      {
-            m_pGEDialog = new GEUIDialog();
-            //m_pGEDialog->Create ( m_parent_window, this, -1, _("Google Earth"),
-            //                   wxPoint( m_gecomapi_dialog_x, m_gecomapi_dialog_y), wxSize( m_gecomapi_dialog_sx, m_gecomapi_dialog_sy));
-            m_pGEDialog->Create ( m_parent_window, this, -1, _("Google Earth"));
+      if(NULL == m_pgecomapi_window)
+            return;
 
-            m_pGEDialog->Show();                        // Show modeless, so it stays on the screen
-      }
-      else 
+      wxAuiPaneInfo &pane = m_pauimgr->GetPane(m_pgecomapi_window);
+      if(!pane.IsOk())
+            return;
+
+      pane.Show(!pane.IsShown());
+      // Toggle is handled by the toolbar but we must keep plugin manager b_toggle updated
+      // to actual status to ensure right status upon toolbar rebuild
+      SetToolbarItemState(m_toolbar_item_id, pane.IsShown());
+      m_pauimgr->Update();
+
+      if (NULL != m_pgecomapi_window->app)
       {
-            m_pGEDialog->Hide();
-            m_pGEDialog->Close();
-            delete (m_pGEDialog);
-            m_pGEDialog = NULL;
+            m_pgecomapi_window->GEClose();
       }
-      
+      else
+      {
+            m_pgecomapi_window->GEInitialize();
+      }
 }
+
+
+
+void gecomapi_pi::UpdateAuiStatus(void)
+{
+      //    This method is called after the PlugIn is initialized
+      //    and the frame has done its initial layout, possibly from a saved wxAuiManager "Perspective"
+      //    It is a chance for the PlugIn to syncronize itself internally with the state of any Panes that
+      //    were added to the frame in the PlugIn ctor.
+
+      //    We use this callback here to keep the context menu selection in sync with the window state
+
+  
+      wxAuiPaneInfo &pane = m_pauimgr->GetPane(m_pgecomapi_window);
+      if(!pane.IsOk())
+            return;
+
+      SetToolbarItemState(m_toolbar_item_id, pane.IsShown());
+}
+
+void gecomapi_pi::SetPositionFix(PlugIn_Position_Fix &pfix)
+{
+      if(m_iWhatToFollow == GECOMAPI_FOLLOW_BOAT && m_pgecomapi_window)
+      {
+            if (mPriPosition >= 1)
+            {
+                  mPriPosition = 1;
+                  m_pgecomapi_window->SetCursorLatLon(pfix.Lat, pfix.Lon);
+            }
+      }
+}
+
+
+bool gecomapi_pi::LoadConfig(void)
+{
+      wxFileConfig *pConf = (wxFileConfig *)m_pconfig;
+
+      if(pConf)
+      {
+            pConf->SetPath( _T("/PlugIns/GoogleEarth") );
+
+            wxString config;
+
+            pConf->Read( _T("WindowWidth"), &m_iWindowWidth, 300 );
+            pConf->Read( _T("WhatToFollow"), &m_iWhatToFollow, 1 ); //1-Cursor, 2-boat, 3-View
+            
+            return true;
+      }
+      else
+            return false;
+}
+
+bool gecomapi_pi::SaveConfig(void)
+{
+      wxFileConfig *pConf = (wxFileConfig *)m_pconfig;
+
+      if(pConf)
+      {
+            pConf->SetPath( _T( "/PlugIns/GoogleEarth" ) );
+            pConf->Write( _T( "WindowWidth" ), m_iWindowWidth );
+            pConf->Write( _T( "WindowWidth" ), m_iWhatToFollow );
+
+            return true;
+      }
+      else
+            return false;
+}
+
+void gecomapi_pi::ApplyConfig(void)
+{
+      if(m_pgecomapi_window)
+      {
+            m_pgecomapi_window->SetWindowWidth(m_iWindowWidth);
+      }
+}
+

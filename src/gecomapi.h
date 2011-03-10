@@ -2,7 +2,7 @@
  * $Id: gecomapi.h,v 1.8 2012/02/26 01:54:37 nohal Exp $
  *
  * Project:  OpenCPN
- * Purpose:  Google Earth Plugin Friends
+ * Purpose:  GoogleEarth Plugin Friends
  * Author:   Pavel Kalian
  *
  ***************************************************************************
@@ -41,47 +41,48 @@
 
 class gecomapi_pi;
 
-class GEUIDialog: public wxDialog
+class GEUIDialog: public wxWindow
 {
-      DECLARE_CLASS( GEUIDialog )
-                  DECLARE_EVENT_TABLE()
       public:
 
-            GEUIDialog( );
+            GEUIDialog(wxWindow *pparent, wxWindowID id, wxAuiManager *auimgr, int tbitem);
 
             ~GEUIDialog( );
-            void Init();
 
-            bool Create(  wxWindow *parent, gecomapi_pi *ppi, wxWindowID id = wxID_ANY,
-                         const wxString& caption = _("Google Earth"),
-                         const wxPoint& pos = wxDefaultPosition,
-                         const wxSize& size = wxDefaultSize,
-                         long style = wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU );
+            void CreateControls();
 
-           void CreateControls();
+            void SetCursorLatLon(double lat, double lon);
+            void SetBoatLatLon(double lat, double lon);
 
-           void SetCursorLatLon(double lat, double lon);
+            void SetWindowWidth(int width);
+
+            void GEInitialize();
+            void GEClose();
+
+            //GoogleEarth
+            IApplicationGE   *app;
 
       private:
-            void OnClose(wxCloseEvent& event);
-            void OnMove( wxMoveEvent& event );
             void OnSize( wxSizeEvent& event );
-            void ResizeGE();
-            void MoveCamera();
+            void OnShow( wxShowEvent& event );
+            void GEResize();
+            void GEMoveCamera();
+            
+            void GEAttachWindow();
 
             //    Data
-            wxWindow          *pParent;
-            gecomapi_pi       *pPlugIn;
-
-            wxFont            *m_dFont;
-
-            int               m_sequence_active;
+            wxWindow         *pParent;
+            gecomapi_pi      *pPlugIn;
 
             double            m_cursor_lat, m_cursor_lon;
 
-            //Google Earth
-            IApplicationGE	*app;
-            ICameraInfoGE	*camera;
+            //GoogleEarth
+            ICameraInfoGE    *camera;
+
+            wxAuiManager     *m_pauimgr;
+            int               m_toolbar_item_id;
+            wxBoxSizer*       itemBoxSizer;
+            bool              m_bgeisuseable;
 };
 
 

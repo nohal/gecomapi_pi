@@ -2,7 +2,7 @@
  *
  *
  * Project:  OpenCPN
- * Purpose:  Google Earth plugin Implementation
+ * Purpose:  GoogleEarth plugin Implementation
  * Author:   Pavel Kalian
  *
  ***************************************************************************
@@ -47,66 +47,38 @@
 
 #define WM_QT_PAINT 0xC2DC
 
-IMPLEMENT_CLASS ( GEUIDialog, wxDialog )
-
-BEGIN_EVENT_TABLE ( GEUIDialog, wxDialog )
-
-            EVT_CLOSE ( GEUIDialog::OnClose )
-            EVT_MOVE ( GEUIDialog::OnMove )
-            EVT_SIZE ( GEUIDialog::OnSize )
-
-END_EVENT_TABLE()
-
-
-GEUIDialog::GEUIDialog( )
+GEUIDialog::GEUIDialog(wxWindow *pparent, wxWindowID id, wxAuiManager *auimgr, int tbitem)
+      :wxWindow(pparent, id, wxDefaultPosition, wxDefaultSize, wxBORDER_NONE, _T("GoogleEarth"))
 {
-      Init();
+      m_pauimgr = auimgr;
+      m_toolbar_item_id = tbitem;
+
+      itemBoxSizer = new wxBoxSizer(wxVERTICAL);
+      SetSizer(itemBoxSizer);
+
+      Connect(this->GetId(), wxEVT_SIZE, wxSizeEventHandler(GEUIDialog::OnSize));
+      Connect(this->GetId(), wxEVT_SHOW, wxShowEventHandler(GEUIDialog::OnShow));
+      
+      app = NULL;
+
+      m_bgeisuseable = false;
+      CoUninitialize();
 }
 
 GEUIDialog::~GEUIDialog( )
 {
-      CoUninitialize();
-}
-
-
-void GEUIDialog::Init( )
-{
-      m_sequence_active = -1;
-      //COM initialization
-      CoInitialize(NULL);
-}
-
-
-bool GEUIDialog::Create ( wxWindow *parent, gecomapi_pi *ppi, wxWindowID id,
-                              const wxString& caption,
-                              const wxPoint& pos, const wxSize& size, long style )
-{
-      pParent = parent;
-      pPlugIn = ppi;
-
-      //    As a display optimization....
-      //    if current color scheme is other than DAY,
-      //    Then create the dialog ..WITHOUT.. borders and title bar.
-      //    This way, any window decorations set by external themes, etc
-      //    will not detract from night-vision
-
-      long wstyle = wxDEFAULT_FRAME_STYLE;
-
-      wxSize size_min = size;
-      if ( !wxDialog::Create ( parent, id, caption, pos, size_min, wstyle ) )
-            return false;
-
-      CreateControls();
-
-      Fit();
-      SetMinSize(GetBestSize());
-
-      return true;
 }
 
 void GEUIDialog::CreateControls()
 {
-	HRESULT	hr;
+      GEResize();
+      GEMoveCamera();
+}
+
+void GEUIDialog::GEInitialize()
+{
+      CoInitialize(NULL);
+      HRESULT	hr;
 
       hr = CoCreateInstance(
 		CLSID_ApplicationGE,
@@ -118,49 +90,61 @@ void GEUIDialog::CreateControls()
 		//cerr << "cannot create IApplicationGE" << endl;
 		//return -1;
 	}
-      ShowWindowAsync((HWND) LongToHandle(app->GetMainHwnd()), 0);
-
       long	is_initialized;
-	do {
-		is_initialized = app->IsInitialized();
-	} while ( is_initialized == 0 );
+      do {
+	      is_initialized = app->IsInitialized();
+      } while ( is_initialized == 0 );
 
-      ::SetParent((HWND) LongToHandle(app->GetRenderHwnd()), (HWND)this->GetHWND());
-      
-      ResizeGE();
-      MoveCamera();
+      m_bgeisuseable = true;
+      GEAttachWindow();
 }
 
-void GEUIDialog::ResizeGE()
+void GEUIDialog::GEAttachWindow()
 {
-      SendMessage((HWND) LongToHandle(app->GetMainHwnd()), WM_COMMAND, WM_PAINT, 0);
-      PostMessage((HWND) LongToHandle(app->GetMainHwnd()), WM_QT_PAINT, 0, 0);
+      if (NULL != app && m_bgeisuseable)
+      {
+            ShowWindowAsync((HWND) LongToHandle(app->GetMainHwnd()), 0);
 
-      SetWindowPos(
-            (HWND) LongToHandle(app->GetMainHwnd()),
-            HWND_TOP,
-            0,
-            0,
-            this->GetSize().GetX(),
-            this->GetSize().GetY(),
-            SWP_FRAMECHANGED);
-
-      SendMessage((HWND) LongToHandle(app->GetMainHwnd()), WM_COMMAND, WM_SIZE, 0);
+            ::SetParent((HWND) LongToHandle(app->GetRenderHwnd()), (HWND)this->GetHWND());
+      }
 }
 
-void GEUIDialog::MoveCamera()
+void GEUIDialog::GEResize()
 {
-    app->raw_GetCamera(false, &camera);
-    OLE_HANDLE hwnd = app->GetMainHwnd();
+      if(NULL != app && m_bgeisuseable) 
+      {
+            SendMessage((HWND) LongToHandle(app->GetMainHwnd()), WM_COMMAND, WM_PAINT, 0);
+            PostMessage((HWND) LongToHandle(app->GetMainHwnd()), WM_QT_PAINT, 0, 0);
 
-    app->raw_GetCamera(false, &camera);
-    camera->PutFocusPointLatitude(m_cursor_lat);
-    camera->PutFocusPointLongitude(m_cursor_lon);
-    camera->PutAzimuth(0.0); //north up
-    camera->PutFocusPointAltitude(0.0); //focus point on sea level
-    camera->PutRange(1000.0); //camera 1000 meters high
-    camera->PutTilt(0.0); //camera directly over a focus point
-    app->raw_SetCamera(camera, 1.0); //1.0 - how fast the camera gets there
+            SetWindowPos(
+                  (HWND) LongToHandle(app->GetMainHwnd()),
+                  HWND_TOP,
+                  0,
+                  0,
+                  this->GetSize().GetX(),
+                  this->GetSize().GetY(),
+                  SWP_FRAMECHANGED);
+
+            SendMessage((HWND) LongToHandle(app->GetMainHwnd()), WM_COMMAND, WM_SIZE, 0);
+      }
+}
+
+void GEUIDialog::GEMoveCamera()
+{
+      if(NULL != app && m_bgeisuseable)
+      {
+            app->raw_GetCamera(false, &camera);
+            OLE_HANDLE hwnd = app->GetMainHwnd();
+
+            app->raw_GetCamera(false, &camera);
+            camera->PutFocusPointLatitude(m_cursor_lat);
+            camera->PutFocusPointLongitude(m_cursor_lon);
+            camera->PutAzimuth(0.0); //north up
+            camera->PutFocusPointAltitude(0.0); //focus point on sea level
+            camera->PutRange(1000.0); //camera 1000 meters high
+            camera->PutTilt(0.0); //camera directly over a focus point
+            app->raw_SetCamera(camera, 1.0); //1.0 - how fast the camera gets there
+      }
 }
 
 void GEUIDialog::SetCursorLatLon(double lat, double lon)
@@ -168,47 +152,55 @@ void GEUIDialog::SetCursorLatLon(double lat, double lon)
       m_cursor_lon = lon;
       m_cursor_lat = lat;
 
-      MoveCamera();
+      GEMoveCamera();
 }
 
-void GEUIDialog::OnClose ( wxCloseEvent& event )
+void GEUIDialog::SetBoatLatLon(double lat, double lon)
 {
-      RequestRefresh(pParent);
+      m_cursor_lon = lon;
+      m_cursor_lat = lat;
 
-      //is all of the following needed?
-      SendMessage((HWND) LongToHandle(app->GetMainHwnd()), WM_COMMAND, WM_QUIT, 0);
-      PostMessage((HWND) LongToHandle(app->GetMainHwnd()), WM_QUIT, 0, 0);
-      app->Release();
-      app = NULL;
+      GEMoveCamera();
+}
+
+void GEUIDialog::OnShow(wxShowEvent& event)
+{
+      SetToolbarItemState(m_toolbar_item_id, IsShown());
       
-      Destroy();
-      pPlugIn->OnGEDialogClose();
+      event.Skip();
 }
 
-void GEUIDialog::OnMove ( wxMoveEvent& event )
+void GEUIDialog::GEClose()
 {
-      //    Record the dialog position
-      wxPoint p = event.GetPosition();
-      pPlugIn->SetGEDialogX(p.x);
-      pPlugIn->SetGEDialogY(p.y);
-
-      event.Skip();
+//is all of the following needed?
+      if (NULL != app) 
+      {
+            m_bgeisuseable = false;
+            SendMessage((HWND) LongToHandle(app->GetMainHwnd()), WM_COMMAND, WM_QUIT, 0);
+            PostMessage((HWND) LongToHandle(app->GetMainHwnd()), WM_QUIT, 0, 0);
+            /*long is_initialized;
+            do {
+	            is_initialized = app->IsInitialized();
+            } while ( is_initialized != 0 );*/
+            app->Release();
+            app = NULL;
+      }
 }
 
 void GEUIDialog::OnSize ( wxSizeEvent& event )
-{
-      //    Record the dialog size
-      wxSize p = event.GetSize();
-      pPlugIn->SetGEDialogSizeX(p.x);
-      pPlugIn->SetGEDialogSizeY(p.y);
-      
-      ResizeGE();
+{      
+      GEResize();
 
       event.Skip();
 }
 
-void gecomapi_pi::OnGEDialogClose()
+void GEUIDialog::SetWindowWidth(int width)
 {
-      SetToolbarItemState(m_toolbar_item_id, false);
-      m_pGEDialog = NULL;
+      itemBoxSizer->Layout();
+      itemBoxSizer->Fit(this);
+      wxAuiPaneInfo &pi = m_pauimgr->GetPane(this);
+      pi.MinSize(wxSize(width, width));
+      pi.BestSize(wxSize(width, width));
+      pi.FloatingSize(wxSize(width, width));
+      m_pauimgr->Update();
 }

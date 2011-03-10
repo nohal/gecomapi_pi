@@ -2,7 +2,7 @@
  * $Id: gecomapi_pi.h,v 1.0 2011/02/26 01:54:37 nohal Exp $
  *
  * Project:  OpenCPN
- * Purpose:  Google Earth Plugin
+ * Purpose:  GoogleEarth Plugin
  * Author:   Pavel Kalian
  *
  ***************************************************************************
@@ -35,6 +35,9 @@
   #include "wx/wx.h"
 #endif //precompiled headers
 
+#include <wx/fileconf.h>
+#include <wx/aui/aui.h>
+
 #define     PLUGIN_VERSION_MAJOR    0
 #define     PLUGIN_VERSION_MINOR    1
 
@@ -52,7 +55,10 @@
 //    The PlugIn Class Definition
 //----------------------------------------------------------------------------------------------------------
 
-#define GECOMAPI_TOOL_POSITION    -1          // Request default positioning of toolbar tool
+#define GECOMAPI_TOOL_POSITION      -1          // Request default positioning of toolbar tool
+#define GECOMAPI_FOLLOW_CURSOR      1
+#define GECOMAPI_FOLLOW_BOAT        2
+#define GECOMAPI_FOLLOW_VIEW        3
 
 class gecomapi_pi : public opencpn_plugin
 {
@@ -80,22 +86,28 @@ public:
       
       void OnToolbarToolCallback(int id);
 
-      //    Other public methods
-      void SetGEDialogX    (int x){ m_gecomapi_dialog_x = x;};
-      void SetGEDialogY    (int x){ m_gecomapi_dialog_y = x;}
-      void SetGEDialogSizeX(int x){ m_gecomapi_dialog_sx = x;}
-      void SetGEDialogSizeY(int x){ m_gecomapi_dialog_sy = x;}
+//    The optional plug-in method overlays
+      void SetPositionFix(PlugIn_Position_Fix &pfix);
+      void UpdateAuiStatus(void);
 
-      void OnGEDialogClose();
+//    Other public methods
+      
 
 private:
+      bool LoadConfig(void);
+      bool SaveConfig(void);
+      void ApplyConfig(void);
+
+      wxFileConfig     *m_pconfig;
       wxWindow         *m_parent_window;
-      GEUIDialog       *m_pGEDialog;
+      wxAuiManager     *m_pauimgr;
+      GEUIDialog       *m_pgecomapi_window;
       int               m_toolbar_item_id;
 
-      int               m_gecomapi_dialog_x, m_gecomapi_dialog_y;
-      int               m_gecomapi_dialog_sx, m_gecomapi_dialog_sy;
+      int               m_iWindowWidth;
+      int               m_iWhatToFollow;
 
+      short             mPriPosition;
 };
 
 #endif
