@@ -105,6 +105,7 @@ int gecomapi_pi::Init(void)
            WANTS_CURSOR_LATLON       |
            WANTS_TOOLBAR_CALLBACK    |
            INSTALLS_TOOLBAR_TOOL     |
+           WANTS_PREFERENCES         |
            WANTS_CONFIG              |
            WANTS_NMEA_EVENTS         |
            WANTS_NMEA_SENTENCES      |
@@ -296,3 +297,17 @@ void gecomapi_pi::ApplyConfig(void)
       }
 }
 
+
+void gecomapi_pi::ShowPreferencesDialog( wxWindow* parent )
+{
+      GEPrefsDlg *dialog = new GEPrefsDlg( parent, wxID_ANY );
+
+      if(dialog->ShowModal() == wxID_OK)
+      {
+
+            SaveConfig();
+            ApplyConfig();
+            // WAS? SetToolbarItemState( m_toolbar_item_id, GetDashboardWindowShownCount()==0 );
+      }
+      dialog->Destroy();
+}

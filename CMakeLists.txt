@@ -74,6 +74,8 @@ SET(SRC_POIMAN
             src/icons.cpp
 	    src/gecomapi.h
 	    src/gecomapi.cpp
+	    src/gecomapicfgdlg.h
+	    src/gecomapicfgdlg.cpp
 	)
 ADD_LIBRARY(${PACKAGE_NAME} SHARED ${SRC_POIMAN})
 

@@ -49,6 +49,7 @@
 #include "../../../include/ocpn_plugin.h"
 
 #include "gecomapi.h"
+#include "gecomapicfgdlg.h"
 
 
 //----------------------------------------------------------------------------------------------------------
@@ -86,10 +87,11 @@ public:
       
       void OnToolbarToolCallback(int id);
 
-//    The optional plug-in method overlays
+//    The optional plug-in method overridess
       void SetPositionFix(PlugIn_Position_Fix &pfix);
       void UpdateAuiStatus(void);
       void SetCurrentViewPort(PlugIn_ViewPort &vp);
+      void ShowPreferencesDialog( wxWindow* parent );
 
 //    Other public methods
       

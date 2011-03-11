@@ -216,3 +216,4 @@ void GEUIDialog::SetWindowWidth(int width)
       pi.FloatingSize(wxSize(width, width));
       m_pauimgr->Update();
 }
+
