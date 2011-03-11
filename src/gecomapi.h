@@ -53,6 +53,7 @@ class GEUIDialog: public wxWindow
             void SetViewPort(double lat, double lon, double geo_height, double geo_width, double rotation);
 
             void SetWindowWidth(int width);
+            void SetCameraParameters(int cameraAzimuth, int cameraTilt, int cameraRange);
 
             void GEInitialize();
             void GEClose();
@@ -73,7 +74,7 @@ class GEUIDialog: public wxWindow
             gecomapi_pi      *pPlugIn;
 
             double            m_hotspot_lat, m_hotspot_lon;
-            double            m_camera_range, m_camera_azimuth;
+            double            m_camera_range, m_camera_azimuth, m_camera_tilt;
 
             wxAuiManager     *m_pauimgr;
             int               m_toolbar_item_id;

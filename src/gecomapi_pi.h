@@ -109,6 +109,9 @@ private:
 
       int               m_iWindowWidth;
       int               m_iWhatToFollow;
+      int               m_iCameraAzimuth;
+      int               m_iCameraTilt;
+      int               m_iCameraRange;
 
       short             mPriPosition;
 };

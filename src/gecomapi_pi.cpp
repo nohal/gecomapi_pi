@@ -119,7 +119,7 @@ bool gecomapi_pi::DeInit(void)
       if(m_pgecomapi_window)
       {
             m_pauimgr->DetachPane(m_pgecomapi_window);
-            m_pgecomapi_window->GEClose();
+            //m_pgecomapi_window->GEClose();
             m_pgecomapi_window->Close();
             m_pgecomapi_window->Destroy();
       }
@@ -203,13 +203,16 @@ void gecomapi_pi::OnToolbarToolCallback(int id)
 
       if (NULL != m_pgecomapi_window->app)
       {
-            m_pgecomapi_window->GEClose();
+            if (!pane.IsShown())
+            {
+                  //m_pgecomapi_window->GEClose();
+            }
       }
       else
       {
             if (pane.IsShown())
             {
-                  m_pgecomapi_window->GEInitialize();
+                  //m_pgecomapi_window->GEInitialize();
             }
       }
 }
@@ -266,7 +269,9 @@ bool gecomapi_pi::LoadConfig(void)
 
             pConf->Read( _T("WindowWidth"), &m_iWindowWidth, 300 );
             pConf->Read( _T("WhatToFollow"), &m_iWhatToFollow, GECOMAPI_FOLLOW_VIEW ); //1-Cursor, 2-boat, 3-View
-            
+            pConf->Read( _T("CameraAzimuth"), &m_iCameraAzimuth, 0 );
+            pConf->Read( _T("CameraTilt"), &m_iCameraTilt, 0 );
+            pConf->Read( _T("CameraRange"), &m_iCameraRange, 0 );
             return true;
       }
       else
@@ -282,6 +287,9 @@ bool gecomapi_pi::SaveConfig(void)
             pConf->SetPath( _T( "/PlugIns/GoogleEarth" ) );
             pConf->Write( _T( "WindowWidth" ), m_iWindowWidth );
             pConf->Write( _T( "WhatToFollow" ), m_iWhatToFollow );
+            pConf->Write( _T( "CameraAzimuth" ), m_iCameraAzimuth );
+            pConf->Write( _T( "CameraTilt" ), m_iCameraTilt );
+            pConf->Write( _T( "CameraRange" ), m_iCameraRange );
 
             return true;
       }
@@ -294,6 +302,7 @@ void gecomapi_pi::ApplyConfig(void)
       if(m_pgecomapi_window)
       {
             m_pgecomapi_window->SetWindowWidth(m_iWindowWidth);
+            m_pgecomapi_window->SetCameraParameters(m_iCameraAzimuth, m_iCameraTilt, m_iCameraRange);
       }
 }
 
@@ -302,12 +311,70 @@ void gecomapi_pi::ShowPreferencesDialog( wxWindow* parent )
 {
       GEPrefsDlg *dialog = new GEPrefsDlg( parent, wxID_ANY );
 
+      dialog->m_Azimuthslider->SetValue(m_iCameraAzimuth);
+      dialog->m_Tiltslider->SetValue(m_iCameraTilt);
+      dialog->m_Rangeslider->SetValue(m_iCameraRange);
+      switch(m_iWhatToFollow)
+      {
+            case GECOMAPI_FOLLOW_BOAT:
+                  dialog->m_radioFlwBoat->SetValue(true);
+                  break;
+            case GECOMAPI_FOLLOW_CURSOR:
+                  dialog->m_radioFlwCursor->SetValue(true);
+                  break;
+            case GECOMAPI_FOLLOW_VIEW:
+                  dialog->m_radioFlwView->SetValue(true);
+                  dialog->m_Azimuthslider->Disable();
+                  dialog->m_Tiltslider->Disable();
+                  dialog->m_Rangeslider->Disable();
+                  dialog->m_btnResetToDefaults->Disable();
+                  break;
+      }
+
       if(dialog->ShowModal() == wxID_OK)
       {
+            m_iCameraAzimuth = dialog->m_Azimuthslider->GetValue();
+            m_iCameraTilt = dialog->m_Tiltslider->GetValue();
+            m_iCameraRange = dialog->m_Rangeslider->GetValue();
+            if (dialog->m_radioFlwBoat->GetValue())
+                  m_iWhatToFollow = GECOMAPI_FOLLOW_BOAT;
+            if (dialog->m_radioFlwCursor->GetValue())
+                  m_iWhatToFollow = GECOMAPI_FOLLOW_CURSOR;
+            if (dialog->m_radioFlwView->GetValue())
+                  m_iWhatToFollow = GECOMAPI_FOLLOW_VIEW;
 
             SaveConfig();
             ApplyConfig();
-            // WAS? SetToolbarItemState( m_toolbar_item_id, GetDashboardWindowShownCount()==0 );
+            // WAS IST DAS? SetToolbarItemState( m_toolbar_item_id, GetDashboardWindowShownCount()==0 );
       }
       dialog->Destroy();
+}
+
+void GEPrefsDlg::ResetToDefaults(wxCommandEvent& event)
+{
+      m_Azimuthslider->SetValue(0);
+      m_Tiltslider->SetValue(0);
+      m_Rangeslider->SetValue(10000);
+
+      event.Skip();
+}
+
+void GEPrefsDlg::BtnTogled(wxCommandEvent& event)
+{
+      if(m_radioFlwView->GetValue())
+      {
+            m_Azimuthslider->Disable();
+            m_Tiltslider->Disable();
+            m_Rangeslider->Disable();
+            m_btnResetToDefaults->Disable();
+      }
+      else
+      {
+            m_Azimuthslider->Enable();
+            m_Tiltslider->Enable();
+            m_Rangeslider->Enable();
+            m_btnResetToDefaults->Enable();
+      }
+
+      event.Skip();
 }

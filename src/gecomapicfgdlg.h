@@ -33,7 +33,7 @@ class GEPrefsDlg : public wxDialog
 {
 	private:
 	
-	protected:
+	public:
 		wxRadioButton* m_radioFlwView;
 		wxRadioButton* m_radioFlwBoat;
 		wxRadioButton* m_radioFlwCursor;
@@ -49,11 +49,8 @@ class GEPrefsDlg : public wxDialog
 		wxButton* m_sdbButtonsSizerCancel;
 		
 		// Virtual event handlers, overide them in your derived class
-		virtual void BtnTogled( wxCommandEvent& event ) { event.Skip(); }
-		virtual void ResetToDefaults( wxCommandEvent& event ) { event.Skip(); }
-		
-	
-	public:
+		virtual void BtnTogled( wxCommandEvent& event );
+		virtual void ResetToDefaults( wxCommandEvent& event );
 		
 		GEPrefsDlg( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("GoogleEarth Preferences"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 400,460 ), long style = wxDEFAULT_DIALOG_STYLE );
 		~GEPrefsDlg();

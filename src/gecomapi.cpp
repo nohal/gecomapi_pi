@@ -68,6 +68,7 @@ GEUIDialog::GEUIDialog(wxWindow *pparent, wxWindowID id, wxAuiManager *auimgr, i
 
 GEUIDialog::~GEUIDialog( )
 {
+      GEClose();
 }
 
 void GEUIDialog::GEInitialize()
@@ -141,7 +142,7 @@ void GEUIDialog::GEMoveCamera()
 
             try 
             {
-            app->SetCameraParams(m_hotspot_lat, m_hotspot_lon, 0.0, AbsoluteAltitudeGE, m_camera_range, 0.0, m_camera_azimuth, 1.0);
+            app->SetCameraParams(m_hotspot_lat, m_hotspot_lon, 0.0, AbsoluteAltitudeGE, m_camera_range, m_camera_tilt, m_camera_azimuth, 1.0);
             }
             catch(...) {
             }
@@ -169,6 +170,7 @@ void GEUIDialog::SetViewPort(double lat, double lon, double geo_height, double g
       //Lets compute a range. To make it easy, we will just look from the distance equal to half the chart viewport width at the centerpoint...
       m_camera_range = geo_width / 2 * 60 * 1852; //TODO: maybe decide which axis is better to use to set it to fit the same area to the window...
       m_camera_azimuth = rotation;
+      m_camera_tilt = 0.0;
       m_hotspot_lon = lon;
       m_hotspot_lat = lat;
       
@@ -195,6 +197,7 @@ void GEUIDialog::GEClose()
 	            is_initialized = app->IsInitialized();
             } while ( is_initialized != 0 );*/
             app->Release();
+            //delete app;
             app = NULL;
       }
 }
@@ -204,6 +207,13 @@ void GEUIDialog::OnSize ( wxSizeEvent& event )
       GEResize();
 
       event.Skip();
+}
+
+void GEUIDialog::SetCameraParameters(int cameraAzimuth, int cameraTilt, int cameraRange)
+{
+      m_camera_azimuth = (double) cameraAzimuth;
+      m_camera_tilt = (double) cameraTilt;
+      m_camera_range = (double) cameraRange;
 }
 
 void GEUIDialog::SetWindowWidth(int width)

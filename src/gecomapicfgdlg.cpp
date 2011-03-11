@@ -17,7 +17,7 @@ GEPrefsDlg::GEPrefsDlg( wxWindow* parent, wxWindowID id, const wxString& title, 
 	bMainSizer = new wxBoxSizer( wxVERTICAL );
 	
 	wxStaticBoxSizer* sbPrefsSizer;
-	sbPrefsSizer = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("label") ), wxVERTICAL );
+	sbPrefsSizer = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("GoogleEarth plugin preferences") ), wxVERTICAL );
 	
 	m_radioFlwView = new wxRadioButton( this, wxID_ANY, _("Follow chart viewport"), wxDefaultPosition, wxDefaultSize, 0 );
 	sbPrefsSizer->Add( m_radioFlwView, 0, wxALL, 5 );
@@ -88,3 +88,5 @@ GEPrefsDlg::~GEPrefsDlg()
 	m_btnResetToDefaults->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GEPrefsDlg::ResetToDefaults ), NULL, this );
 	
 }
+
+
