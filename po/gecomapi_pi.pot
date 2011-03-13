@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: gecomapi_pi 2.2.1207\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-12-11 10:26-0500\n"
+"POT-Creation-Date: 2011-03-13 22:19+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,3 +16,76 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: src/gecomapi_pi.cpp:98 src/gecomapi_pi.cpp:170
+msgid "GoogleEarth"
+msgstr ""
+
+#: src/gecomapi_pi.cpp:176
+msgid "GoogleEarth PlugIn for OpenCPN"
+msgstr ""
+
+#: src/gecomapi_pi.cpp:181
+msgid ""
+"GoogleEarth PlugIn for OpenCPN\n"
+"Conquers the world"
+msgstr ""
+
+#: src/gecomapi.cpp:331
+msgid "Enter the name for the view"
+msgstr ""
+
+#: src/gecomapi.cpp:331
+msgid "Enter view name"
+msgstr ""
+
+#: src/gecomapi.cpp:331
+msgid "View name"
+msgstr ""
+
+#: src/gecomapi.cpp:340
+msgid "Where to save?"
+msgstr ""
+
+#: src/gecomapicfgdlg.h:60
+msgid "GoogleEarth Preferences"
+msgstr ""
+
+#: src/gecomapicfgdlg.cpp:20
+msgid "label"
+msgstr ""
+
+#: src/gecomapicfgdlg.cpp:28
+msgid "Follow chart viewport"
+msgstr ""
+
+#: src/gecomapicfgdlg.cpp:31
+msgid "Follow boat"
+msgstr ""
+
+#: src/gecomapicfgdlg.cpp:34
+msgid "Follow cursor"
+msgstr ""
+
+#: src/gecomapicfgdlg.cpp:42
+msgid "Always start hidden"
+msgstr ""
+
+#: src/gecomapicfgdlg.cpp:50
+msgid "View properties"
+msgstr ""
+
+#: src/gecomapicfgdlg.cpp:52
+msgid "Camera azimuth"
+msgstr ""
+
+#: src/gecomapicfgdlg.cpp:59
+msgid "Camera Tilt"
+msgstr ""
+
+#: src/gecomapicfgdlg.cpp:66
+msgid "Camera Range"
+msgstr ""
+
+#: src/gecomapicfgdlg.cpp:73
+msgid "Reset to defaults"
+msgstr ""

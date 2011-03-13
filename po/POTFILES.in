@@ -1,5 +1,6 @@
 src/gecomapi_pi.h
 src/gecomapi_pi.cpp
-src/icons.cpp
 src/gecomapi.h
 src/gecomapi.cpp
+src/gecomapicfgdlg.h
+src/gecomapicfgdlg.cpp
