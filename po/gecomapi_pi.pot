@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-03-13 22:19+0100\n"
+"POT-Creation-Date: 2011-03-13 22:30+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -51,7 +51,7 @@ msgid "GoogleEarth Preferences"
 msgstr ""
 
 #: src/gecomapicfgdlg.cpp:20
-msgid "label"
+msgid "Preferences"
 msgstr ""
 
 #: src/gecomapicfgdlg.cpp:28
@@ -75,7 +75,7 @@ msgid "View properties"
 msgstr ""
 
 #: src/gecomapicfgdlg.cpp:52
-msgid "Camera azimuth"
+msgid "Camera Azimuth"
 msgstr ""
 
 #: src/gecomapicfgdlg.cpp:59

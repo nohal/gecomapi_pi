@@ -17,7 +17,7 @@ GEPrefsDlg::GEPrefsDlg( wxWindow* parent, wxWindowID id, const wxString& title, 
 	bMainSizer = new wxBoxSizer( wxVERTICAL );
 	
 	wxStaticBoxSizer* sbPrefsSizer;
-	sbPrefsSizer = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("label") ), wxVERTICAL );
+	sbPrefsSizer = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Preferences") ), wxVERTICAL );
 	
 	wxBoxSizer* bSizer2;
 	bSizer2 = new wxBoxSizer( wxHORIZONTAL );
@@ -49,7 +49,7 @@ GEPrefsDlg::GEPrefsDlg( wxWindow* parent, wxWindowID id, const wxString& title, 
 	wxStaticBoxSizer* sbViewPropsSizer;
 	sbViewPropsSizer = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("View properties") ), wxVERTICAL );
 	
-	m_staticText1 = new wxStaticText( this, wxID_ANY, _("Camera azimuth"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText1 = new wxStaticText( this, wxID_ANY, _("Camera Azimuth"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText1->Wrap( -1 );
 	sbViewPropsSizer->Add( m_staticText1, 0, wxALL, 5 );
 	
