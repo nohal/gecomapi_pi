@@ -35,6 +35,7 @@
 #include <wx/filename.h>
 #include <wx/debug.h>
 #include <wx/graphics.h>
+#include <wx/textfile.h>
 
 #include <stdlib.h>
 #include <math.h>
@@ -48,13 +49,31 @@
 #define WM_QT_PAINT 0xC2DC
 
 GEUIDialog::GEUIDialog(wxWindow *pparent, wxWindowID id, wxAuiManager *auimgr, int tbitem)
-      :wxWindow(pparent, id, wxDefaultPosition, wxDefaultSize, wxBORDER_NONE, _T("GoogleEarth"))
+      :wxPanel(pparent, id, wxDefaultPosition, wxDefaultSize, wxBORDER_NONE, _T("GoogleEarth"))
 {
+      wxLogMessage(_T("Constructing the GE plugin window"));
       m_pauimgr = auimgr;
       m_toolbar_item_id = tbitem;
+      m_ballowStart = false;
+
+      m_pfocusedwindow = FindFocus();
+
+      this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+
+      this->SetMinSize(wxSize(300, 300)); //Something like that it has to be to fit GE's GUI inside
 
       itemBoxSizer = new wxBoxSizer(wxVERTICAL);
       SetSizer(itemBoxSizer);
+
+      m_panel1 = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	itemBoxSizer->Add( m_panel1, 1, wxEXPAND | wxALL, 5 );
+	
+	m_buttonSaveKml = new wxButton( this, wxID_ANY, wxT("Save view as KML"), wxDefaultPosition, wxDefaultSize, 0 );
+      itemBoxSizer->Add( m_buttonSaveKml, 0, wxALIGN_RIGHT|wxBOTTOM|wxLEFT|wxRIGHT|wxTOP, 5 );
+	
+	this->Layout();
+	
+	this->Centre( wxBOTH );
 
       Connect(this->GetId(), wxEVT_SIZE, wxSizeEventHandler(GEUIDialog::OnSize));
       Connect(this->GetId(), wxEVT_SHOW, wxShowEventHandler(GEUIDialog::OnShow));
@@ -62,54 +81,111 @@ GEUIDialog::GEUIDialog(wxWindow *pparent, wxWindowID id, wxAuiManager *auimgr, i
       app = NULL;
 
       m_bgeisuseable = false;
+      m_binitializing = false;
+      m_bclosed = false;
 
-      GEInitialize();
+      //wxLogMessage(_T("GE plugin window created, going to start GE"));
+      //GEInitialize();
+      m_buttonSaveKml->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GEUIDialog::SaveViewAsKml ), NULL, this );
 }
 
 GEUIDialog::~GEUIDialog( )
 {
+      wxLogMessage(_T("Destroying the GE plugin window"));
+      m_buttonSaveKml->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GEUIDialog::SaveViewAsKml ), NULL, this );
+      wxLogMessage(_T("Going to close GE"));
       GEClose();
 }
 
 void GEUIDialog::GEInitialize()
 {
-      if (NULL == app && !m_bgeisuseable) 
+      wxLogMessage(_T("GE initialization requested"));
+      wxLogMessage(_T("GE initialization requested"));
+      if (NULL == app && !m_bgeisuseable & !m_binitializing & !m_bclosed) 
       {
-            CoInitialize(NULL);
-            HRESULT	hr;
+            m_binitializing = true;
+            wxLogMessage(_T("Initializing GE"));
+            try
+            {
+                  CoInitialize(NULL);
+                  HRESULT	hr;
 
-            hr = CoCreateInstance(
-		      CLSID_ApplicationGE,
-		      0,
-		      CLSCTX_LOCAL_SERVER,
-		      IID_IApplicationGE,
-		      reinterpret_cast<LPVOID *>( &app ));
-	      if ( FAILED( hr )) {
-		      //cerr << "cannot create IApplicationGE" << endl;
-		      //return -1;
-	      }
-            long	is_initialized;
-            do {
-	            is_initialized = app->IsInitialized();
-            } while ( is_initialized == 0 );
-            m_bgeisuseable = true;
+                  hr = CoCreateInstance(
+		            CLSID_ApplicationGE,
+		            0,
+		            CLSCTX_LOCAL_SERVER,
+		            IID_IApplicationGE,
+		            reinterpret_cast<LPVOID *>( &app ));
+	            if ( FAILED( hr )) {
+		            //cerr << "cannot create IApplicationGE" << endl;
+		            //return -1;
+	            }
+                  long	is_initialized;
+                  do {
+	                  is_initialized = app->IsInitialized();
+                  } while ( is_initialized == 0 );
+                  m_bgeisuseable = true;
+                  m_binitializing = false;
+                  m_binitializing = false;
+            }
+            catch(...) {
+                  wxLogMessage(_T("Error initializing GE"));
+            }
+            wxLogMessage(_T("GE Initialized, attaching to the window"));
             GEAttachWindow();
       }
 }
 
 void GEUIDialog::GEAttachWindow()
 {
+      wxLogMessage(_T("Attaching to GE window requested"));
       if (NULL != app && m_bgeisuseable)
       {
-            ShowWindowAsync((HWND) LongToHandle(app->GetMainHwnd()), 0);
+            wxLogMessage(_T("Attaching to the GE window"));
+            try
+            {
+                 ShowWindowAsync((HWND) LongToHandle(app->GetMainHwnd()), 0);
 
-            ::SetParent((HWND) LongToHandle(app->GetRenderHwnd()), (HWND)this->GetHWND());
+                  //::SetParent((HWND) LongToHandle(app->GetRenderHwnd()), (HWND)this->GetHWND());
+                  ::SetParent((HWND) LongToHandle(app->GetRenderHwnd()), (HWND)this->m_panel1->GetHWND());
+                  GEResize();
+            }
+            catch(...) {
+                  wxLogMessage(_T("Error attaching to GE window"));
+            }
+            wxLogMessage(_T("GE window attached"));
       }
 }
 
 void GEUIDialog::GEResize()
 {
+      wxLogMessage(_T("GE resize requested"));
       if(NULL != app && m_bgeisuseable) 
+      {
+            wxLogMessage(_T("Resizing GE"));
+            try
+            {
+                  SendMessage((HWND) LongToHandle(app->GetMainHwnd()), WM_COMMAND, WM_PAINT, 0);
+                  PostMessage((HWND) LongToHandle(app->GetMainHwnd()), WM_QT_PAINT, 0, 0);
+
+                  SetWindowPos(
+                        (HWND) LongToHandle(app->GetMainHwnd()),
+                        HWND_TOP,
+                        0,
+                        0,
+                        this->GetSize().GetX(),
+                        this->GetSize().GetY() + 30, //FIXME: those 30 are just a wild guess based on observation - we should resize RenderHwnd - but how to not confuse GE?
+                        SWP_FRAMECHANGED);
+
+                  SendMessage((HWND) LongToHandle(app->GetRenderHwnd()), WM_COMMAND, WM_SIZE, 0);
+            }
+            catch(...) {
+                  wxLogMessage(_T("Error resizing GE window"));
+            }
+            wxLogMessage(_T("GE resized"));
+      }
+
+      /*if(NULL != app && m_bgeisuseable) 
       {
             SendMessage((HWND) LongToHandle(app->GetMainHwnd()), WM_COMMAND, WM_PAINT, 0);
             PostMessage((HWND) LongToHandle(app->GetMainHwnd()), WM_QT_PAINT, 0, 0);
@@ -124,13 +200,15 @@ void GEUIDialog::GEResize()
                   SWP_FRAMECHANGED);
 
             SendMessage((HWND) LongToHandle(app->GetMainHwnd()), WM_COMMAND, WM_SIZE, 0);
-      }
+      }*/
 }
 
 void GEUIDialog::GEMoveCamera()
 {
+      wxLogMessage(_T("GE camera move requested"));
       if(NULL != app && m_bgeisuseable)
       {
+            wxLogMessage(_T("Moving GE camera"));
             //app->raw_GetCamera(false, &camera);
             //camera->PutFocusPointLatitude(m_hotspot_lat);
             //camera->PutFocusPointLongitude(m_hotspot_lon);
@@ -142,9 +220,11 @@ void GEUIDialog::GEMoveCamera()
 
             try 
             {
-            app->SetCameraParams(m_hotspot_lat, m_hotspot_lon, 0.0, AbsoluteAltitudeGE, m_camera_range, m_camera_tilt, m_camera_azimuth, 1.0);
+                  app->SetCameraParams(m_hotspot_lat, m_hotspot_lon, 0.0, AbsoluteAltitudeGE, m_camera_range, m_camera_tilt, m_camera_azimuth, 5.0);
+                  wxLogMessage(_T("GE camera moved"));
             }
             catch(...) {
+                  wxLogMessage(_T("Error moving GE camera"));
             }
       }
 }
@@ -179,6 +259,9 @@ void GEUIDialog::SetViewPort(double lat, double lon, double geo_height, double g
 
 void GEUIDialog::OnShow(wxShowEvent& event)
 {
+      wxLogMessage(_T("GE plugin - OnShow event"));
+      if(m_ballowStart)
+            GEInitialize();
       SetToolbarItemState(m_toolbar_item_id, IsShown());
       
       event.Skip();
@@ -187,24 +270,38 @@ void GEUIDialog::OnShow(wxShowEvent& event)
 void GEUIDialog::GEClose()
 {
 //is all of the following needed?
+      wxLogMessage(_T("Closing GE requested"));
       if (NULL != app && m_bgeisuseable) 
       {
+            wxLogMessage(_T("Closing GE"));
             m_bgeisuseable = false;
-            SendMessage((HWND) LongToHandle(app->GetMainHwnd()), WM_COMMAND, WM_QUIT, 0);
-            PostMessage((HWND) LongToHandle(app->GetMainHwnd()), WM_QUIT, 0, 0);
-            /*long is_initialized;
-            do {
-	            is_initialized = app->IsInitialized();
-            } while ( is_initialized != 0 );*/
-            app->Release();
-            //delete app;
-            app = NULL;
+            m_bclosed = true;
+            try
+            {
+                  SendMessage((HWND) LongToHandle(app->GetMainHwnd()), WM_COMMAND, WM_QUIT, 0);
+                  PostMessage((HWND) LongToHandle(app->GetMainHwnd()), WM_QUIT, 0, 0);
+                  /*long is_initialized;
+                  do {
+	                  is_initialized = app->IsInitialized();
+                  } while ( is_initialized != 0 );*/
+                  app->Release();
+                  //delete app;
+                  app = NULL;
+                  CoUninitialize();
+            }
+            catch(...) {
+                  wxLogMessage(_T("Error closing GE"));
+            }
+            wxLogMessage(_T("GE closed"));
       }
 }
 
 void GEUIDialog::OnSize ( wxSizeEvent& event )
-{      
+{
+      wxLogMessage(_T("GE plugin - OnSize event"));
       GEResize();
+      if (m_pfocusedwindow)
+            m_pfocusedwindow->SetFocus(); //returns focus - don't know why, but seems needed
 
       event.Skip();
 }
@@ -218,6 +315,7 @@ void GEUIDialog::SetCameraParameters(int cameraAzimuth, int cameraTilt, int came
 
 void GEUIDialog::SetWindowWidth(int width)
 {
+      wxLogMessage(_T("GE SetWindowWidth"));
       itemBoxSizer->Layout();
       itemBoxSizer->Fit(this);
       wxAuiPaneInfo &pi = m_pauimgr->GetPane(this);
@@ -225,5 +323,74 @@ void GEUIDialog::SetWindowWidth(int width)
       pi.BestSize(wxSize(width, width));
       pi.FloatingSize(wxSize(width, width));
       m_pauimgr->Update();
+      wxLogMessage(_T("GE window width set"));
 }
 
+void GEUIDialog::SaveViewAsKml( wxCommandEvent& event ) 
+{ 
+      wxString viewname = wxGetTextFromUser(_("Enter the name for the view"), _("Enter view name"), _("View name"), this);
+
+      if(viewname.empty())
+      {
+            //FIXME: Should we accept empty or not??? If yes
+            event.Skip();
+            return;
+      }
+
+      wxString filename = wxFileSelector(_("Where to save?"), NULL, NULL, _T("kml"), _T("KML files (*.kml)|*.kml"));
+      if ( !filename.empty() )
+      {
+            double lat, lon, alt, azimuth, rng, tilt;
+            //We have to read the camera as there is no other way to tell whether user modified the GE view or not
+            if (GEReadViewParameters(lat, lon, alt, azimuth, rng, tilt))
+            {
+                  wxTextFile file( filename );
+                  file.Open();
+                  file.AddLine(wxString::Format(_T("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<kml xmlns=\"http://earth.google.com/kml/2.0\">\n<Placemark>\n<name>%s</name>\n<LookAt>\n<longitude>%f</longitude>\n<latitude>%f</latitude>\n<range>%f</range>\n<tilt>%f</tilt>\n<heading>%f</heading>\n</LookAt>\n</Placemark>\n</kml>"), 
+                        encodeXMLEntities(viewname), lon, lat, rng, tilt, azimuth));
+                  file.Write();
+                  file.Close();
+            }
+            //else: error
+
+      }
+      //else: cancelled by user
+
+      event.Skip(); 
+}
+
+wxString GEUIDialog::encodeXMLEntities(wxString str)
+{
+      str.Replace(_T("<"),_T("&lt;"));
+      str.Replace(_T(">"),_T("&gt;"));
+      str.Replace(_T("&"),_T("&amp;"));
+      str.Replace(_T("\""),_T("&#34;"));
+      str.Replace(_T("\\"),_T("&#39;"));
+      return str;
+}
+
+bool GEUIDialog::GEReadViewParameters(double& lat, double& lon, double& alt, double& azimuth, double& range, double& tilt)
+{
+      wxLogMessage(_T("GE View parameters requested"));
+      if(NULL != app && m_bgeisuseable)
+      {
+            wxLogMessage(_T("Getting GE view parameters"));
+            try
+            {
+                  ICameraInfoGE* camera;
+                  app->raw_GetCamera(false, &camera);
+                  lat = camera->FocusPointLatitude;
+                  lon = camera->FocusPointLongitude;
+                  alt = camera->FocusPointAltitude;
+                  azimuth = camera->Azimuth;
+                  range = camera->Range;
+                  tilt = camera->Tilt;
+            }
+            catch(...) {
+                  wxLogMessage(_T("Error geting GE view parameters"));
+            }
+            wxLogMessage(_T("GE view parameters obtained"));
+            return true;
+      }
+      return false;
+}

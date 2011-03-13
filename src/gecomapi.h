@@ -41,7 +41,7 @@
 
 class gecomapi_pi;
 
-class GEUIDialog: public wxWindow
+class GEUIDialog: public wxPanel
 {
       public:
             GEUIDialog(wxWindow *pparent, wxWindowID id, wxAuiManager *auimgr, int tbitem);
@@ -61,13 +61,18 @@ class GEUIDialog: public wxWindow
             //GoogleEarth
             IApplicationGE   *app;
 
+            wxWindow         *m_pfocusedwindow;
+            bool              m_ballowStart;
+
       private:
             void OnSize( wxSizeEvent& event );
             void OnShow( wxShowEvent& event );
             void GEResize();
             void GEMoveCamera();
-            
+            bool GEReadViewParameters(double& lat, double& lon, double& alt, double& azimuth, double& range, double& tilt);
             void GEAttachWindow();
+
+            wxString encodeXMLEntities(wxString str);
 
             //    Data
             wxWindow         *pParent;
@@ -78,8 +83,13 @@ class GEUIDialog: public wxWindow
 
             wxAuiManager     *m_pauimgr;
             int               m_toolbar_item_id;
-            wxBoxSizer*       itemBoxSizer;
+            wxPanel          *m_panel1;
+            wxBoxSizer       *itemBoxSizer;
+            wxButton         *m_buttonSaveKml;
+            void              SaveViewAsKml( wxCommandEvent& event );
             bool              m_bgeisuseable;
+            bool              m_binitializing;
+            bool              m_bclosed;
 };
 
 

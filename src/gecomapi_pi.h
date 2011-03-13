@@ -39,7 +39,7 @@
 #include <wx/aui/aui.h>
 
 #define     PLUGIN_VERSION_MAJOR    0
-#define     PLUGIN_VERSION_MINOR    1
+#define     PLUGIN_VERSION_MINOR    2
 
 #define     MY_API_VERSION_MAJOR    1
 #define     MY_API_VERSION_MINOR    4
@@ -108,10 +108,12 @@ private:
       int               m_toolbar_item_id;
 
       int               m_iWindowWidth;
+      bool              m_bstartHidden;
       int               m_iWhatToFollow;
       int               m_iCameraAzimuth;
       int               m_iCameraTilt;
       int               m_iCameraRange;
+      int               m_idefaultwidth;
 
       short             mPriPosition;
 };

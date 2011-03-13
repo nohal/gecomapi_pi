@@ -17,16 +17,34 @@ GEPrefsDlg::GEPrefsDlg( wxWindow* parent, wxWindowID id, const wxString& title, 
 	bMainSizer = new wxBoxSizer( wxVERTICAL );
 	
 	wxStaticBoxSizer* sbPrefsSizer;
-	sbPrefsSizer = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("GoogleEarth plugin preferences") ), wxVERTICAL );
+	sbPrefsSizer = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("label") ), wxVERTICAL );
+	
+	wxBoxSizer* bSizer2;
+	bSizer2 = new wxBoxSizer( wxHORIZONTAL );
+	
+	wxBoxSizer* bSizer3;
+	bSizer3 = new wxBoxSizer( wxVERTICAL );
 	
 	m_radioFlwView = new wxRadioButton( this, wxID_ANY, _("Follow chart viewport"), wxDefaultPosition, wxDefaultSize, 0 );
-	sbPrefsSizer->Add( m_radioFlwView, 0, wxALL, 5 );
+	bSizer3->Add( m_radioFlwView, 0, wxALL, 5 );
 	
 	m_radioFlwBoat = new wxRadioButton( this, wxID_ANY, _("Follow boat"), wxDefaultPosition, wxDefaultSize, 0 );
-	sbPrefsSizer->Add( m_radioFlwBoat, 0, wxALL, 5 );
+	bSizer3->Add( m_radioFlwBoat, 0, wxALL, 5 );
 	
 	m_radioFlwCursor = new wxRadioButton( this, wxID_ANY, _("Follow cursor"), wxDefaultPosition, wxDefaultSize, 0 );
-	sbPrefsSizer->Add( m_radioFlwCursor, 0, wxALL, 5 );
+	bSizer3->Add( m_radioFlwCursor, 0, wxALL, 5 );
+	
+	bSizer2->Add( bSizer3, 0, 0, 5 );
+	
+	wxBoxSizer* bSizer4;
+	bSizer4 = new wxBoxSizer( wxVERTICAL );
+	
+	m_cbStartHidden = new wxCheckBox( this, wxID_ANY, _("Always start hidden"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer4->Add( m_cbStartHidden, 0, wxALL, 5 );
+	
+	bSizer2->Add( bSizer4, 1, wxEXPAND, 5 );
+	
+	sbPrefsSizer->Add( bSizer2, 1, wxEXPAND, 5 );
 	
 	wxStaticBoxSizer* sbViewPropsSizer;
 	sbViewPropsSizer = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("View properties") ), wxVERTICAL );
@@ -88,5 +106,3 @@ GEPrefsDlg::~GEPrefsDlg()
 	m_btnResetToDefaults->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GEPrefsDlg::ResetToDefaults ), NULL, this );
 	
 }
-
-
