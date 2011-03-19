@@ -66,3 +66,44 @@ Before you use it:
 
 Run OpenCPN, go to Toolbox and enable the GE plugin on the Plugins tab
 The plugin icon appears in the toolbar
+
+------------------------------------------------------
+
+Version 0.3 beta of the GE plugin is available
+
+Changes since the 0.2 beta:
+- Added config options to control more aspects of the behavior
+- Added the possibility to save the current view as .JPG image.
+- The plugin tries to disconnect from the chart viewport semi-intelligently when the user starts to fiddle with the GE view
+- The boat position can be transferred to the GE window
+- New plugin icon
+- Fixed all the crashes found here
+
+Known problems in this version:
+- Disabling the plugin in toolbox while it's window is open leaves the pane on screen
+- Toolbar icon state on enabling the plugin is wrong
+- Plugin window size resets to default when it's reopened
+- AUI code generally needs rework
+
+Feature wise the plugin is approaching what I've planned for now. The window sizing and docking logic generally sucks - the wxAuiManager author was probably born on a different planet than me :) - the fixes will be in the next version, if I experience a bit of an enlightenment...
+As I'm in armchair mode right now and don't even have a NMEA simulator installed, all the logic dealing with boat movement is absolutely untested.
+This version also brings a few internal optimizations trying to save a few CPU cycles. This logic will need some tuning not to be annoying, any feedback appreciated.
+
+Important note for GE offline use GE tries to connect to the internet on startup and if it's not available it waits for some time (about a minute on my machine), hoping the connection will come alive. There is nothing that could be done about it, so you have to be patient waiting for the plugin to start in this scenario. After another while, GE displays two dialogs telling you, that there's no internet connection and whether you want to troubleshoot the problem. Answering No to the question is the thing to do. Unfortunately while displaying these dialogs, GE "steals" the focus and mouse wheel events don't get to OpenCPN anymore. To reclaim the mouse for OpenCPN, resize the GE plugin view a little bit and you are set again. This is inconvenient, I know, but currently I can't find any other workaround.
+
+Populating the GE cache for offline use Google Earth is designed with a permanent highspeed connection to the internet in mind, but can be used offline if the necessary imagery data is available in the local cache on disk.
+To make the data available locally, it's necessary to visit all the places we want to see before the computer is disconnected from the internet.
+Fortunately we are not the only people facing this problem and several tools exist, helping to simplify this process. Probably the best for our use is GoogleEarth Voyager - read about it and find the download links at [URL="http://freegeographytools.com/2009/google-earth-caching-programs-iii-google-earth-voyager"]Google Earth Caching Programs III[/URL]
+GEV comes with a comprehensive documentation covering the whole problem - definitely worth reading to understand what's going on.
+
+Installation and usage instructions
+It does NOT work with OpenCPN 2.3.1 as it relies on the API extensions introduced in version 2.4
+
+Before you use it:
+- Make sure you are using Microsoft Windows. Sorry, there is no chance to get this running on any normal operating system
+- Download OpenCPN, version 2.4.0310 beta from [URL="http://www.opencpn.org/download"]Download OpenCPN | Official OpenCPN Homepage[/URL] and install it
+- To make the view sizing work reasonably, run Google Earth and turn off the toolbar and the sidebar in the View menu or Ctrl + Alt + T and Ctrl + Alt + B respectively
+- Download the attached file gecomapi_pi.doc, change the extension to .dll and place it into the plugin directory in your OpenCPN installation
+
+Run OpenCPN, go to Toolbox and enable the GE plugin on the Plugins tab
+The plugin icon appears in the toolbar
