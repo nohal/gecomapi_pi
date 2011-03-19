@@ -39,12 +39,15 @@
 #import "earth/earth.tlb" no_namespace, named_guids
 //#include "earth/earth.h"
 
+#define DONT_CONSIDER_VALUE   -999
+#define CAMERA_MOVE_INTERVAL  20
+
 class gecomapi_pi;
 
 class GEUIDialog: public wxPanel
 {
       public:
-            GEUIDialog(wxWindow *pparent, wxWindowID id, wxAuiManager *auimgr, int tbitem);
+            GEUIDialog(wxWindow *pparent, wxWindowID id, wxAuiManager *auimgr, int tbitem, gecomapi_pi *ppi);
 
             ~GEUIDialog( );
 
@@ -55,6 +58,8 @@ class GEUIDialog: public wxPanel
             void SetWindowWidth(int width);
             void SetCameraParameters(int cameraAzimuth, int cameraTilt, int cameraRange);
 
+            void ConnectToGE();
+
             void GEInitialize();
             void GEClose();
 
@@ -64,13 +69,16 @@ class GEUIDialog: public wxPanel
             wxWindow         *m_pfocusedwindow;
             bool              m_ballowStart;
 
+            void DetachIfNeeded(double plugin_azimuth, double plugin_range, double plugin_tilt);
+
       private:
             void OnSize( wxSizeEvent& event );
             void OnShow( wxShowEvent& event );
             void GEResize();
-            void GEMoveCamera();
+            bool GEMoveCamera();
             bool GEReadViewParameters(double& lat, double& lon, double& alt, double& azimuth, double& range, double& tilt);
             void GEAttachWindow();
+            void GEShowBoat(double lat, double lon);
 
             wxString encodeXMLEntities(wxString str);
 
@@ -85,11 +93,19 @@ class GEUIDialog: public wxPanel
             int               m_toolbar_item_id;
             wxPanel          *m_panel1;
             wxBoxSizer       *itemBoxSizer;
+            wxBoxSizer       *itemBoxSizer1;
+            wxCheckBox       *m_cbConnected;
+            wxButton         *m_buttonSaveJPG;
             wxButton         *m_buttonSaveKml;
             void              SaveViewAsKml( wxCommandEvent& event );
+            void              SaveViewAsJPG( wxCommandEvent& event );
+            void              ConnectedClicked( wxCommandEvent& event );
             bool              m_bgeisuseable;
             bool              m_binitializing;
             bool              m_bclosed;
+            bool              m_bshouldcatchup;
+            bool              m_bbusy;
+            wxStopWatch       m_stopwatch;
 };
 
 

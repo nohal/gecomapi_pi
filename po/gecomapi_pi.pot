@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-03-13 22:30+0100\n"
+"POT-Creation-Date: 2011-03-19 18:35+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/gecomapi_pi.cpp:98 src/gecomapi_pi.cpp:170
+#: src/gecomapi_pi.cpp:98 src/gecomapi_pi.cpp:102 src/gecomapi_pi.cpp:170
 msgid "GoogleEarth"
 msgstr ""
 
@@ -30,23 +30,43 @@ msgid ""
 "Conquers the world"
 msgstr ""
 
-#: src/gecomapi.cpp:331
+#: src/gecomapi.cpp:77
+msgid "Connected to chart viewport"
+msgstr ""
+
+#: src/gecomapi.cpp:80
+msgid "Save view as JPG"
+msgstr ""
+
+#: src/gecomapi.cpp:83
+msgid "Save view as KML"
+msgstr ""
+
+#: src/gecomapi.cpp:421
 msgid "Enter the name for the view"
 msgstr ""
 
-#: src/gecomapi.cpp:331
+#: src/gecomapi.cpp:421
 msgid "Enter view name"
 msgstr ""
 
-#: src/gecomapi.cpp:331
+#: src/gecomapi.cpp:421
 msgid "View name"
 msgstr ""
 
-#: src/gecomapi.cpp:340
+#: src/gecomapi.cpp:430 src/gecomapi.cpp:459
 msgid "Where to save?"
 msgstr ""
 
-#: src/gecomapicfgdlg.h:60
+#: src/gecomapi.cpp:456
+msgid "Screenshot can't be created, GE looks uninitialized..."
+msgstr ""
+
+#: src/gecomapi.cpp:456
+msgid "Problem!"
+msgstr ""
+
+#: src/gecomapicfgdlg.h:66
 msgid "GoogleEarth Preferences"
 msgstr ""
 
@@ -66,26 +86,46 @@ msgstr ""
 msgid "Follow cursor"
 msgstr ""
 
-#: src/gecomapicfgdlg.cpp:42
+#: src/gecomapicfgdlg.cpp:37
+msgid "Don't connect to OpenCPN"
+msgstr ""
+
+#: src/gecomapicfgdlg.cpp:45
 msgid "Always start hidden"
 msgstr ""
 
-#: src/gecomapicfgdlg.cpp:50
+#: src/gecomapicfgdlg.cpp:48
+msgid "Disconnect from Viewport on GE action"
+msgstr ""
+
+#: src/gecomapicfgdlg.cpp:51
+msgid "Update plugin settings from GE"
+msgstr ""
+
+#: src/gecomapicfgdlg.cpp:54
+msgid "Show boat in GE"
+msgstr ""
+
+#: src/gecomapicfgdlg.cpp:62
 msgid "View properties"
 msgstr ""
 
-#: src/gecomapicfgdlg.cpp:52
-msgid "Camera Azimuth"
+#: src/gecomapicfgdlg.cpp:64
+msgid "Camera azimuth"
 msgstr ""
 
-#: src/gecomapicfgdlg.cpp:59
+#: src/gecomapicfgdlg.cpp:71
 msgid "Camera Tilt"
 msgstr ""
 
-#: src/gecomapicfgdlg.cpp:66
+#: src/gecomapicfgdlg.cpp:78
 msgid "Camera Range"
 msgstr ""
 
-#: src/gecomapicfgdlg.cpp:73
+#: src/gecomapicfgdlg.cpp:85
 msgid "Reset to defaults"
+msgstr ""
+
+#: src/gecomapicfgdlg.cpp:90
+msgid "Floating window transparency"
 msgstr ""

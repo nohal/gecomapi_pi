@@ -39,7 +39,7 @@
 #include <wx/aui/aui.h>
 
 #define     PLUGIN_VERSION_MAJOR    0
-#define     PLUGIN_VERSION_MINOR    2
+#define     PLUGIN_VERSION_MINOR    3
 
 #define     MY_API_VERSION_MAJOR    1
 #define     MY_API_VERSION_MINOR    4
@@ -60,6 +60,7 @@
 #define GECOMAPI_FOLLOW_CURSOR      1
 #define GECOMAPI_FOLLOW_BOAT        2
 #define GECOMAPI_FOLLOW_VIEW        3
+#define GECOMAPI_FOLLOW_OFF         0
 
 class gecomapi_pi : public opencpn_plugin
 {
@@ -94,7 +95,11 @@ public:
       void ShowPreferencesDialog( wxWindow* parent );
 
 //    Other public methods
-      
+      bool ShouldDisconnect() { return m_bdisconnectOnGEAction; }
+      bool ShouldUpdateFromGE() { return m_bupdateSettingsFromGE; }
+      bool ShouldShowBoat() { return m_bShowBoatInGE; }
+      void UpdateFromGE(double azimuth, double tilt, double range);
+      void SetParams(double azimuth, double range, double tilt);
 
 private:
       bool LoadConfig(void);
@@ -109,11 +114,15 @@ private:
 
       int               m_iWindowWidth;
       bool              m_bstartHidden;
+      bool              m_bdisconnectOnGEAction;
+      bool              m_bupdateSettingsFromGE;
+      bool              m_bShowBoatInGE;
       int               m_iWhatToFollow;
       int               m_iCameraAzimuth;
       int               m_iCameraTilt;
       int               m_iCameraRange;
       int               m_idefaultwidth;
+      int               m_iOpacity;
 
       short             mPriPosition;
 };

@@ -97,13 +97,13 @@ int gecomapi_pi::Init(void)
       m_toolbar_item_id  = InsertPlugInTool(_T(""), _img_gecomapi, _img_gecomapi, wxITEM_CHECK,
             _("GoogleEarth"), _T(""), NULL, GECOMAPI_TOOL_POSITION, 0, this);
 
-      m_pgecomapi_window = new GEUIDialog(GetOCPNCanvasWindow(), wxID_ANY, m_pauimgr, m_toolbar_item_id);
+      m_pgecomapi_window = new GEUIDialog(GetOCPNCanvasWindow(), wxID_ANY, m_pauimgr, m_toolbar_item_id, this);
 
-      wxAuiPaneInfo pane = wxAuiPaneInfo().Name(_T("GoogleEarth")).Caption(_T("GoogleEarth")).CaptionVisible(true).Float().FloatingPosition(0,0).Show(!m_bstartHidden);
-      pane.TopDockable(false).BottomDockable(false).LeftDockable(true).RightDockable(true).CaptionVisible(true).CloseButton(false);
+      wxAuiPaneInfo pane = wxAuiPaneInfo().Name(_T("GoogleEarth")).Caption(_("GoogleEarth")).CaptionVisible(true).Float().FloatingPosition(0,0).Show(!m_bstartHidden).TopDockable(false).BottomDockable(false).LeftDockable(true).RightDockable(true).CaptionVisible(true).CloseButton(false).MinSize(300,300);
 
       m_pauimgr->AddPane(m_pgecomapi_window, pane);
       m_pauimgr->Update();
+      
       if(m_pgecomapi_window)
       {
             m_pgecomapi_window->SetCameraParameters(m_iCameraAzimuth, m_iCameraTilt, m_iCameraRange);
@@ -185,6 +185,7 @@ void gecomapi_pi::SetCursorLatLon(double lat, double lon)
 {
       if(m_iWhatToFollow == GECOMAPI_FOLLOW_CURSOR && m_pgecomapi_window)
       {
+            m_pgecomapi_window->SetCameraParameters(m_iCameraAzimuth, m_iCameraTilt, m_iCameraRange);
             m_pgecomapi_window->SetCursorLatLon(lat, lon);
       }
 }
@@ -245,7 +246,6 @@ void gecomapi_pi::UpdateAuiStatus(void)
 
       //    We use this callback here to keep the context menu selection in sync with the window state
 
-  
       wxAuiPaneInfo &pane = m_pauimgr->GetPane(m_pgecomapi_window);
       if(!pane.IsOk())
             return;
@@ -254,6 +254,8 @@ void gecomapi_pi::UpdateAuiStatus(void)
             pane.Show(false); 
       else if (pane.IsShown())
             m_pgecomapi_window->GEInitialize();
+      if (pane.IsFloating())
+            pane.frame->SetTransparent(m_iOpacity);
       m_pauimgr->Update();
 
       SetToolbarItemState(m_toolbar_item_id, pane.IsShown());
@@ -261,6 +263,7 @@ void gecomapi_pi::UpdateAuiStatus(void)
 
 void gecomapi_pi::SetCurrentViewPort(PlugIn_ViewPort &vp)
 {
+      wxLogMessage(_T("SetCurrentViewPort called by OpenCPN"));
       m_idefaultwidth = vp.pix_width / 2;
       if(m_iWhatToFollow == GECOMAPI_FOLLOW_VIEW && m_pgecomapi_window)
       {
@@ -275,11 +278,18 @@ void gecomapi_pi::SetPositionFix(PlugIn_Position_Fix &pfix)
             if (mPriPosition >= 1)
             {
                   mPriPosition = 1;
+                  m_pgecomapi_window->SetCameraParameters(m_iCameraAzimuth, m_iCameraTilt, m_iCameraRange);
                   m_pgecomapi_window->SetCursorLatLon(pfix.Lat, pfix.Lon);
             }
       }
 }
 
+void gecomapi_pi::SetParams(double azimuth, double range, double tilt)
+{
+      m_iCameraAzimuth = (int) azimuth;
+      m_iCameraTilt = (int) tilt;
+      m_iCameraRange = (int) range;
+}
 
 bool gecomapi_pi::LoadConfig(void)
 {
@@ -293,10 +303,14 @@ bool gecomapi_pi::LoadConfig(void)
 
             pConf->Read( _T( "WindowWidth" ), &m_iWindowWidth, m_idefaultwidth );
             pConf->Read( _T( "AlwaysStartHidden" ), &m_bstartHidden, true );
-            pConf->Read( _T( "WhatToFollow" ), &m_iWhatToFollow, GECOMAPI_FOLLOW_VIEW ); //1-Cursor, 2-boat, 3-View
+            pConf->Read( _T( "DisconnectOnGEAction" ), &m_bdisconnectOnGEAction, true );
+            pConf->Read( _T( "UpdateSettingsFromGE" ), &m_bupdateSettingsFromGE, true );
+            pConf->Read( _T( "ShowBoatInGE" ), &m_bShowBoatInGE, true );
+            pConf->Read( _T( "WhatToFollow" ), &m_iWhatToFollow, GECOMAPI_FOLLOW_VIEW ); //1-Cursor, 2-boat, 3-View, 0-Nothing
             pConf->Read( _T( "CameraAzimuth" ), &m_iCameraAzimuth, 0 );
             pConf->Read( _T( "CameraTilt" ), &m_iCameraTilt, 0 );
             pConf->Read( _T( "CameraRange" ), &m_iCameraRange, 0 );
+            pConf->Read( _T( "WindowOpacity" ), &m_iOpacity, 255 );
             return true;
       }
       else
@@ -312,10 +326,14 @@ bool gecomapi_pi::SaveConfig(void)
             pConf->SetPath( _T( "/PlugIns/GoogleEarth" ) );
             pConf->Write( _T( "WindowWidth" ), m_iWindowWidth );
             pConf->Write( _T( "AlwaysStartHidden" ), m_bstartHidden );
+            pConf->Write( _T( "DisconnectOnGEAction" ), m_bdisconnectOnGEAction );
+            pConf->Write( _T( "UpdateSettingsFromGE" ), m_bupdateSettingsFromGE );
+            pConf->Write( _T( "ShowBoatInGE" ), m_bShowBoatInGE );
             pConf->Write( _T( "WhatToFollow" ), m_iWhatToFollow );
             pConf->Write( _T( "CameraAzimuth" ), m_iCameraAzimuth );
             pConf->Write( _T( "CameraTilt" ), m_iCameraTilt );
             pConf->Write( _T( "CameraRange" ), m_iCameraRange );
+            pConf->Write( _T( "WindowOpacity" ), m_iOpacity );
 
             return true;
       }
@@ -325,6 +343,11 @@ bool gecomapi_pi::SaveConfig(void)
 
 void gecomapi_pi::ApplyConfig(void)
 {
+      wxAuiPaneInfo &pane = m_pauimgr->GetPane(m_pgecomapi_window);
+      if(!pane.IsOk())
+            return;
+      if (pane.IsFloating())
+            pane.frame->SetTransparent(m_iOpacity);
 }
 
 
@@ -335,7 +358,11 @@ void gecomapi_pi::ShowPreferencesDialog( wxWindow* parent )
       dialog->m_Azimuthslider->SetValue(m_iCameraAzimuth);
       dialog->m_Tiltslider->SetValue(m_iCameraTilt);
       dialog->m_Rangeslider->SetValue(m_iCameraRange);
+      dialog->m_Transparencyslider->SetValue(m_iOpacity);
       dialog->m_cbStartHidden->SetValue(m_bstartHidden);
+      dialog->m_cbAutodisconnect->SetValue(m_bdisconnectOnGEAction);
+      dialog->m_cbUpdateSettingsFromGE->SetValue(m_bupdateSettingsFromGE);
+      dialog->m_cbShowBoatInGE->SetValue(m_bShowBoatInGE);
       switch(m_iWhatToFollow)
       {
             case GECOMAPI_FOLLOW_BOAT:
@@ -351,6 +378,9 @@ void gecomapi_pi::ShowPreferencesDialog( wxWindow* parent )
                   dialog->m_Rangeslider->Disable();
                   dialog->m_btnResetToDefaults->Disable();
                   break;
+            case GECOMAPI_FOLLOW_OFF:
+                  dialog->m_radioDontFollow->SetValue(true);
+                  break;
       }
 
       if(dialog->ShowModal() == wxID_OK)
@@ -358,19 +388,35 @@ void gecomapi_pi::ShowPreferencesDialog( wxWindow* parent )
             m_iCameraAzimuth = dialog->m_Azimuthslider->GetValue();
             m_iCameraTilt = dialog->m_Tiltslider->GetValue();
             m_iCameraRange = dialog->m_Rangeslider->GetValue();
+            m_iOpacity = dialog->m_Transparencyslider->GetValue();
             m_bstartHidden = dialog->m_cbStartHidden->GetValue();
+            m_bdisconnectOnGEAction = dialog->m_cbAutodisconnect->GetValue();
+            m_bupdateSettingsFromGE = dialog->m_cbUpdateSettingsFromGE->GetValue();
+            m_bShowBoatInGE = dialog->m_cbShowBoatInGE->GetValue();
             if (dialog->m_radioFlwBoat->GetValue())
                   m_iWhatToFollow = GECOMAPI_FOLLOW_BOAT;
             if (dialog->m_radioFlwCursor->GetValue())
                   m_iWhatToFollow = GECOMAPI_FOLLOW_CURSOR;
             if (dialog->m_radioFlwView->GetValue())
                   m_iWhatToFollow = GECOMAPI_FOLLOW_VIEW;
+            if (dialog->m_radioDontFollow->GetValue())
+                  m_iWhatToFollow = GECOMAPI_FOLLOW_OFF;
 
             SaveConfig();
-            //ApplyConfig();
+            ApplyConfig();
             // WAS IST DAS? SetToolbarItemState( m_toolbar_item_id, GetDashboardWindowShownCount()==0 );
       }
       dialog->Destroy();
+}
+
+
+void gecomapi_pi::UpdateFromGE(double azimuth, double tilt, double range)
+{
+      m_iCameraAzimuth = (int) azimuth;
+      m_iCameraTilt = (int) tilt;
+      m_iCameraRange = (int) range;
+
+      SaveConfig();
 }
 
 void GEPrefsDlg::ResetToDefaults(wxCommandEvent& event)

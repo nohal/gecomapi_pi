@@ -34,6 +34,9 @@ GEPrefsDlg::GEPrefsDlg( wxWindow* parent, wxWindowID id, const wxString& title, 
 	m_radioFlwCursor = new wxRadioButton( this, wxID_ANY, _("Follow cursor"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer3->Add( m_radioFlwCursor, 0, wxALL, 5 );
 	
+	m_radioDontFollow = new wxRadioButton( this, wxID_ANY, _("Don't connect to OpenCPN"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer3->Add( m_radioDontFollow, 0, wxALL, 5 );
+	
 	bSizer2->Add( bSizer3, 0, 0, 5 );
 	
 	wxBoxSizer* bSizer4;
@@ -42,6 +45,15 @@ GEPrefsDlg::GEPrefsDlg( wxWindow* parent, wxWindowID id, const wxString& title, 
 	m_cbStartHidden = new wxCheckBox( this, wxID_ANY, _("Always start hidden"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer4->Add( m_cbStartHidden, 0, wxALL, 5 );
 	
+	m_cbAutodisconnect = new wxCheckBox( this, wxID_ANY, _("Disconnect from Viewport on GE action"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer4->Add( m_cbAutodisconnect, 0, wxALL, 5 );
+	
+	m_cbUpdateSettingsFromGE = new wxCheckBox( this, wxID_ANY, _("Update plugin settings from GE"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer4->Add( m_cbUpdateSettingsFromGE, 0, wxALL, 5 );
+	
+	m_cbShowBoatInGE = new wxCheckBox( this, wxID_ANY, _("Show boat in GE"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer4->Add( m_cbShowBoatInGE, 0, wxALL, 5 );
+	
 	bSizer2->Add( bSizer4, 1, wxEXPAND, 5 );
 	
 	sbPrefsSizer->Add( bSizer2, 1, wxEXPAND, 5 );
@@ -49,7 +61,7 @@ GEPrefsDlg::GEPrefsDlg( wxWindow* parent, wxWindowID id, const wxString& title, 
 	wxStaticBoxSizer* sbViewPropsSizer;
 	sbViewPropsSizer = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("View properties") ), wxVERTICAL );
 	
-	m_staticText1 = new wxStaticText( this, wxID_ANY, _("Camera Azimuth"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText1 = new wxStaticText( this, wxID_ANY, _("Camera azimuth"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText1->Wrap( -1 );
 	sbViewPropsSizer->Add( m_staticText1, 0, wxALL, 5 );
 	
@@ -74,6 +86,13 @@ GEPrefsDlg::GEPrefsDlg( wxWindow* parent, wxWindowID id, const wxString& title, 
 	sbViewPropsSizer->Add( m_btnResetToDefaults, 0, wxALIGN_RIGHT|wxALL, 5 );
 	
 	sbPrefsSizer->Add( sbViewPropsSizer, 0, wxBOTTOM|wxEXPAND|wxLEFT|wxRIGHT|wxTOP, 5 );
+	
+	m_staticText5 = new wxStaticText( this, wxID_ANY, _("Floating window transparency"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText5->Wrap( -1 );
+	sbPrefsSizer->Add( m_staticText5, 0, wxALL, 5 );
+	
+	m_Transparencyslider = new wxSlider( this, wxID_ANY, 255, 1, 255, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL|wxSL_INVERSE );
+	sbPrefsSizer->Add( m_Transparencyslider, 0, wxEXPAND, 5 );
 	
 	bMainSizer->Add( sbPrefsSizer, 1, wxBOTTOM|wxEXPAND|wxLEFT|wxRIGHT|wxTOP, 5 );
 	
