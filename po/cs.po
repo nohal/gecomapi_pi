@@ -1,0 +1,136 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-03-19 18:35+0100\n"
+"PO-Revision-Date: 2011-03-19 19:58+0100\n"
+"Last-Translator: Pavel Kalian <pavel@kalian.cz>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/gecomapi_pi.cpp:98
+#: src/gecomapi_pi.cpp:102
+#: src/gecomapi_pi.cpp:170
+msgid "GoogleEarth"
+msgstr "Google Earth"
+
+#: src/gecomapi_pi.cpp:176
+msgid "GoogleEarth PlugIn for OpenCPN"
+msgstr "Google Earth PlugIn pro  OpenCPN"
+
+#: src/gecomapi_pi.cpp:181
+msgid ""
+"GoogleEarth PlugIn for OpenCPN\n"
+"Conquers the world"
+msgstr ""
+"Google Earth PlugIn pro OpenCPN\n"
+"Tohle naprogramovat byl fakt vopruz..."
+
+#: src/gecomapi.cpp:77
+msgid "Connected to chart viewport"
+msgstr "Připojeno k pohledu na mapu"
+
+#: src/gecomapi.cpp:80
+msgid "Save view as JPG"
+msgstr "Uložit jako JPG"
+
+#: src/gecomapi.cpp:83
+msgid "Save view as KML"
+msgstr "Uložit jako KML"
+
+#: src/gecomapi.cpp:421
+msgid "Enter the name for the view"
+msgstr "Zadej název pohledu"
+
+#: src/gecomapi.cpp:421
+msgid "Enter view name"
+msgstr "Zadej název pohledu"
+
+#: src/gecomapi.cpp:421
+msgid "View name"
+msgstr "Název pohledu"
+
+#: src/gecomapi.cpp:430
+#: src/gecomapi.cpp:459
+msgid "Where to save?"
+msgstr "Kam uložit?"
+
+#: src/gecomapi.cpp:456
+msgid "Screenshot can't be created, GE looks uninitialized..."
+msgstr "Snímek obrazovky nelze uložit, zdá se, že GE neběží..."
+
+#: src/gecomapi.cpp:456
+msgid "Problem!"
+msgstr "Problém!"
+
+#: src/gecomapicfgdlg.h:66
+msgid "GoogleEarth Preferences"
+msgstr "Nastavení Google Earth"
+
+#: src/gecomapicfgdlg.cpp:20
+msgid "Preferences"
+msgstr "Nastavení"
+
+#: src/gecomapicfgdlg.cpp:28
+msgid "Follow chart viewport"
+msgstr "Sledovat mapu"
+
+#: src/gecomapicfgdlg.cpp:31
+msgid "Follow boat"
+msgstr "Sledovat loď"
+
+#: src/gecomapicfgdlg.cpp:34
+msgid "Follow cursor"
+msgstr "Sledovat kurzor"
+
+#: src/gecomapicfgdlg.cpp:37
+msgid "Don't connect to OpenCPN"
+msgstr "Nenapojovat na OpenCPN"
+
+#: src/gecomapicfgdlg.cpp:45
+msgid "Always start hidden"
+msgstr "Vždy skrýt při startu"
+
+#: src/gecomapicfgdlg.cpp:48
+msgid "Disconnect from Viewport on GE action"
+msgstr "Odpojit od mapy při akci v GE"
+
+#: src/gecomapicfgdlg.cpp:51
+msgid "Update plugin settings from GE"
+msgstr "Aktualizovat nastavení z GE"
+
+#: src/gecomapicfgdlg.cpp:54
+msgid "Show boat in GE"
+msgstr "Zobrazovat loď"
+
+#: src/gecomapicfgdlg.cpp:62
+msgid "View properties"
+msgstr "Nastavení pohledu"
+
+#: src/gecomapicfgdlg.cpp:64
+msgid "Camera azimuth"
+msgstr "Azimut kamery"
+
+#: src/gecomapicfgdlg.cpp:71
+msgid "Camera Tilt"
+msgstr "Sklon kamery"
+
+#: src/gecomapicfgdlg.cpp:78
+msgid "Camera Range"
+msgstr "Vzdálenost kamery"
+
+#: src/gecomapicfgdlg.cpp:85
+msgid "Reset to defaults"
+msgstr "Tovární nastavení"
+
+#: src/gecomapicfgdlg.cpp:90
+msgid "Floating window transparency"
+msgstr "Průhlednost plovoucího okna"
+
