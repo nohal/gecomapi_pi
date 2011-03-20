@@ -273,7 +273,10 @@ void GEUIDialog::DetachIfNeeded(double plugin_azimuth, double plugin_range, doub
             {
                   if ( pPlugIn->ShouldDisconnect() && m_cbConnected->GetValue() )
                         if ( (abs(azimuth - plugin_azimuth) > 10 && plugin_azimuth != DONT_CONSIDER_VALUE) || (abs(range - plugin_range) > 100 && plugin_range != DONT_CONSIDER_VALUE) || (abs(tilt - plugin_tilt) > 10 && plugin_tilt != DONT_CONSIDER_VALUE) ) //we don't want to do anything in case of a very small difference I would say
+                        {
+                              wxLogMessage(wxString::Format(_T("Disconnected from the viewport, because the GE reported values (A: %f, R: %f, T: %f) differ from the plugin settings (A: %f, R: %f, T: %f)"), azimuth, range, tilt, plugin_azimuth, plugin_range, plugin_tilt));
                               m_cbConnected->SetValue(false);
+                        }
                   if ( pPlugIn->ShouldUpdateFromGE() )
                         pPlugIn->SetParams(azimuth, range, tilt);
             }
