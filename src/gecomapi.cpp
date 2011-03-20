@@ -212,9 +212,13 @@ bool GEUIDialog::GEMoveCamera()
       wxLogMessage(_T("GE camera move requested"));
       int interval = m_stopwatch.Time();
       if (m_bbusy)
+      {
+            wxLogMessage(_T("GE camera move request discarded, GE busy"));
             return false;
+      }
       if (interval < CAMERA_MOVE_INTERVAL) // If it is less than CAMERA_MOVE_INTERVAL since last request, don't move the camera
       {
+            wxLogMessage(_T("GE camera move request discarded, too soon after a previous action"));
             return false;
       }
       m_stopwatch.Start();
@@ -508,6 +512,7 @@ bool GEUIDialog::GEReadViewParameters(double& lat, double& lon, double& alt, dou
       wxLogMessage(_T("GE View parameters requested"));
       int interval = m_stopwatch.Time();
       if (interval < CAMERA_MOVE_INTERVAL) // If it is less than CAMERA_MOVE_INTERVAL since last request, don't move the camera
+            wxLogMessage(_T("GE View parameters request discarded - too soon after the previous action"));
             return false;
       while ( m_bbusy ) ;
       m_bbusy = true;
