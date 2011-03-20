@@ -516,8 +516,10 @@ bool GEUIDialog::GEReadViewParameters(double& lat, double& lon, double& alt, dou
       wxLogMessage(_T("GE View parameters requested"));
       int interval = m_stopwatch.Time();
       if (interval < CAMERA_MOVE_INTERVAL) // If it is less than CAMERA_MOVE_INTERVAL since last request, don't move the camera
+      {
             wxLogMessage(_T("GE View parameters request discarded - too soon after the previous action"));
             return false;
+      }
       while ( m_bbusy ) ;
       m_bbusy = true;
       if (interval > CAMERA_MOVE_INTERVAL * 10)
