@@ -264,13 +264,17 @@ void GEUIDialog::DetachIfNeeded(double plugin_azimuth, double plugin_range, doub
 {
       double lat, lon, alt, azimuth, range, tilt;
 
+      if ( m_bbusy )
+      {
+            wxLogMessage(_T("Not detaching, busy"));
+            return;
+      }
       if ( m_bshouldcatchup ) 
       {
             m_bshouldcatchup = false;
+            wxLogMessage(_T("Not detaching, asked to catch up"));
             return;
       }
-      if ( m_bbusy )
-            return;
 
       if ( pPlugIn->ShouldDisconnect() || pPlugIn->ShouldUpdateFromGE() )
             if ( GEReadViewParameters( lat, lon, alt, azimuth, range, tilt ) )
