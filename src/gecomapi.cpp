@@ -305,10 +305,6 @@ void GEUIDialog::DetachIfNeeded(double plugin_azimuth, double plugin_range, doub
 void GEUIDialog::SetBoatLatLon(double lat, double lon)
 {
       LogDebugMessage(wxString::Format(_T("Following the boat to %f, %f requested"), lat, lon));
-      if ( pPlugIn->ShouldShowBoat() )
-      {
-            GEShowBoat(lat, lon);
-      }
       DetachIfNeeded(m_camera_azimuth, m_camera_range, m_camera_tilt);
       if (!m_cbConnected->GetValue())
       {
@@ -319,6 +315,11 @@ void GEUIDialog::SetBoatLatLon(double lat, double lon)
       m_hotspot_lat = lat;
 
       GEMoveCamera();
+}
+
+void GEUIDialog::ShowBoat(double lat, double lon)
+{
+      GEShowBoat(lat, lon);
 }
 
 void GEUIDialog::GEShowBoat(double lat, double lon)
@@ -363,6 +364,7 @@ void GEUIDialog::GEShowBoat(double lat, double lon)
 
 void GEUIDialog::SetViewPort(double lat, double lon, double geo_height, double geo_width, double rotation)
 {
+      if (m_bclosed)
       LogDebugMessage(wxString::Format(_T("Following the viewport to Lat=%f, Lon=%f, H=%f, W=%f, R=%f requested"), lat, lon, geo_height, geo_width, rotation));
       DetachIfNeeded(rotation, DONT_CONSIDER_VALUE, DONT_CONSIDER_VALUE);
       if (!m_cbConnected->GetValue())

@@ -40,7 +40,7 @@
 //#include "earth/earth.h"
 
 #define DONT_CONSIDER_VALUE   -999
-#define CAMERA_MOVE_INTERVAL  20
+#define CAMERA_MOVE_INTERVAL  100
 
 class gecomapi_pi;
 
@@ -70,6 +70,7 @@ class GEUIDialog: public wxPanel
             bool              m_ballowStart;
 
             void DetachIfNeeded(double plugin_azimuth, double plugin_range, double plugin_tilt);
+            void ShowBoat(double lat, double lon);
 
       private:
             void OnSize( wxSizeEvent& event );

@@ -278,13 +278,17 @@ void gecomapi_pi::SetCurrentViewPort(PlugIn_ViewPort &vp)
 
 void gecomapi_pi::SetPositionFix(PlugIn_Position_Fix &pfix)
 {
+      if ( ShouldShowBoat() && m_pgecomapi_window )
+      {
+            m_pgecomapi_window->ShowBoat(pfix.Lat, pfix.Lon);
+      }
       if(m_iWhatToFollow == GECOMAPI_FOLLOW_BOAT && m_pgecomapi_window)
       {
             if (mPriPosition >= 1)
             {
                   mPriPosition = 1;
-                  m_pgecomapi_window->SetCameraParameters(m_iCameraAzimuth, m_iCameraTilt, m_iCameraRange);
-                  m_pgecomapi_window->SetCursorLatLon(pfix.Lat, pfix.Lon);
+                  //m_pgecomapi_window->SetCameraParameters(m_iCameraAzimuth, m_iCameraTilt, m_iCameraRange);
+                  m_pgecomapi_window->SetBoatLatLon(pfix.Lat, pfix.Lon);
             }
       }
 }
