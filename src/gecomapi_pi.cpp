@@ -78,6 +78,8 @@ gecomapi_pi::gecomapi_pi(void *ppimgr)
 
 int gecomapi_pi::Init(void)
 {
+      m_bshuttingDown = false;
+
       m_idefaultwidth = 500; //some default width before we know how wide is the screen...
 
       mPriPosition = 99;
@@ -130,6 +132,7 @@ int gecomapi_pi::Init(void)
 
 bool gecomapi_pi::DeInit(void)
 {
+      m_bshuttingDown = true;
       if(m_pgecomapi_window)
       {
             m_iWindowWidth = m_pgecomapi_window->GetSize().GetX();
@@ -141,7 +144,6 @@ bool gecomapi_pi::DeInit(void)
             SaveConfig();
             m_pauimgr->Update();
       }
-
       return true;
 }
 
@@ -188,6 +190,8 @@ wxString gecomapi_pi::GetLongDescription()
 
 void gecomapi_pi::SetCursorLatLon(double lat, double lon)
 {
+      if (m_bshuttingDown)
+            return;
       if(m_iWhatToFollow == GECOMAPI_FOLLOW_CURSOR && m_pgecomapi_window)
       {
             m_pgecomapi_window->SetCameraParameters(m_iCameraAzimuth, m_iCameraTilt, m_iCameraRange);
@@ -268,6 +272,8 @@ void gecomapi_pi::UpdateAuiStatus(void)
 
 void gecomapi_pi::SetCurrentViewPort(PlugIn_ViewPort &vp)
 {
+      if (m_bshuttingDown)
+            return;
       LogDebugMessage(_T("SetCurrentViewPort called by OpenCPN"));
       m_idefaultwidth = vp.pix_width / 2;
       if(m_iWhatToFollow == GECOMAPI_FOLLOW_VIEW && m_pgecomapi_window)
@@ -278,6 +284,8 @@ void gecomapi_pi::SetCurrentViewPort(PlugIn_ViewPort &vp)
 
 void gecomapi_pi::SetPositionFix(PlugIn_Position_Fix &pfix)
 {
+      if (m_bshuttingDown)
+            return;
       if ( ShouldShowBoat() && m_pgecomapi_window )
       {
             m_pgecomapi_window->ShowBoat(pfix.Lat, pfix.Lon);

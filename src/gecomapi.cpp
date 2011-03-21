@@ -364,7 +364,6 @@ void GEUIDialog::GEShowBoat(double lat, double lon)
 
 void GEUIDialog::SetViewPort(double lat, double lon, double geo_height, double geo_width, double rotation)
 {
-      if (m_bclosed)
       LogDebugMessage(wxString::Format(_T("Following the viewport to Lat=%f, Lon=%f, H=%f, W=%f, R=%f requested"), lat, lon, geo_height, geo_width, rotation));
       DetachIfNeeded(rotation, DONT_CONSIDER_VALUE, DONT_CONSIDER_VALUE);
       if (!m_cbConnected->GetValue())

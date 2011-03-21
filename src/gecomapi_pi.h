@@ -130,6 +130,8 @@ private:
       int               m_idefaultwidth;
       int               m_iOpacity;
 
+      bool              m_bshuttingDown;
+
       short             mPriPosition;
 };
 
