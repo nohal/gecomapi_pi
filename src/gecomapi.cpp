@@ -515,11 +515,15 @@ void GEUIDialog::SaveViewAsJPG( wxCommandEvent& event )
 }
 
 void GEUIDialog::ConnectedClicked( wxCommandEvent& event ) 
-{ 
+{
+      LogDebugMessage(_T("Connection checkbox clicked"));
       if (m_cbConnected->GetValue())
       {
+            LogDebugMessage(_T("The checkbox is now checked, so we will try to catch up with the viewport..."));
             m_bshouldcatchup = true;
       }
+      else
+            LogDebugMessage(_T("The checkbox is now unchecked"));
 
       event.Skip(); 
 }
