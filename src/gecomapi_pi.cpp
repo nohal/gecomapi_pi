@@ -139,6 +139,7 @@ bool gecomapi_pi::DeInit(void)
             m_pgecomapi_window->Close();
             m_pgecomapi_window->Destroy();
             SaveConfig();
+            m_pauimgr->Update();
       }
 
       return true;
