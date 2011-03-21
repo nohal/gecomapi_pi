@@ -267,7 +267,7 @@ void gecomapi_pi::UpdateAuiStatus(void)
 
 void gecomapi_pi::SetCurrentViewPort(PlugIn_ViewPort &vp)
 {
-      wxLogMessage(_T("SetCurrentViewPort called by OpenCPN"));
+      LogDebugMessage(_T("SetCurrentViewPort called by OpenCPN"));
       m_idefaultwidth = vp.pix_width / 2;
       if(m_iWhatToFollow == GECOMAPI_FOLLOW_VIEW && m_pgecomapi_window)
       {
@@ -511,4 +511,10 @@ void GEPrefsDlg::BtnTogled(wxCommandEvent& event)
       }
 
       event.Skip();
+}
+
+void LogDebugMessage(wxString msg)
+{
+      if (DEBUG_MESSAGES)
+            wxLogMessage(msg);
 }

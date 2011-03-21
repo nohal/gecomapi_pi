@@ -51,10 +51,10 @@
 #define WM_QT_PAINT 0xC2DC
 
 GEUIDialog::GEUIDialog(wxWindow *pparent, wxWindowID id, wxAuiManager *auimgr, int tbitem, gecomapi_pi *ppi)
-      :wxPanel(pparent, id, wxDefaultPosition, wxDefaultSize, wxBORDER_NONE, _T("GoogleEarth"))
+      :wxPanel(pparent, id, wxDefaultPosition, wxDefaultSize, wxBORDER_NONE, _("GoogleEarth"))
 {
       pPlugIn = ppi;
-      wxLogMessage(_T("Constructing the GE plugin window"));
+      LogDebugMessage(_T("Constructing the GE plugin window"));
       m_pauimgr = auimgr;
       m_toolbar_item_id = tbitem;
       m_ballowStart = false;
@@ -96,7 +96,7 @@ GEUIDialog::GEUIDialog(wxWindow *pparent, wxWindowID id, wxAuiManager *auimgr, i
       m_binitializing = false;
       m_bclosed = false;
 
-      //wxLogMessage(_T("GE plugin window created, going to start GE"));
+      //LogDebugMessage(_T("GE plugin window created, going to start GE"));
       //GEInitialize();
       m_buttonSaveKml->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GEUIDialog::SaveViewAsKml ), NULL, this );
       m_buttonSaveJPG->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GEUIDialog::SaveViewAsJPG ), NULL, this );
@@ -109,27 +109,27 @@ GEUIDialog::GEUIDialog(wxWindow *pparent, wxWindowID id, wxAuiManager *auimgr, i
 
 GEUIDialog::~GEUIDialog( )
 {
-      wxLogMessage(_T("Destroying the GE plugin window"));
+      LogDebugMessage(_T("Destroying the GE plugin window"));
       m_buttonSaveKml->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GEUIDialog::SaveViewAsKml ), NULL, this );
-      wxLogMessage(_T("Going to close GE"));
+      LogDebugMessage(_T("Going to close GE"));
       GEClose();
 }
 
 void GEUIDialog::GEInitialize()
 {
-      wxLogMessage(_T("GE initialization requested"));
-      wxLogMessage(_T("GE initialization requested"));
+      LogDebugMessage(_T("GE initialization requested"));
+      LogDebugMessage(_T("GE initialization requested"));
       if (NULL == app && !m_bgeisuseable & !m_binitializing & !m_bclosed) 
       {
             m_binitializing = true;
-            wxLogMessage(_T("Initializing GE"));
+            LogDebugMessage(_T("Initializing GE"));
             if (pPlugIn->IsProcessRunningByName(_T("googleearth.exe")))
             {
-                  wxLogMessage(_T("GE found running, killing it"));
+                  LogDebugMessage(_T("GE found running, killing it"));
                   if (pPlugIn->KillProcessByName(_T("googleearth.exe")))
-                        wxLogMessage(_T("GE killed"));
+                        LogDebugMessage(_T("GE killed"));
                   else
-                        wxLogMessage(_T("GE kill attempt failed"));
+                        LogDebugMessage(_T("GE kill attempt failed"));
             }
             try
             {
@@ -155,19 +155,19 @@ void GEUIDialog::GEInitialize()
                   m_binitializing = false;
             }
             catch(...) {
-                  wxLogMessage(_T("Error initializing GE"));
+                  LogDebugMessage(_T("Error initializing GE"));
             }
-            wxLogMessage(_T("GE Initialized, attaching to the window"));
+            LogDebugMessage(_T("GE Initialized, attaching to the window"));
             GEAttachWindow();
       }
 }
 
 void GEUIDialog::GEAttachWindow()
 {
-      wxLogMessage(_T("Attaching to GE window requested"));
+      LogDebugMessage(_T("Attaching to GE window requested"));
       if (NULL != app && m_bgeisuseable)
       {
-            wxLogMessage(_T("Attaching to the GE window"));
+            LogDebugMessage(_T("Attaching to the GE window"));
             try
             {
                  ShowWindowAsync((HWND) LongToHandle(app->GetMainHwnd()), 0);
@@ -177,20 +177,20 @@ void GEUIDialog::GEAttachWindow()
                   GEResize();
             }
             catch(...) {
-                  wxLogMessage(_T("Error attaching to GE window"));
+                  LogDebugMessage(_T("Error attaching to GE window"));
             }
-            wxLogMessage(_T("GE window attached"));
+            LogDebugMessage(_T("GE window attached"));
       }
 }
 
 void GEUIDialog::GEResize()
 {
-      wxLogMessage(_T("GE resize requested"));
+      LogDebugMessage(_T("GE resize requested"));
       while ( m_bbusy ) ;
             m_bbusy = true;
       if(NULL != app && m_bgeisuseable) 
       {
-            wxLogMessage(_T("Resizing GE"));
+            LogDebugMessage(_T("Resizing GE"));
             try
             {
                   SendMessage((HWND) LongToHandle(app->GetMainHwnd()), WM_COMMAND, WM_PAINT, 0);
@@ -208,31 +208,31 @@ void GEUIDialog::GEResize()
                   SendMessage((HWND) LongToHandle(app->GetRenderHwnd()), WM_COMMAND, WM_SIZE, 0);
             }
             catch(...) {
-                  wxLogMessage(_T("Error resizing GE window"));
+                  LogDebugMessage(_T("Error resizing GE window"));
             }
-            wxLogMessage(_T("GE resized"));
+            LogDebugMessage(_T("GE resized"));
       }
       m_bbusy = false;
 }
 
 bool GEUIDialog::GEMoveCamera()
 {
-      wxLogMessage(_T("GE camera move requested"));
+      LogDebugMessage(_T("GE camera move requested"));
       int interval = m_stopwatch.Time();
       if (m_bbusy)
       {
-            wxLogMessage(_T("GE camera move request discarded, GE busy"));
+            LogDebugMessage(_T("GE camera move request discarded, GE busy"));
             return false;
       }
       if (interval < CAMERA_MOVE_INTERVAL) // If it is less than CAMERA_MOVE_INTERVAL since last request, don't move the camera
       {
-            wxLogMessage(_T("GE camera move request discarded, too soon after a previous action"));
+            LogDebugMessage(_T("GE camera move request discarded, too soon after a previous action"));
             return false;
       }
       m_stopwatch.Start();
       if(NULL != app && m_bgeisuseable)
       {
-            wxLogMessage(_T("Moving GE camera"));
+            LogDebugMessage(_T("Moving GE camera"));
             //app->raw_GetCamera(false, &camera);
             //camera->PutFocusPointLatitude(m_hotspot_lat);
             //camera->PutFocusPointLongitude(m_hotspot_lon);
@@ -245,10 +245,10 @@ bool GEUIDialog::GEMoveCamera()
             try 
             {
                   app->SetCameraParams(m_hotspot_lat, m_hotspot_lon, 0.0, AbsoluteAltitudeGE, m_camera_range, m_camera_tilt, m_camera_azimuth, 5.0);
-                  wxLogMessage(_T("GE camera moved"));
+                  LogDebugMessage(_T("GE camera moved"));
             }
             catch(...) {
-                  wxLogMessage(_T("Error moving GE camera"));
+                  LogDebugMessage(_T("Error moving GE camera"));
                   return false;
             }
             return true;
@@ -274,13 +274,13 @@ void GEUIDialog::DetachIfNeeded(double plugin_azimuth, double plugin_range, doub
 
       if ( m_bbusy )
       {
-            wxLogMessage(_T("Not detaching, busy"));
+            LogDebugMessage(_T("Not detaching, busy"));
             return;
       }
       if ( m_bshouldcatchup ) 
       {
             m_bshouldcatchup = false;
-            wxLogMessage(_T("Not detaching, asked to catch up"));
+            LogDebugMessage(_T("Not detaching, asked to catch up"));
             return;
       }
 
@@ -290,7 +290,7 @@ void GEUIDialog::DetachIfNeeded(double plugin_azimuth, double plugin_range, doub
                   if ( pPlugIn->ShouldDisconnect() && m_cbConnected->GetValue() )
                         if ( (abs(azimuth - plugin_azimuth) > 10 && plugin_azimuth != DONT_CONSIDER_VALUE) || (abs(range - plugin_range) > 100 && plugin_range != DONT_CONSIDER_VALUE) || (abs(tilt - plugin_tilt) > 10 && plugin_tilt != DONT_CONSIDER_VALUE) ) //we don't want to do anything in case of a very small difference I would say
                         {
-                              wxLogMessage(wxString::Format(_T("Disconnected from the viewport, because the GE reported values (A: %f, R: %f, T: %f) differ from the plugin settings (A: %f, R: %f, T: %f)"), azimuth, range, tilt, plugin_azimuth, plugin_range, plugin_tilt));
+                              LogDebugMessage(wxString::Format(_T("Disconnected from the viewport, because the GE reported values (A: %f, R: %f, T: %f) differ from the plugin settings (A: %f, R: %f, T: %f)"), azimuth, range, tilt, plugin_azimuth, plugin_range, plugin_tilt));
                               m_cbConnected->SetValue(false);
                         }
                   if ( pPlugIn->ShouldUpdateFromGE() )
@@ -368,7 +368,7 @@ void GEUIDialog::SetViewPort(double lat, double lon, double geo_height, double g
 
 void GEUIDialog::OnShow(wxShowEvent& event)
 {
-      wxLogMessage(_T("GE plugin - OnShow event"));
+      LogDebugMessage(_T("GE plugin - OnShow event"));
       if(m_ballowStart)
             GEInitialize();
       SetToolbarItemState(m_toolbar_item_id, IsShown());
@@ -379,10 +379,10 @@ void GEUIDialog::OnShow(wxShowEvent& event)
 void GEUIDialog::GEClose()
 {
 //is all of the following needed?
-      wxLogMessage(_T("Closing GE requested"));
+      LogDebugMessage(_T("Closing GE requested"));
       if (NULL != app && m_bgeisuseable) 
       {
-            wxLogMessage(_T("Closing GE"));
+            LogDebugMessage(_T("Closing GE"));
             m_bgeisuseable = false;
             m_bclosed = true;
             try
@@ -399,15 +399,15 @@ void GEUIDialog::GEClose()
                   CoUninitialize();
             }
             catch(...) {
-                  wxLogMessage(_T("Error closing GE"));
+                  LogDebugMessage(_T("Error closing GE"));
             }
-            wxLogMessage(_T("GE closed"));
+            LogDebugMessage(_T("GE closed"));
       }
 }
 
 void GEUIDialog::OnSize ( wxSizeEvent& event )
 {
-      wxLogMessage(_T("GE plugin - OnSize event"));
+      LogDebugMessage(_T("GE plugin - OnSize event"));
       GEResize();
       if (m_pfocusedwindow)
             m_pfocusedwindow->SetFocus(); //returns focus - don't know why, but seems needed
@@ -424,7 +424,7 @@ void GEUIDialog::SetCameraParameters(int cameraAzimuth, int cameraTilt, int came
 
 void GEUIDialog::SetWindowWidth(int width)
 {
-      wxLogMessage(_T("GE SetWindowWidth"));
+      LogDebugMessage(_T("GE SetWindowWidth"));
       itemBoxSizer->Layout();
       itemBoxSizer->Fit(this);
       wxAuiPaneInfo &pi = m_pauimgr->GetPane(this);
@@ -432,7 +432,7 @@ void GEUIDialog::SetWindowWidth(int width)
       pi.BestSize(wxSize(width, width));
       pi.FloatingSize(wxSize(width, width));
       m_pauimgr->Update();
-      wxLogMessage(_T("GE window width set"));
+      LogDebugMessage(_T("GE window width set"));
 }
 
 void GEUIDialog::SaveViewAsKml( wxCommandEvent& event ) 
@@ -521,11 +521,11 @@ wxString GEUIDialog::encodeXMLEntities(wxString str)
 
 bool GEUIDialog::GEReadViewParameters(double& lat, double& lon, double& alt, double& azimuth, double& range, double& tilt)
 {
-      wxLogMessage(_T("GE View parameters requested"));
+      LogDebugMessage(_T("GE View parameters requested"));
       int interval = m_stopwatch.Time();
       if (interval < CAMERA_MOVE_INTERVAL) // If it is less than CAMERA_MOVE_INTERVAL since last request, don't move the camera
       {
-            wxLogMessage(_T("GE View parameters request discarded - too soon after the previous action"));
+            LogDebugMessage(_T("GE View parameters request discarded - too soon after the previous action"));
             return false;
       }
       while ( m_bbusy ) ;
@@ -534,7 +534,7 @@ bool GEUIDialog::GEReadViewParameters(double& lat, double& lon, double& alt, dou
             m_stopwatch.Start(); //Things got crazy, it's time to let it settle down...
       if(NULL != app && m_bgeisuseable)
       {
-            wxLogMessage(_T("Getting GE view parameters"));
+            LogDebugMessage(_T("Getting GE view parameters"));
             try
             {
                   ICameraInfoGE* camera;
@@ -547,9 +547,9 @@ bool GEUIDialog::GEReadViewParameters(double& lat, double& lon, double& alt, dou
                   tilt = camera->Tilt;
             }
             catch(...) {
-                  wxLogMessage(_T("Error geting GE view parameters"));
+                  LogDebugMessage(_T("Error geting GE view parameters"));
             }
-            wxLogMessage(_T("GE view parameters obtained"));
+            LogDebugMessage(_T("GE view parameters obtained"));
             m_bbusy = false;
             return true;
       }

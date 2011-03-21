@@ -44,12 +44,14 @@
 #define     MY_API_VERSION_MAJOR    1
 #define     MY_API_VERSION_MINOR    4
 
-#define GECOMAPI_TOOL_POSITION -1          // Request default positioning of toolbar tool
+#define     GECOMAPI_TOOL_POSITION -1          // Request default positioning of toolbar tool
 
 #include "../../../include/ocpn_plugin.h"
 
 #include "gecomapi.h"
 #include "gecomapicfgdlg.h"
+
+#define     DEBUG_MESSAGES          true
 
 
 //----------------------------------------------------------------------------------------------------------
@@ -61,6 +63,8 @@
 #define GECOMAPI_FOLLOW_BOAT        2
 #define GECOMAPI_FOLLOW_VIEW        3
 #define GECOMAPI_FOLLOW_OFF         0
+
+void LogDebugMessage(wxString msg);
 
 class gecomapi_pi : public opencpn_plugin
 {
