@@ -217,7 +217,7 @@ void GEUIDialog::GEResize()
 
 bool GEUIDialog::GEMoveCamera()
 {
-      LogDebugMessage(_T("GE camera move requested"));
+      LogDebugMessage(wxString::Format(_T("GE camera move to %f, %f requested"), m_hotspot_lat, m_hotspot_lon, m_camera_range, m_camera_tilt, m_camera_azimuth));
       int interval = m_stopwatch.Time();
       if (m_bbusy)
       {
@@ -253,15 +253,19 @@ bool GEUIDialog::GEMoveCamera()
             }
             return true;
       }
+      LogDebugMessage(_T("Not moving the camera, GE looks unusable"));
       return false;
 }
 
 void GEUIDialog::SetCursorLatLon(double lat, double lon)
 {
+      LogDebugMessage(wxString::Format(_T("Following the cursor to %f, %f requested"), lat, lon));
       DetachIfNeeded(m_camera_azimuth, m_camera_range, m_camera_tilt);
       if (!m_cbConnected->GetValue())
+      {
+            LogDebugMessage(_T("Not following as the checkbox is not checked"));
             return;
-
+      }
       m_hotspot_lon = lon;
       m_hotspot_lat = lat;
 
@@ -300,14 +304,17 @@ void GEUIDialog::DetachIfNeeded(double plugin_azimuth, double plugin_range, doub
 
 void GEUIDialog::SetBoatLatLon(double lat, double lon)
 {
+      LogDebugMessage(wxString::Format(_T("Following the boat to %f, %f requested"), lat, lon));
       if ( pPlugIn->ShouldShowBoat() )
       {
             GEShowBoat(lat, lon);
       }
       DetachIfNeeded(m_camera_azimuth, m_camera_range, m_camera_tilt);
       if (!m_cbConnected->GetValue())
+      {
+            LogDebugMessage(_T("Not following as the checkbox is not checked"));
             return;
-
+      }
       m_hotspot_lon = lon;
       m_hotspot_lat = lat;
 
@@ -316,6 +323,7 @@ void GEUIDialog::SetBoatLatLon(double lat, double lon)
 
 void GEUIDialog::GEShowBoat(double lat, double lon)
 {
+      LogDebugMessage(wxString::Format(_T("Show boat at %f, %f requested"), lat, lon));
       while ( m_bbusy ) ;
             m_bbusy = true;
       if(NULL != app && m_bgeisuseable)
@@ -343,17 +351,25 @@ void GEUIDialog::GEShowBoat(double lat, double lon)
             try 
             {
                   app->LoadKmlData(&pdata);
+                  LogDebugMessage(_T("Shown"));
             }
-            catch (...) {}
+            catch (...) 
+            {
+                  LogDebugMessage(_T("There was an error showing the boat"));
+            }
       }
       m_bbusy = false;
 }
 
 void GEUIDialog::SetViewPort(double lat, double lon, double geo_height, double geo_width, double rotation)
 {
+      LogDebugMessage(wxString::Format(_T("Following the viewport to Lat=%f, Lon=%f, H=%f, W=%f, R=%f requested"), lat, lon, geo_height, geo_width, rotation));
       DetachIfNeeded(rotation, DONT_CONSIDER_VALUE, DONT_CONSIDER_VALUE);
       if (!m_cbConnected->GetValue())
+      {
+            LogDebugMessage(_T("Not following as the checkbox is not checked"));
             return;
+      }
       //Lets compute a range. To make it easy, we will just look from the distance equal to half the chart viewport width at the centerpoint...
       m_camera_range = geo_width / 2 * 60 * 1852; //TODO: maybe decide which axis is better to use to set it to fit the same area to the window...
       m_camera_azimuth = rotation;
@@ -549,7 +565,7 @@ bool GEUIDialog::GEReadViewParameters(double& lat, double& lon, double& alt, dou
             catch(...) {
                   LogDebugMessage(_T("Error geting GE view parameters"));
             }
-            LogDebugMessage(_T("GE view parameters obtained"));
+            LogDebugMessage(wxString::Format(_T("GE view parameters obtained: lat=%f, lon=%f, alt=%f, azimuth=%f, range=%f, tilt=%f"), lat, lon, alt, azimuth, range, tilt));
             m_bbusy = false;
             return true;
       }

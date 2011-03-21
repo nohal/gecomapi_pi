@@ -315,6 +315,9 @@ bool gecomapi_pi::LoadConfig(void)
             pConf->Read( _T( "CameraTilt" ), &m_iCameraTilt, 0 );
             pConf->Read( _T( "CameraRange" ), &m_iCameraRange, 0 );
             pConf->Read( _T( "WindowOpacity" ), &m_iOpacity, 255 );
+            LogDebugMessage(wxString::Format(_T("Config params loaded: WW=%d, ASH=%d, DGA=%d, USG=%d, SB=%d, WF=%d, Az=%d, Ti=%d, Ra=%d, Opa=%d"), 
+                  m_iWindowWidth, m_bstartHidden, m_bdisconnectOnGEAction, m_bupdateSettingsFromGE, m_bShowBoatInGE, 
+                  m_iWhatToFollow, m_iCameraAzimuth, m_iCameraTilt, m_iCameraRange, m_iOpacity));
             return true;
       }
       else
@@ -338,7 +341,9 @@ bool gecomapi_pi::SaveConfig(void)
             pConf->Write( _T( "CameraTilt" ), m_iCameraTilt );
             pConf->Write( _T( "CameraRange" ), m_iCameraRange );
             pConf->Write( _T( "WindowOpacity" ), m_iOpacity );
-
+            LogDebugMessage(wxString::Format(_T("Config params saved: WW=%d, ASH=%d, DGA=%d, USG=%d, SB=%d, WF=%d, Az=%d, Ti=%d, Ra=%d, Opa=%d"), 
+                  m_iWindowWidth, m_bstartHidden, m_bdisconnectOnGEAction, m_bupdateSettingsFromGE, m_bShowBoatInGE, 
+                  m_iWhatToFollow, m_iCameraAzimuth, m_iCameraTilt, m_iCameraRange, m_iOpacity));
             return true;
       }
       else
