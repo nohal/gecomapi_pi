@@ -100,6 +100,8 @@ public:
       bool ShouldShowBoat() { return m_bShowBoatInGE; }
       void UpdateFromGE(double azimuth, double tilt, double range);
       void SetParams(double azimuth, double range, double tilt);
+      bool KillProcessByName(wxString szProcessToKill);
+      bool IsProcessRunningByName(wxString szProcessToFind);
 
 private:
       bool LoadConfig(void);

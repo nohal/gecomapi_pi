@@ -33,6 +33,10 @@
   #include "wx/wx.h"
 #endif //precompiled headers
 
+#include <windows.h>
+#include <tlhelp32.h>
+#include <stdio.h>
+
 #include "gecomapi_pi.h"
 #include "gecomapi.h"
 
@@ -417,6 +421,67 @@ void gecomapi_pi::UpdateFromGE(double azimuth, double tilt, double range)
       m_iCameraRange = (int) range;
 
       SaveConfig();
+}
+
+bool gecomapi_pi::KillProcessByName(wxString szProcessToKill)
+{
+	HANDLE hProcessSnap;
+	HANDLE hProcess;
+	PROCESSENTRY32 pe32;
+
+	hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);  // Takes a snapshot of all the processes
+
+	if(hProcessSnap == INVALID_HANDLE_VALUE){
+		return( FALSE );
+	}
+
+	pe32.dwSize = sizeof(PROCESSENTRY32);
+
+	if(!Process32First(hProcessSnap, &pe32)){
+		CloseHandle(hProcessSnap);     
+		return( FALSE );
+	}
+
+	do{
+            if(!wcscmp(pe32.szExeFile, szProcessToKill.c_str())){    //  checks if process at current position has the name of to be killed app
+			hProcess = OpenProcess(PROCESS_TERMINATE,0, pe32.th32ProcessID);  // gets handle to process
+			TerminateProcess(hProcess,0);   // Terminate process by handle
+			CloseHandle(hProcess);  // close the handle
+		} 
+	}while(Process32Next(hProcessSnap,&pe32));  // gets next member of snapshot
+
+	CloseHandle(hProcessSnap);  // closes the snapshot handle
+	return( TRUE );
+}
+
+bool gecomapi_pi::IsProcessRunningByName(wxString szProcessToFind)
+{
+	HANDLE hProcessSnap;
+	PROCESSENTRY32 pe32;
+      bool result = false;
+
+	hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);  // Takes a snapshot of all the processes
+
+	if(hProcessSnap == INVALID_HANDLE_VALUE){
+		return( false );
+	}
+
+	pe32.dwSize = sizeof(PROCESSENTRY32);
+
+	if(!Process32First(hProcessSnap, &pe32)){
+		CloseHandle(hProcessSnap);     
+		return( false );
+	}
+
+	do{
+            if(!wcscmp(pe32.szExeFile, szProcessToFind.c_str())){    //  checks if process at current position has the name of to be killed app
+			result = true;
+                  break;
+		} 
+	}while(Process32Next(hProcessSnap,&pe32));  // gets next member of snapshot
+
+	CloseHandle(hProcessSnap);  // closes the snapshot handle
+	return( result );
 }
 
 void GEPrefsDlg::ResetToDefaults(wxCommandEvent& event)

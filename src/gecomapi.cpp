@@ -123,6 +123,14 @@ void GEUIDialog::GEInitialize()
       {
             m_binitializing = true;
             wxLogMessage(_T("Initializing GE"));
+            if (pPlugIn->IsProcessRunningByName(_T("googleearth.exe")))
+            {
+                  wxLogMessage(_T("GE found running, killing it"));
+                  if (pPlugIn->KillProcessByName(_T("googleearth.exe")))
+                        wxLogMessage(_T("GE killed"));
+                  else
+                        wxLogMessage(_T("GE kill attempt failed"));
+            }
             try
             {
                   CoInitialize(NULL);
