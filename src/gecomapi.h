@@ -89,6 +89,7 @@ class GEUIDialog: public wxPanel
 
             double            m_hotspot_lat, m_hotspot_lon;
             double            m_camera_range, m_camera_azimuth, m_camera_tilt;
+            double            m_prev_camera_range, m_prev_camera_azimuth, m_prev_camera_tilt;
 
             wxAuiManager     *m_pauimgr;
             int               m_toolbar_item_id;

@@ -246,6 +246,9 @@ bool GEUIDialog::GEMoveCamera()
             {
                   app->SetCameraParams(m_hotspot_lat, m_hotspot_lon, 0.0, AbsoluteAltitudeGE, m_camera_range, m_camera_tilt, m_camera_azimuth, 5.0);
                   LogDebugMessage(_T("GE camera moved"));
+                  m_prev_camera_azimuth = m_camera_azimuth;
+                  m_prev_camera_range = m_camera_range;
+                  m_prev_camera_tilt = m_camera_tilt;
             }
             catch(...) {
                   LogDebugMessage(_T("Error moving GE camera"));
@@ -292,11 +295,16 @@ void GEUIDialog::DetachIfNeeded(double plugin_azimuth, double plugin_range, doub
             if ( GEReadViewParameters( lat, lon, alt, azimuth, range, tilt ) )
             {
                   if ( pPlugIn->ShouldDisconnect() && m_cbConnected->GetValue() )
-                        if ( (abs(azimuth - plugin_azimuth) > 10 && plugin_azimuth != DONT_CONSIDER_VALUE) || (abs(range - plugin_range) > 100 && plugin_range != DONT_CONSIDER_VALUE) || (abs(tilt - plugin_tilt) > 10 && plugin_tilt != DONT_CONSIDER_VALUE) ) //we don't want to do anything in case of a very small difference I would say
+                        if ( (abs(azimuth - m_prev_camera_azimuth) > 10 && plugin_azimuth != DONT_CONSIDER_VALUE) || (abs(range - m_prev_camera_range) > 100 && plugin_range != DONT_CONSIDER_VALUE) || (abs(tilt - m_prev_camera_tilt) > 10 && plugin_tilt != DONT_CONSIDER_VALUE) ) //we don't want to do anything in case of a very small difference I would say
                         {
                               LogDebugMessage(wxString::Format(_T("Disconnected from the viewport, because the GE reported values (A: %f, R: %f, T: %f) differ from the plugin settings (A: %f, R: %f, T: %f)"), azimuth, range, tilt, plugin_azimuth, plugin_range, plugin_tilt));
                               m_cbConnected->SetValue(false);
                         }
+                        //if ( (abs(azimuth - plugin_azimuth) > 10 && plugin_azimuth != DONT_CONSIDER_VALUE) || (abs(range - plugin_range) > 100 && plugin_range != DONT_CONSIDER_VALUE) || (abs(tilt - plugin_tilt) > 10 && plugin_tilt != DONT_CONSIDER_VALUE) ) //we don't want to do anything in case of a very small difference I would say
+                        //{
+                        //      LogDebugMessage(wxString::Format(_T("Disconnected from the viewport, because the GE reported values (A: %f, R: %f, T: %f) differ from the plugin settings (A: %f, R: %f, T: %f)"), azimuth, range, tilt, plugin_azimuth, plugin_range, plugin_tilt));
+                        //      m_cbConnected->SetValue(false);
+                        //}
                   if ( pPlugIn->ShouldUpdateFromGE() )
                         pPlugIn->SetParams(azimuth, range, tilt);
             }
