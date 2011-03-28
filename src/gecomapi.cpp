@@ -335,7 +335,7 @@ void GEUIDialog::GEShowBoat(double lat, double lon)
       LogDebugMessage(wxString::Format(_T("Show boat at %f, %f requested"), lat, lon));
       while ( m_bbusy ) ;
             m_bbusy = true;
-      if (interval < CAMERA_MOVE_INTERVAL) // If it is less than CAMERA_MOVE_INTERVAL since last request, don't move the camera
+      if (interval < CAMERA_MOVE_INTERVAL) // If it is less than CAMERA_MOVE_INTERVAL since last request, don't move the boat
       {
             LogDebugMessage(_T("Boat display request discarded, too soon after a previous action"));
             return;
@@ -355,7 +355,10 @@ void GEUIDialog::GEShowBoat(double lat, double lon)
                               tps->Item[i]->PutVisibility(0);
                         }*/
                         try {
-                              tps->GetItem(tps->GetCount() - 1)->PutVisibility(false); //FIXME: Why does this fail on the first?
+                              //FIXME: This works, BUT GE consumes enormous amounts of memory - really there is no way to change the properties of existing waypoint?
+                              //Looks like ther isn't, so some trick like from http://groups.google.com/group/kml-support-com-api/browse_thread/thread/76c9f9f3ab5ff28f/4244ff5df01c5c25?lnk=gst&q=temporary+places# and http://bbs.keyhole.com/ubb/ubbthreads.php?ubb=showflat&Number=816832&site_id=1#import will be necessary
+                              //Tutorial: http://code.google.com/intl/cs/apis/kml/documentation/kml_21tutorial.html#updates
+                              tps->GetItem(tps->GetCount() - 1)->PutVisibility(false);
                         }
                         catch (...) {}
                   }
