@@ -335,6 +335,11 @@ void GEUIDialog::GEShowBoat(double lat, double lon)
       LogDebugMessage(wxString::Format(_T("Show boat at %f, %f requested"), lat, lon));
       while ( m_bbusy ) ;
             m_bbusy = true;
+      if (interval < CAMERA_MOVE_INTERVAL) // If it is less than CAMERA_MOVE_INTERVAL since last request, don't move the camera
+      {
+            LogDebugMessage(_T("Boat display request discarded, too soon after a previous action"));
+            return;
+      }
       if(NULL != app && m_bgeisuseable)
       {
             IFeatureGE* tp;

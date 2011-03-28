@@ -40,7 +40,7 @@
 //#include "earth/earth.h"
 
 #define DONT_CONSIDER_VALUE   -999
-#define CAMERA_MOVE_INTERVAL  100
+#define CAMERA_MOVE_INTERVAL  200
 
 class gecomapi_pi;
 
