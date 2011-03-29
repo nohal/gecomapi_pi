@@ -107,7 +107,7 @@ class GEUIDialog: public wxPanel
             bool              m_bclosed;
             bool              m_bshouldcatchup;
             bool              m_bbusy;
-            wxStopWatch       m_stopwatch;
+            wxStopWatch       m_stopwatch, m_stopwatch_boat;
 };
 
 

@@ -105,6 +105,7 @@ GEUIDialog::GEUIDialog(wxWindow *pparent, wxWindowID id, wxAuiManager *auimgr, i
       ConnectToGE();
 
       m_stopwatch.Start();
+      m_stopwatch_boat.Start();
 }
 
 GEUIDialog::~GEUIDialog( )
@@ -343,13 +344,14 @@ void GEUIDialog::GEShowBoat(double lat, double lon)
             LogDebugMessage(_T("Not showing, busy"));
             return;
       }
-      m_bbusy = true;
-      int interval = m_stopwatch.Time();
+      int interval = m_stopwatch_boat.Time();
       if (interval < CAMERA_MOVE_INTERVAL * 5) // If it is less than CAMERA_MOVE_INTERVAL * 5 since last request, don't move the boat
       {
             LogDebugMessage(_T("Boat display request discarded, too soon after a previous action"));
             return;
       }
+      m_bbusy = true;
+      m_stopwatch_boat.Start();
       if(NULL != app && m_bgeisuseable)
       {
             IFeatureGE* tp;
