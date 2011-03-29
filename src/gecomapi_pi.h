@@ -63,10 +63,13 @@
 #define GECOMAPI_FOLLOW_BOAT        2
 #define GECOMAPI_FOLLOW_VIEW        3
 #define GECOMAPI_FOLLOW_OFF         0
+#define DEFAULT_WIDTH               300
+#define DEFAULT_HEIGHT              300
+#define DEFAULT_FLOATING            false
 
 void LogDebugMessage(wxString msg);
 
-class gecomapi_pi : public opencpn_plugin
+class gecomapi_pi : public wxEvtHandler, opencpn_plugin
 {
 public:
       gecomapi_pi(void *ppimgr);
@@ -106,6 +109,10 @@ public:
       void SetParams(double azimuth, double range, double tilt);
       bool KillProcessByName(wxString szProcessToKill);
       bool IsProcessRunningByName(wxString szProcessToFind);
+      void OnAuiRender( wxAuiManagerEvent& event );
+
+      int               m_iWindowWidth;
+      int               m_iWindowHeight;
 
 private:
       bool LoadConfig(void);
@@ -118,7 +125,7 @@ private:
       GEUIDialog       *m_pgecomapi_window;
       int               m_toolbar_item_id;
 
-      int               m_iWindowWidth;
+      bool              m_bWindowFloating;
       bool              m_bstartHidden;
       bool              m_bdisconnectOnGEAction;
       bool              m_bupdateSettingsFromGE;
@@ -127,7 +134,6 @@ private:
       int               m_iCameraAzimuth;
       int               m_iCameraTilt;
       int               m_iCameraRange;
-      int               m_idefaultwidth;
       int               m_iOpacity;
 
       bool              m_bshuttingDown;

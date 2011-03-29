@@ -335,6 +335,7 @@ void GEUIDialog::GEShowBoat(double lat, double lon)
       LogDebugMessage(wxString::Format(_T("Show boat at %f, %f requested"), lat, lon));
       while ( m_bbusy ) ;
             m_bbusy = true;
+      int interval = m_stopwatch.Time();
       if (interval < CAMERA_MOVE_INTERVAL) // If it is less than CAMERA_MOVE_INTERVAL since last request, don't move the boat
       {
             LogDebugMessage(_T("Boat display request discarded, too soon after a previous action"));
@@ -448,6 +449,8 @@ void GEUIDialog::OnSize ( wxSizeEvent& event )
       if (m_pfocusedwindow)
             m_pfocusedwindow->SetFocus(); //returns focus - don't know why, but seems needed
 
+      pPlugIn->m_iWindowWidth = this->GetSize().GetWidth();
+      pPlugIn->m_iWindowHeight = this->GetSize().GetHeight();
       event.Skip();
 }
 

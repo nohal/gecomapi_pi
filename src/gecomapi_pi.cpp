@@ -45,7 +45,7 @@
 
 extern "C" DECL_EXP opencpn_plugin* create_pi(void *ppimgr)
 {
-    return new gecomapi_pi(ppimgr);
+    return (opencpn_plugin *)new gecomapi_pi(ppimgr);
 }
 
 extern "C" DECL_EXP void destroy_pi(opencpn_plugin* p)
@@ -80,8 +80,6 @@ int gecomapi_pi::Init(void)
 {
       m_bshuttingDown = false;
 
-      m_idefaultwidth = 500; //some default width before we know how wide is the screen...
-
       mPriPosition = 99;
 
       m_pgecomapi_window = NULL;
@@ -108,7 +106,6 @@ int gecomapi_pi::Init(void)
       wxAuiPaneInfo pane = wxAuiPaneInfo().Name(_T("GoogleEarth")).Caption(_("GoogleEarth")).CaptionVisible(true).Float().FloatingPosition(0,0).Show(!m_bstartHidden).TopDockable(false).BottomDockable(false).LeftDockable(true).RightDockable(true).CaptionVisible(true).CloseButton(false).MinSize(300,300);
 
       m_pauimgr->AddPane(m_pgecomapi_window, pane);
-      m_pauimgr->Update();
       
       if(m_pgecomapi_window)
       {
@@ -116,6 +113,10 @@ int gecomapi_pi::Init(void)
       }
 
       ApplyConfig();
+
+      m_pauimgr->Update();
+
+      m_pauimgr->Connect( wxEVT_AUI_RENDER, wxAuiManagerEventHandler( gecomapi_pi::OnAuiRender ), NULL, this );
 
       return (WANTS_OVERLAY_CALLBACK |
            WANTS_CURSOR_LATLON       |
@@ -135,7 +136,9 @@ bool gecomapi_pi::DeInit(void)
       m_bshuttingDown = true;
       if(m_pgecomapi_window)
       {
-            m_iWindowWidth = m_pgecomapi_window->GetSize().GetX();
+            m_iWindowWidth = m_pgecomapi_window->GetSize().GetWidth();
+            m_iWindowHeight = m_pgecomapi_window->GetSize().GetHeight();
+            m_bWindowFloating = m_pauimgr->GetPane(m_pgecomapi_window).IsFloating();
             m_pauimgr->ClosePane(m_pauimgr->GetPane(m_pgecomapi_window));
             m_pauimgr->DetachPane(m_pgecomapi_window);
             //m_pgecomapi_window->GEClose();
@@ -228,7 +231,15 @@ void gecomapi_pi::OnToolbarToolCallback(int id)
       {
             if (!pane.IsShown())
             {
-                  //m_pgecomapi_window->GEClose();
+                  m_iWindowWidth = m_pgecomapi_window->GetSize().GetWidth();
+                  m_iWindowHeight = m_pgecomapi_window->GetSize().GetHeight();
+                  pane.window->SetSize(m_iWindowWidth, m_iWindowHeight);
+                  pane.BestSize(m_iWindowWidth, m_iWindowHeight);
+            }
+            else
+            {
+                    pane.window->SetSize(m_iWindowWidth, m_iWindowHeight);
+                    pane.BestSize(m_iWindowWidth, m_iWindowHeight);
             }
       }
       else
@@ -237,10 +248,9 @@ void gecomapi_pi::OnToolbarToolCallback(int id)
             {
                   m_pgecomapi_window->m_pfocusedwindow = wxWindow::FindFocus();
                   m_pgecomapi_window->GEInitialize();
-                  pane.Dock();
+                  ApplyConfig();
             }
       }
-      pane.BestSize(m_iWindowWidth, m_pgecomapi_window->GetSize().GetY());
       m_pauimgr->Update();
 }
 
@@ -265,6 +275,8 @@ void gecomapi_pi::UpdateAuiStatus(void)
             m_pgecomapi_window->GEInitialize();
       if (pane.IsFloating())
             pane.frame->SetTransparent(m_iOpacity);
+      m_pgecomapi_window->SetSize(m_iWindowWidth, m_iWindowHeight);
+      pane.BestSize(m_iWindowWidth, m_iWindowHeight);
       m_pauimgr->Update();
 
       SetToolbarItemState(m_toolbar_item_id, pane.IsShown());
@@ -275,7 +287,6 @@ void gecomapi_pi::SetCurrentViewPort(PlugIn_ViewPort &vp)
       if (m_bshuttingDown)
             return;
       LogDebugMessage(_T("SetCurrentViewPort called by OpenCPN"));
-      m_idefaultwidth = vp.pix_width / 2;
       if(m_iWhatToFollow == GECOMAPI_FOLLOW_VIEW && m_pgecomapi_window)
       {
             m_pgecomapi_window->SetViewPort(vp.clat, vp.clon, vp.lat_max - vp.lat_min, vp.lon_max - vp.lon_min, vp.rotation);
@@ -318,7 +329,9 @@ bool gecomapi_pi::LoadConfig(void)
 
             wxString config;
 
-            pConf->Read( _T( "WindowWidth" ), &m_iWindowWidth, m_idefaultwidth );
+            pConf->Read( _T( "WindowWidth" ), &m_iWindowWidth, DEFAULT_WIDTH );
+            pConf->Read( _T( "WindowHeight" ), &m_iWindowHeight, DEFAULT_HEIGHT );
+            pConf->Read( _T( "WindowFloating" ), &m_bWindowFloating, DEFAULT_FLOATING );
             pConf->Read( _T( "AlwaysStartHidden" ), &m_bstartHidden, true );
             pConf->Read( _T( "DisconnectOnGEAction" ), &m_bdisconnectOnGEAction, true );
             pConf->Read( _T( "UpdateSettingsFromGE" ), &m_bupdateSettingsFromGE, true );
@@ -345,6 +358,8 @@ bool gecomapi_pi::SaveConfig(void)
       {
             pConf->SetPath( _T( "/PlugIns/GoogleEarth" ) );
             pConf->Write( _T( "WindowWidth" ), m_iWindowWidth );
+            pConf->Write( _T( "WindowHeight" ), m_iWindowHeight );
+            pConf->Write( _T( "WindowFloating" ), m_bWindowFloating );
             pConf->Write( _T( "AlwaysStartHidden" ), m_bstartHidden );
             pConf->Write( _T( "DisconnectOnGEAction" ), m_bdisconnectOnGEAction );
             pConf->Write( _T( "UpdateSettingsFromGE" ), m_bupdateSettingsFromGE );
@@ -369,7 +384,12 @@ void gecomapi_pi::ApplyConfig(void)
       if(!pane.IsOk())
             return;
       if (pane.IsFloating())
-            pane.frame->SetTransparent(m_iOpacity);
+      {
+            if ( pane.frame )
+                  pane.frame->SetTransparent(m_iOpacity);
+      }
+      m_pgecomapi_window->SetSize(m_iWindowWidth, m_iWindowHeight);
+      pane.BestSize(m_iWindowWidth, m_iWindowHeight);
 }
 
 
@@ -470,6 +490,12 @@ bool gecomapi_pi::KillProcessByName(wxString szProcessToKill)
 
 	CloseHandle(hProcessSnap);  // closes the snapshot handle
 	return( TRUE );
+}
+
+void gecomapi_pi::OnAuiRender( wxAuiManagerEvent& event )
+{
+      //TODO: Can we prevent the resizing here?
+      event.Skip();
 }
 
 bool gecomapi_pi::IsProcessRunningByName(wxString szProcessToFind)
