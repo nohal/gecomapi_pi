@@ -112,7 +112,7 @@ The plugin icon appears in the toolbar
 
 Version 0.5 beta of the GE plugin is available
 
-Changes since the 0.3 beta:
+Changes since the 0.3/0.4 beta:
 
 [LIST]
 [*]The plugin kills and restarts GE if it's running when the plugin window is first shown
@@ -127,23 +127,22 @@ Known problems in this version:
 
 [LIST]
 [*]Course-up mode does not work as expected (Dave, what's PlugIn_ViewPort.rotation? Thought it will be degrees from north-up, but never get anything outside -5/+5 range as far as I can tell...)
-[*]While displaying the boat in GE, Google Earth keeps eating memory all the time. The reason for that is that we can't delete the objects we once create through the API and can just set them invisible. Google crippled the API in this way for "security reasons" in GE 4.02. There are basically three possible ways to do it differently.
+[*]While displaying the boat in GE, Google Earth keeps eating memory all the time (with no limit, after hours of operation it will be really a lot). The reason for that is that we can't delete the objects we once create through the API and can just set them invisible. Google crippled the API in this way for "security reasons" in GE 4.02. There are basically three possible ways to do the boat display differently.
 [/LIST]
 [INDENT]
 [LIST=1]
-[*]Emit NMEA and simulate a COM port to which GE can be connected. Definitely not going to implement it - if you want it, use external tool like PolarCOM or MMG
+[*]Simulate a COM port and emit NMEA to it, so GE can have the GPS data as well. Definitely not going to implement it - if you want it, use external tool like PolarCOM or MMG
 [*]Implement a WEBSERVER :banghead: in the plugin to circumvent another crippled part of GE's design disallowing it to use <NetworkLinkControl> with local URLs
 [*]Try to simulate user's keyboard input to GE
 [/LIST]
-[/INDENT][INDENT]I have to say I like neither...
+[/INDENT][INDENT]I have to say I like neither... Currently the updates were reduced to one per second so the growth got slower,  but the problem is still there of course.
 [/INDENT]
 [LIST]
 [*]Toolbar icon state on enabling the plugin is wrong
 [*]Plugin window size resets to default when it's reopened - I'm slowly but surely running out of places where I can try to force AuiManager not to resize the window to a size it chooses :(
 [*]AUI code generally needs rework
 [/LIST]
-
-Important note for GE offline use GE tries to connect to the internet on startup and if it's not available it waits for some time (about a minute on my machine), hoping the connection will come alive. There is nothing that could be done about it, so you have to be patient waiting for the plugin to start in this scenario. After another while, GE displays two dialogs telling you, that there's no internet connection and whether you want to troubleshoot the problem. Answering No to the question is the thing to do. Unfortunately while displaying these dialogs, GE "steals" the focus and mouse wheel events don't get to OpenCPN anymore. To reclaim the mouse for OpenCPN, resize the GE plugin view a little bit and you are set again. This is inconvenient, I know, but currently I can't find any other workaround.
+ Important note for GE offline use GE tries to connect to the internet on startup and if it's not available it waits for some time (about a minute on my machine), hoping the connection will come alive. There is nothing that could be done about it, so you have to be patient waiting for the plugin to start in this scenario. After another while, GE displays two dialogs telling you, that there's no internet connection and whether you want to troubleshoot the problem. Answering No to the question is the thing to do. Unfortunately while displaying these dialogs, GE "steals" the focus and mouse wheel events don't get to OpenCPN anymore. To reclaim the mouse for OpenCPN, resize the GE plugin view a little bit and you are set again. This is inconvenient, I know, but currently I can't find any other workaround.
 
 Populating the GE cache for offline use Google Earth is designed with a permanent highspeed connection to the internet in mind, but can be used offline if the necessary imagery data is available in the local cache on disk.
 To make the data available locally, it's necessary to visit all the places we want to see before the computer is disconnected from the internet.
