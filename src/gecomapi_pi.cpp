@@ -116,7 +116,7 @@ int gecomapi_pi::Init(void)
 
       m_pauimgr->Update();
 
-      m_pauimgr->Connect( wxEVT_AUI_RENDER, wxAuiManagerEventHandler( gecomapi_pi::OnAuiRender ), NULL, this );
+      //m_pauimgr->Connect( wxEVT_AUI_RENDER, wxAuiManagerEventHandler( gecomapi_pi::OnAuiRender ), NULL, this );
 
       return (WANTS_OVERLAY_CALLBACK |
            WANTS_CURSOR_LATLON       |

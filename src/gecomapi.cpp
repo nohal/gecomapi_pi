@@ -58,7 +58,7 @@ GEUIDialog::GEUIDialog(wxWindow *pparent, wxWindowID id, wxAuiManager *auimgr, i
       m_pauimgr = auimgr;
       m_toolbar_item_id = tbitem;
       m_ballowStart = false;
-      m_bshouldcatchup = false;
+      m_bshouldcatchup = true;
       m_bbusy = false;
 
       m_pfocusedwindow = FindFocus();
@@ -186,8 +186,13 @@ void GEUIDialog::GEAttachWindow()
 void GEUIDialog::GEResize()
 {
       LogDebugMessage(_T("GE resize requested"));
-      while ( m_bbusy ) ;
-            m_bbusy = true;
+      //while ( m_bbusy ) ;
+      if ( m_bbusy )
+      {
+            LogDebugMessage(_T("GE resize request discarded, busy"));
+            return;
+      }
+      m_bbusy = true;
       if(NULL != app && m_bgeisuseable) 
       {
             LogDebugMessage(_T("Resizing GE"));
@@ -219,6 +224,9 @@ bool GEUIDialog::GEMoveCamera()
 {
       LogDebugMessage(wxString::Format(_T("GE camera move to %f, %f requested"), m_hotspot_lat, m_hotspot_lon, m_camera_range, m_camera_tilt, m_camera_azimuth));
       int interval = m_stopwatch.Time();
+      m_prev_camera_azimuth = m_camera_azimuth;
+      m_prev_camera_range = m_camera_range;
+      m_prev_camera_tilt = m_camera_tilt;
       if (m_bbusy)
       {
             LogDebugMessage(_T("GE camera move request discarded, GE busy"));
@@ -246,9 +254,6 @@ bool GEUIDialog::GEMoveCamera()
             {
                   app->SetCameraParams(m_hotspot_lat, m_hotspot_lon, 0.0, AbsoluteAltitudeGE, m_camera_range, m_camera_tilt, m_camera_azimuth, 5.0);
                   LogDebugMessage(_T("GE camera moved"));
-                  m_prev_camera_azimuth = m_camera_azimuth;
-                  m_prev_camera_range = m_camera_range;
-                  m_prev_camera_tilt = m_camera_tilt;
             }
             catch(...) {
                   LogDebugMessage(_T("Error moving GE camera"));
@@ -333,10 +338,14 @@ void GEUIDialog::ShowBoat(double lat, double lon)
 void GEUIDialog::GEShowBoat(double lat, double lon)
 {
       LogDebugMessage(wxString::Format(_T("Show boat at %f, %f requested"), lat, lon));
-      while ( m_bbusy ) ;
-            m_bbusy = true;
+      if ( m_bbusy )
+      {
+            LogDebugMessage(_T("Not showing, busy"));
+            return;
+      }
+      m_bbusy = true;
       int interval = m_stopwatch.Time();
-      if (interval < CAMERA_MOVE_INTERVAL) // If it is less than CAMERA_MOVE_INTERVAL since last request, don't move the boat
+      if (interval < CAMERA_MOVE_INTERVAL * 5) // If it is less than CAMERA_MOVE_INTERVAL * 5 since last request, don't move the boat
       {
             LogDebugMessage(_T("Boat display request discarded, too soon after a previous action"));
             return;
