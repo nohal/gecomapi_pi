@@ -297,7 +297,7 @@ void gecomapi_pi::SetPositionFix(PlugIn_Position_Fix &pfix)
 {
       if (m_bshuttingDown)
             return;
-      if ( ShouldShowBoat() && m_pgecomapi_window )
+      if ( m_pgecomapi_window )
       {
             m_pgecomapi_window->ShowBoat(pfix.Lat, pfix.Lon);
       }

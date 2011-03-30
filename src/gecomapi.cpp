@@ -36,8 +36,10 @@
 #include <wx/debug.h>
 #include <wx/graphics.h>
 #include <wx/textfile.h>
+#include <wx/stdpaths.h>
 #include <wx/gdiobj.h>
 #include <wx/bitmap.h>
+#include <wx/listimpl.cpp>
 
 #include <stdlib.h>
 #include <math.h>
@@ -49,6 +51,8 @@
 #include "gecomapi_pi.h"
 
 #define WM_QT_PAINT 0xC2DC
+
+WX_DEFINE_LIST(PositionsList);
 
 GEUIDialog::GEUIDialog(wxWindow *pparent, wxWindowID id, wxAuiManager *auimgr, int tbitem, gecomapi_pi *ppi)
       :wxPanel(pparent, id, wxDefaultPosition, wxDefaultSize, wxBORDER_NONE, _("GoogleEarth"))
@@ -95,6 +99,7 @@ GEUIDialog::GEUIDialog(wxWindow *pparent, wxWindowID id, wxAuiManager *auimgr, i
       m_bgeisuseable = false;
       m_binitializing = false;
       m_bclosed = false;
+      m_bisfollowingboat = false;
 
       //LogDebugMessage(_T("GE plugin window created, going to start GE"));
       //GEInitialize();
@@ -106,10 +111,14 @@ GEUIDialog::GEUIDialog(wxWindow *pparent, wxWindowID id, wxAuiManager *auimgr, i
 
       m_stopwatch.Start();
       m_stopwatch_boat.Start();
+      m_pPositions = new PositionsList();
+      m_sEnvelopeKmlFilename = wxStandardPaths().GetTempDir() + _T("\\gecomapi.kml");
+      m_sLiveKmlFilename = wxStandardPaths().GetTempDir() + _T("\\gecomapilive.kml");
 }
 
 GEUIDialog::~GEUIDialog( )
 {
+      delete m_pPositions;
       LogDebugMessage(_T("Destroying the GE plugin window"));
       m_buttonSaveKml->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GEUIDialog::SaveViewAsKml ), NULL, this );
       LogDebugMessage(_T("Going to close GE"));
@@ -353,8 +362,54 @@ void GEUIDialog::GEShowBoat(double lat, double lon)
       }
       m_bbusy = true;
       m_stopwatch_boat.Start();
+      if (m_pPositions->GetCount() > BOAT_POSITIONS_STORED)
+            m_pPositions->Erase(m_pPositions->GetFirst());
+      m_pPositions->Append(new PositionReport(lat, lon, wxDateTime::Now()));
+      if(wxFile::Exists(m_sLiveKmlFilename))
+            wxRemoveFile(m_sLiveKmlFilename);
+      wxTextFile kml(m_sLiveKmlFilename);
+      kml.Create();
+      wxString coords;
+      wxPositionsListNode *posn = m_pPositions->GetFirst();
+      do
+      {
+            coords += wxString::Format(_T("%f,%f,0.000000\n"), posn->GetData()->longitude, posn->GetData()->latitude);
+      } while (posn = posn->GetNext());
+      if (pPlugIn->ShouldShowBoat())
+            kml.AddLine(wxString::Format(LiveKml, 1, lon, lat, 1, coords));
+      else
+            kml.AddLine(wxString::Format(LiveKml, 0, lon, lat, 0, coords));
+      kml.Write();
+      kml.Close();
       if(NULL != app && m_bgeisuseable)
       {
+            if (!m_bisfollowingboat && pPlugIn->ShouldShowBoat())
+            {
+                  if(wxFile::Exists(m_sEnvelopeKmlFilename))
+                        wxRemoveFile(m_sEnvelopeKmlFilename);
+                  wxTextFile kml(m_sEnvelopeKmlFilename);
+                  kml.Create();
+                  kml.AddLine(wxString::Format(EnvelopeKml, m_sLiveKmlFilename));
+                  kml.Write();
+                  kml.Close();
+                  BSTR pdata = wxConvertStringToOle(m_sEnvelopeKmlFilename);
+                  app->OpenKmlFile(pdata, 1);
+                  m_bisfollowingboat = true;
+            } 
+            else if (m_bisfollowingboat && !pPlugIn->ShouldShowBoat())
+            {
+                  if(wxFile::Exists(m_sEnvelopeKmlFilename))
+                        wxRemoveFile(m_sEnvelopeKmlFilename);
+                  wxTextFile kml(m_sEnvelopeKmlFilename);
+                  kml.Create();
+                  kml.AddLine(EmptyKml);
+                  kml.Write();
+                  kml.Close();
+                  BSTR pdata = wxConvertStringToOle(m_sEnvelopeKmlFilename);
+                  app->OpenKmlFile(pdata, 1);
+                  m_bisfollowingboat = false;
+            }
+            /*
             IFeatureGE* tp;
             app->raw_GetTemporaryPlaces(&tp);
             if ( tp )
@@ -363,10 +418,10 @@ void GEUIDialog::GEShowBoat(double lat, double lon)
                   tp->raw_GetChildren(&tps);
                   if ( tps && tps->GetCount() > 0 )
                   {
-                        /*for (int i = 0; i < tps->Count; i++)
-                        {
-                              tps->Item[i]->PutVisibility(0);
-                        }*/
+                        //for (int i = 0; i < tps->Count; i++)
+                        //{
+                        //      tps->Item[i]->PutVisibility(0);
+                        //}
                         try {
                               //FIXME: This works, BUT GE consumes enormous amounts of memory - really there is no way to change the properties of existing waypoint?
                               //Looks like ther isn't, so some trick like from http://groups.google.com/group/kml-support-com-api/browse_thread/thread/76c9f9f3ab5ff28f/4244ff5df01c5c25?lnk=gst&q=temporary+places# and http://bbs.keyhole.com/ubb/ubbthreads.php?ubb=showflat&Number=816832&site_id=1#import will be necessary
@@ -387,6 +442,7 @@ void GEUIDialog::GEShowBoat(double lat, double lon)
             {
                   LogDebugMessage(_T("There was an error showing the boat"));
             }
+            */
       }
       m_bbusy = false;
 }
@@ -615,4 +671,11 @@ bool GEUIDialog::GEReadViewParameters(double& lat, double& lon, double& alt, dou
 void GEUIDialog::ConnectToGE()
 {
       m_cbConnected->SetValue(true);
+}
+
+PositionReport::PositionReport(double lat, double lon, wxDateTime ts)
+{
+      latitude = lat;
+      longitude = lon;
+      timestamp = ts;
 }

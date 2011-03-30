@@ -41,8 +41,10 @@
 
 #define DONT_CONSIDER_VALUE   -999
 #define CAMERA_MOVE_INTERVAL  200
+#define BOAT_POSITIONS_STORED 50
 
 class gecomapi_pi;
+class PositionsList;
 
 class GEUIDialog: public wxPanel
 {
@@ -108,7 +110,140 @@ class GEUIDialog: public wxPanel
             bool              m_bshouldcatchup;
             bool              m_bbusy;
             wxStopWatch       m_stopwatch, m_stopwatch_boat;
+
+            PositionsList    *m_pPositions;
+            wxString          m_sEnvelopeKmlFilename;
+            wxString          m_sLiveKmlFilename;
+            bool              m_bisfollowingboat;
 };
 
+class PositionReport
+{
+      public:
+            PositionReport(double lat, double lon, wxDateTime ts);
+
+            double            latitude;
+            double            longitude;
+            wxDateTime        timestamp;
+};
+
+WX_DECLARE_LIST(PositionReport, PositionsList);
+
+const wxString    EmptyKml = _T("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\
+<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n\
+</kml>");
+
+const wxString    EnvelopeKml = _T("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\
+<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n\
+<NetworkLink>\n\
+<name>Realtime OpenCPN</name>\n\
+<open>1</open>\n\
+<Link>\n\
+<href>%s</href>\n\
+<refreshMode>onInterval</refreshMode>\n\
+</Link>\n\
+</NetworkLink>\n\
+</kml>");
+
+const wxString    LiveKml = _T("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\
+<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\">\n\
+<Document>\n\
+<name>BOAT position</name>\n\
+<!-- Normal track style -->\n\
+<Style id=\"track_n\">\n\
+<LabelStyle>\n\
+<scale>0</scale>\n\
+</LabelStyle>\n\
+<IconStyle>\n\
+<scale>.5</scale>\n\
+<Icon>\n\
+<href>http://earth.google.com/images/kml-icons/track-directional/track-none.png</href>\n\
+</Icon>\n\
+</IconStyle>\n\
+</Style>\n\
+<!-- Highlighted track style -->\n\
+<Style id=\"track_h\">\n\
+<IconStyle>\n\
+<scale>1.2</scale>\n\
+<Icon>\n\
+<href>http://earth.google.com/images/kml-icons/track-directional/track-none.png</href>\n\
+</Icon>\n\
+</IconStyle>\n\
+</Style>\n\
+<StyleMap id=\"track\">\n\
+<Pair>\n\
+<key>normal</key>\n\
+<styleUrl>#track_n</styleUrl>\n\
+</Pair>\n\
+<Pair>\n\
+<key>highlight</key>\n\
+<styleUrl>#track_h</styleUrl>\n\
+</Pair>\n\
+</StyleMap>\n\
+<!-- Normal waypoint style -->\n\
+<Style id=\"waypoint_n\">\n\
+<IconStyle>\n\
+<Icon>\n\
+<href>http://maps.google.com/mapfiles/kml/pal4/icon61.png</href>\n\
+</Icon>\n\
+</IconStyle>\n\
+</Style>\n\
+<!-- Highlighted waypoint style -->\n\
+<Style id=\"waypoint_h\">\n\
+<IconStyle>\n\
+<scale>1.2</scale>\n\
+<Icon>\n\
+<href>http://maps.google.com/mapfiles/kml/pal4/icon61.png</href>\n\
+</Icon>\n\
+</IconStyle>\n\
+</Style>\n\
+<StyleMap id=\"waypoint\">\n\
+<Pair>\n\
+<key>normal</key>\n\
+<styleUrl>#waypoint_n</styleUrl>\n\
+</Pair>\n\
+<Pair>\n\
+<key>highlight</key>\n\
+<styleUrl>#waypoint_h</styleUrl>\n\
+</Pair>\n\
+</StyleMap>\n\
+<Style id=\"lineStyle\">\n\
+<LineStyle>\n\
+<color>640000ff</color>\n\
+<width>6</width>\n\
+</LineStyle>\n\
+</Style>\n\
+<Placemark>\n\
+<name>Position</name>\n\
+<visibility>%u</visibility>\n\
+<!--<TimeStamp><when>2010-06-12T14:55:28Z</when></TimeStamp>-->\n\
+<Style>\n\
+<IconStyle>\n\
+<Icon>\n\
+<href>http://earth.google.com/images/kml-icons/youarehere-0.png</href>\n\
+</Icon>\n\
+</IconStyle>\n\
+</Style>\n\
+<Point>\n\
+<coordinates>%f,%f,0.000000</coordinates>\n\
+</Point>\n\
+</Placemark>\n\
+<!--<TimeSpan>\n\
+<begin>2010-06-12T14:53:24Z</begin>\n\
+<end>2012-06-12T14:55:23Z</end>\n\
+</TimeSpan>-->\n\
+<Placemark>\n\
+<name>Path</name>\n\
+<visibility>%u</visibility>\n\
+<styleUrl>#lineStyle</styleUrl>\n\
+<LineString>\n\
+<tessellate>1</tessellate>\n\
+<coordinates>\n\
+%s\n\
+</coordinates>\n\
+</LineString>\n\
+</Placemark>\n\
+</Document>\n\
+</kml>");
 
 #endif
