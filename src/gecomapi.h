@@ -39,6 +39,11 @@
 #import "earth/earth.tlb" no_namespace, named_guids
 //#include "earth/earth.h"
 
+//    Constants
+#ifndef PI
+#define PI        3.1415926535897931160E0      /* pi */
+#endif
+
 #define DONT_CONSIDER_VALUE   -999
 #define CAMERA_MOVE_INTERVAL  200
 #define BOAT_POSITIONS_STORED 50

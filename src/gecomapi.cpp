@@ -458,10 +458,14 @@ void GEUIDialog::SetViewPort(double lat, double lon, double geo_height, double g
       }
       //Lets compute a range. To make it easy, we will just look from the distance equal to half the chart viewport width at the centerpoint...
       m_camera_range = geo_width / 2 * 60 * 1852; //TODO: maybe decide which axis is better to use to set it to fit the same area to the window...
-      if (rotation <= 180)
-            m_camera_azimuth = rotation;
+
+      double rotation_deg = rotation * 180 / PI;
+      if (rotation_deg < -180)
+            rotation_deg = -360 - rotation_deg;
       else
-            m_camera_azimuth = 180 - rotation;
+            rotation_deg = abs(rotation_deg);
+      LogDebugMessage(wxString::Format(_T("Rotation translated to %f degrees"), rotation_deg));
+      m_camera_azimuth = rotation_deg;
       m_camera_tilt = 0.0;
       m_hotspot_lon = lon;
       m_hotspot_lat = lat;
