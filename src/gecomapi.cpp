@@ -144,8 +144,8 @@ void GEUIDialog::GEInitialize()
 		            IID_IApplicationGE,
 		            reinterpret_cast<LPVOID *>( &app ));
 	            if ( FAILED( hr )) {
-		            //cerr << "cannot create IApplicationGE" << endl;
-		            //return -1;
+		            LogDebugMessage(_T("Error initializing GE"));
+                        return;
 	            }
                   long	is_initialized;
                   do {
@@ -153,10 +153,10 @@ void GEUIDialog::GEInitialize()
                   } while ( is_initialized == 0 );
                   m_bgeisuseable = true;
                   m_binitializing = false;
-                  m_binitializing = false;
             }
             catch(...) {
                   LogDebugMessage(_T("Error initializing GE"));
+                  return;
             }
             LogDebugMessage(_T("GE Initialized, attaching to the window"));
             GEAttachWindow();
@@ -179,6 +179,7 @@ void GEUIDialog::GEAttachWindow()
             }
             catch(...) {
                   LogDebugMessage(_T("Error attaching to GE window"));
+                  return;
             }
             LogDebugMessage(_T("GE window attached"));
       }
@@ -212,11 +213,11 @@ void GEUIDialog::GEResize()
                         SWP_FRAMECHANGED);
 
                   SendMessage((HWND) LongToHandle(app->GetRenderHwnd()), WM_COMMAND, WM_SIZE, 0);
+                  LogDebugMessage(_T("GE resized"));
             }
             catch(...) {
                   LogDebugMessage(_T("Error resizing GE window"));
             }
-            LogDebugMessage(_T("GE resized"));
       }
       m_bbusy = false;
 }
