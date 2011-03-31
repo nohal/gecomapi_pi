@@ -373,10 +373,16 @@ void GEUIDialog::GEShowBoat(double lat, double lon)
       if (m_pPositions->GetCount() > BOAT_POSITIONS_STORED)
             m_pPositions->Erase(m_pPositions->GetFirst());
       m_pPositions->Append(new PositionReport(lat, lon, wxDateTime::Now()));
-      if(wxFile::Exists(m_sLiveKmlFilename))
-            wxRemoveFile(m_sLiveKmlFilename);
       wxTextFile kml(m_sLiveKmlFilename);
-      kml.Create();
+      if(wxFile::Exists(m_sLiveKmlFilename))
+      {
+            kml.Open();
+            kml.Clear();
+      }
+      else
+      {
+            kml.Create();
+      }
       wxString coords;
       wxPositionsListNode *posn = m_pPositions->GetFirst();
       do
