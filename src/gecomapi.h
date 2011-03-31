@@ -146,7 +146,8 @@ const wxString    EnvelopeKml = _T("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n
 <Link>\n\
 <href>%s</href>\n\
 <refreshMode>onInterval</refreshMode>\n\
-<viewRefreshMode>onRegion</viewRefreshMode>\n\
+<refreshInterval>4</refreshInterval>\n\
+<!--<viewRefreshMode>onRegion</viewRefreshMode>-->\n\
 </Link>\n\
 </NetworkLink>\n\
 </kml>");
