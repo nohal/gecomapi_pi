@@ -139,6 +139,7 @@ private:
       bool              m_bshuttingDown;
 
       short             mPriPosition;
+      PlugIn_ViewPort   m_pastVp;
 };
 
 #endif

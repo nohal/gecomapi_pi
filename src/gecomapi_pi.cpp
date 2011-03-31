@@ -284,6 +284,12 @@ void gecomapi_pi::UpdateAuiStatus(void)
 
 void gecomapi_pi::SetCurrentViewPort(PlugIn_ViewPort &vp)
 {
+      if (vp.clat == m_pastVp.clat && vp.clon == m_pastVp.clon && vp.pix_height == m_pastVp.pix_height && vp.pix_width == m_pastVp.pix_width && vp.rotation == m_pastVp.rotation && vp.chart_scale == m_pastVp.chart_scale && 
+            vp.lat_max == m_pastVp.lat_max && vp.lat_min == m_pastVp.lat_min && vp.lon_max == m_pastVp.lon_max && vp.lon_min == m_pastVp.lon_min && vp.view_scale_ppm == m_pastVp.view_scale_ppm)
+      {
+            return; //Prevents event storm killing the responsiveness. At least in course-up it looks needed.
+      }
+      m_pastVp = vp;
       if (m_bshuttingDown)
             return;
       LogDebugMessage(_T("SetCurrentViewPort called by OpenCPN"));

@@ -128,7 +128,6 @@ GEUIDialog::~GEUIDialog( )
 void GEUIDialog::GEInitialize()
 {
       LogDebugMessage(_T("GE initialization requested"));
-      LogDebugMessage(_T("GE initialization requested"));
       if (NULL == app && !m_bgeisuseable & !m_binitializing & !m_bclosed) 
       {
             m_binitializing = true;
@@ -148,27 +147,35 @@ void GEUIDialog::GEInitialize()
 
                   hr = CoCreateInstance(
 		            CLSID_ApplicationGE,
-		            0,
+		            NULL, //0,
 		            CLSCTX_LOCAL_SERVER,
 		            IID_IApplicationGE,
-		            reinterpret_cast<LPVOID *>( &app ));
+		            (void**) &app); //reinterpret_cast<LPVOID *>( &app ));
 	            if ( FAILED( hr )) {
-		            LogDebugMessage(_T("Error initializing GE"));
+		            LogDebugMessage(_T("Error %i while initializing GE"));
                         return;
 	            }
+                  LogDebugMessage(_T("We survived CoCreateInstance"));
+                  Sleep(500);
                   long	is_initialized;
                   do {
 	                  is_initialized = app->IsInitialized();
                   } while ( is_initialized == 0 );
+                  LogDebugMessage(_T("We survived waiting for IsInitialized"));
+                  Sleep(500);
                   m_bgeisuseable = true;
                   m_binitializing = false;
             }
             catch(...) {
-                  LogDebugMessage(_T("Error initializing GE"));
+                  LogDebugMessage(_T("Error initializing GE, we caught an exception"));
                   return;
             }
             LogDebugMessage(_T("GE Initialized, attaching to the window"));
             GEAttachWindow();
+      }
+      else
+      {
+            LogDebugMessage(_T("Not even trying to initialize GE"));
       }
 }
 
@@ -241,11 +248,13 @@ bool GEUIDialog::GEMoveCamera()
       if (m_bbusy)
       {
             LogDebugMessage(_T("GE camera move request discarded, GE busy"));
+            m_bshouldcatchup = true;
             return false;
       }
       if (interval < CAMERA_MOVE_INTERVAL) // If it is less than CAMERA_MOVE_INTERVAL since last request, don't move the camera
       {
             LogDebugMessage(_T("GE camera move request discarded, too soon after a previous action"));
+            m_bshouldcatchup = true;
             return false;
       }
       m_stopwatch.Start();
@@ -360,7 +369,6 @@ void GEUIDialog::GEShowBoat(double lat, double lon)
             LogDebugMessage(_T("Boat display request discarded, too soon after a previous action"));
             return;
       }
-      m_bbusy = true;
       m_stopwatch_boat.Start();
       if (m_pPositions->GetCount() > BOAT_POSITIONS_STORED)
             m_pPositions->Erase(m_pPositions->GetFirst());
@@ -393,6 +401,7 @@ void GEUIDialog::GEShowBoat(double lat, double lon)
                   kml.Write();
                   kml.Close();
                   BSTR pdata = wxConvertStringToOle(m_sEnvelopeKmlFilename);
+                  m_bbusy = true;
                   app->OpenKmlFile(pdata, 1);
                   m_bisfollowingboat = true;
             } 
@@ -406,6 +415,7 @@ void GEUIDialog::GEShowBoat(double lat, double lon)
                   kml.Write();
                   kml.Close();
                   BSTR pdata = wxConvertStringToOle(m_sEnvelopeKmlFilename);
+                  m_bbusy = true;
                   app->OpenKmlFile(pdata, 1);
                   m_bisfollowingboat = false;
             }
