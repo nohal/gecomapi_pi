@@ -99,11 +99,11 @@ int gecomapi_pi::Init(void)
 
       //    This PlugIn needs a toolbar icon
       m_toolbar_item_id  = InsertPlugInTool(_T(""), _img_gecomapi, _img_gecomapi, wxITEM_CHECK,
-            _("GoogleEarth"), _T(""), NULL, GECOMAPI_TOOL_POSITION, 0, this);
+            _T("GoogleEarth"), _T(""), NULL, GECOMAPI_TOOL_POSITION, 0, this);
 
       m_pgecomapi_window = new GEUIDialog(GetOCPNCanvasWindow(), wxID_ANY, m_pauimgr, m_toolbar_item_id, this);
 
-      wxAuiPaneInfo pane = wxAuiPaneInfo().Name(_T("GoogleEarth")).Caption(_("GoogleEarth")).CaptionVisible(true).Float().FloatingPosition(0,0).Show(!m_bstartHidden).TopDockable(false).BottomDockable(false).LeftDockable(true).RightDockable(true).CaptionVisible(true).CloseButton(false).MinSize(300,300);
+      wxAuiPaneInfo pane = wxAuiPaneInfo().Name(_T("GoogleEarth")).Caption(_T("GoogleEarth")).CaptionVisible(true).Float().FloatingPosition(0,0).Show(!m_bstartHidden).TopDockable(false).BottomDockable(false).LeftDockable(true).RightDockable(true).CaptionVisible(true).CloseButton(false).MinSize(300,300);
 
       m_pauimgr->AddPane(m_pgecomapi_window, pane);
       
@@ -177,7 +177,7 @@ wxBitmap *gecomapi_pi::GetPlugInBitmap()
 
 wxString gecomapi_pi::GetCommonName()
 {
-      return _("GoogleEarth");
+      return _T("GoogleEarth");
 }
 
 
