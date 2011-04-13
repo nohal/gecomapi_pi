@@ -576,17 +576,22 @@ void GEUIDialog::SaveViewAsKml( wxString filename, wxString viewname )
 
 void GEUIDialog::SaveViewAsGpx( wxString filename, wxString viewname ) 
 { 
-      double lat, lon, alt, azimuth, rng, tilt;
-      //We have to read the camera as there is no other way to tell whether user modified the GE view or not
-      if (GEReadViewParameters(lat, lon, alt, azimuth, rng, tilt))
-      {
-            wxTextFile file( filename );
-            file.Open();
-            //file.AddLine(wxString::Format(_T("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<kml xmlns=\"http://earth.google.com/kml/2.0\">\n<Placemark>\n<name>%s</name>\n<LookAt>\n<longitude>%f</longitude>\n<latitude>%f</latitude>\n<range>%f</range>\n<tilt>%f</tilt>\n<heading>%f</heading>\n</LookAt>\n</Placemark>\n</kml>"), 
-            //      m_GEWindow->encodeXMLEntities(viewname), lon, lat, rng, tilt, azimuth));
-            file.Write();
-            file.Close();
-      }
+      double lat, lon;
+      lat = 0;
+      lon = 0;
+      GpxDocument * gpx = new GpxDocument();
+      GpxRootElement *gpxroot = (GpxRootElement *)gpx->RootElement();
+      //TODO: read
+      gpxroot->AddWaypoint(new GpxWptElement(GPX_WPT_WAYPOINT, lat, lon, 0, &wxDateTime::Now(), 0, -1, _T("UpperLeft"), wxEmptyString, viewname, wxEmptyString, NULL, _T("triangle"), _T("WPT")));
+      //TODO: read
+      gpxroot->AddWaypoint(new GpxWptElement(GPX_WPT_WAYPOINT, lat, lon, 0, &wxDateTime::Now(), 0, -1, _T("UpperRight"), wxEmptyString, viewname, wxEmptyString, NULL, _T("triangle"), _T("WPT")));
+      //TODO: read
+      gpxroot->AddWaypoint(new GpxWptElement(GPX_WPT_WAYPOINT, lat, lon, 0, &wxDateTime::Now(), 0, -1, _T("LowerLeft"), wxEmptyString, viewname, wxEmptyString, NULL, _T("triangle"), _T("WPT")));
+      //TODO: read
+      gpxroot->AddWaypoint(new GpxWptElement(GPX_WPT_WAYPOINT, lat, lon, 0, &wxDateTime::Now(), 0, -1, _T("LowerRight"), wxEmptyString, viewname, wxEmptyString, NULL, _T("triangle"), _T("WPT")));
+      //TODO: read
+      gpxroot->AddWaypoint(new GpxWptElement(GPX_WPT_WAYPOINT, lat, lon, 0, &wxDateTime::Now(), 0, -1, _T("Center"), wxEmptyString, viewname, wxEmptyString, NULL, _T("triangle"), _T("WPT")));
+      gpx->SaveFile(filename);
 }
 
 void GEUIDialog::SaveViewAsJPG( wxString filename ) 
