@@ -55,7 +55,7 @@
 WX_DEFINE_LIST(PositionsList);
 
 GEUIDialog::GEUIDialog(wxWindow *pparent, wxWindowID id, wxAuiManager *auimgr, int tbitem, gecomapi_pi *ppi)
-      :wxPanel(pparent, id, wxDefaultPosition, wxDefaultSize, wxBORDER_NONE, _("GoogleEarth"))
+      :wxPanel(pparent, id, wxDefaultPosition, wxDefaultSize, wxBORDER_NONE, _T("GoogleEarth"))
 {
       pPlugIn = ppi;
       LogDebugMessage(_T("Constructing the GE plugin window"));
