@@ -37,7 +37,8 @@
 #endif //precompiled headers
 
 #import "earth/earth.tlb" no_namespace, named_guids
-//#include "earth/earth.h"
+
+#include "gecomapicfgdlg.h"
 
 //    Constants
 #ifndef PI
@@ -47,6 +48,10 @@
 #define DONT_CONSIDER_VALUE   -999
 #define CAMERA_MOVE_INTERVAL  200
 #define BOAT_POSITIONS_STORED 50
+
+#define SAVE_JPG              0
+#define SAVE_KML              1
+#define SAVE_GE2KAP           2
 
 class gecomapi_pi;
 class PositionsList;
@@ -79,9 +84,6 @@ class GEUIDialog: public wxPanel
             void DetachIfNeeded(double plugin_azimuth, double plugin_range, double plugin_tilt);
             void ShowBoat(double lat, double lon);
 
-      private:
-            void OnSize( wxSizeEvent& event );
-            void OnShow( wxShowEvent& event );
             void GEResize();
             bool GEMoveCamera();
             bool GEReadViewParameters(double& lat, double& lon, double& alt, double& azimuth, double& range, double& tilt);
@@ -89,6 +91,13 @@ class GEUIDialog: public wxPanel
             void GEShowBoat(double lat, double lon);
 
             wxString encodeXMLEntities(wxString str);
+            bool m_bgeisuseable;
+      private:
+            void OnSize( wxSizeEvent& event );
+            void OnShow( wxShowEvent& event );
+            void SaveViewAsKml( wxString filename, wxString viewname );
+            void SaveViewAsJPG( wxString filename );
+            void SaveViewAsGpx( wxString filename, wxString viewname );
 
             //    Data
             wxWindow         *pParent;
@@ -105,11 +114,8 @@ class GEUIDialog: public wxPanel
             wxBoxSizer       *itemBoxSizer1;
             wxCheckBox       *m_cbConnected;
             wxButton         *m_buttonSave;
-            void              SaveViewAsKml( wxCommandEvent& event );
-            void              SaveViewAsJPG( wxCommandEvent& event );
             void              SaveView( wxCommandEvent& event );
             void              ConnectedClicked( wxCommandEvent& event );
-            bool              m_bgeisuseable;
             bool              m_binitializing;
             bool              m_bclosed;
             bool              m_bshouldcatchup;
@@ -120,6 +126,19 @@ class GEUIDialog: public wxPanel
             wxString          m_sEnvelopeKmlFilename;
             wxString          m_sLiveKmlFilename;
             bool              m_bisfollowingboat;
+};
+
+class GESaveViewDlgImpl : public GESaveViewDlg
+{
+public:
+      GESaveViewDlgImpl( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("Save view"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxDEFAULT_DIALOG_STYLE ) :
+            GESaveViewDlg( parent, id, title, pos, size, style ) { m_sdbSizer2OK->Disable(); }
+protected:
+      void OnOkClick( wxCommandEvent& event );
+      void CheckInput( wxCommandEvent& event );
+      void CheckInput( wxFileDirPickerEvent& event );
+private:
+      void DoCheckInput();
 };
 
 class PositionReport

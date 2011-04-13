@@ -106,6 +106,7 @@ GEPrefsDlg::GEPrefsDlg( wxWindow* parent, wxWindowID id, const wxString& title, 
 	
 	this->SetSizer( bMainSizer );
 	this->Layout();
+	bMainSizer->Fit( this );
 	
 	this->Centre( wxBOTH );
 	
@@ -145,11 +146,13 @@ GESaveViewDlg::GESaveViewDlg( wxWindow* parent, wxWindowID id, const wxString& t
 	
 	wxString m_rFormatChoices[] = { _("Save as JPG"), _("Save as KML"), _("Save as JPG + GPX for GE2KAP") };
 	int m_rFormatNChoices = sizeof( m_rFormatChoices ) / sizeof( wxString );
-	m_rFormat = new wxRadioBox( this, wxID_ANY, _("Format"), wxDefaultPosition, wxDefaultSize, m_rFormatNChoices, m_rFormatChoices, 1, wxRA_SPECIFY_COLS );
+	m_rFormat = new wxRadioBox( this, wxID_ANY, _("Format"), wxDefaultPosition, wxDefaultSize, m_rFormatNChoices, m_rFormatChoices, 1, 0 );
 	m_rFormat->SetSelection( 0 );
+	m_rFormat->SetMinSize( wxSize( 300,-1 ) );
+	
 	bSizer6->Add( m_rFormat, 0, wxALL|wxEXPAND, 5 );
 	
-	m_fpPath = new wxFilePickerCtrl( this, wxID_ANY, wxEmptyString, _("Select a file"), wxT("*.*"), wxDefaultPosition, wxDefaultSize, wxFLP_DEFAULT_STYLE );
+	m_fpPath = new wxFilePickerCtrl( this, wxID_ANY, wxEmptyString, _("Select a file"), wxT("All files (*.*)|*.*|JPG files (*.jpg)|*.jpg|KML files (*.kml)|*.kml"), wxDefaultPosition, wxDefaultSize, wxFLP_DEFAULT_STYLE|wxFLP_OVERWRITE_PROMPT|wxFLP_SAVE );
 	bSizer6->Add( m_fpPath, 0, wxALL|wxEXPAND, 5 );
 	
 	bSizer5->Add( bSizer6, 1, wxEXPAND, 5 );
@@ -164,10 +167,23 @@ GESaveViewDlg::GESaveViewDlg( wxWindow* parent, wxWindowID id, const wxString& t
 	
 	this->SetSizer( bSizer5 );
 	this->Layout();
+	bSizer5->Fit( this );
 	
 	this->Centre( wxBOTH );
+	
+	// Connect Events
+	m_tViewName->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( GESaveViewDlg::CheckInput ), NULL, this );
+	m_rFormat->Connect( wxEVT_COMMAND_RADIOBOX_SELECTED, wxCommandEventHandler( GESaveViewDlg::CheckInput ), NULL, this );
+	m_fpPath->Connect( wxEVT_COMMAND_FILEPICKER_CHANGED, wxFileDirPickerEventHandler( GESaveViewDlg::CheckInput ), NULL, this );
+	m_sdbSizer2OK->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GESaveViewDlg::OnOkClick ), NULL, this );
 }
 
 GESaveViewDlg::~GESaveViewDlg()
 {
+	// Disconnect Events
+	m_tViewName->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( GESaveViewDlg::CheckInput ), NULL, this );
+	m_rFormat->Disconnect( wxEVT_COMMAND_RADIOBOX_SELECTED, wxCommandEventHandler( GESaveViewDlg::CheckInput ), NULL, this );
+	m_fpPath->Disconnect( wxEVT_COMMAND_FILEPICKER_CHANGED, wxFileDirPickerEventHandler( GESaveViewDlg::CheckInput ), NULL, this );
+	m_sdbSizer2OK->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GESaveViewDlg::OnOkClick ), NULL, this );
+	
 }
