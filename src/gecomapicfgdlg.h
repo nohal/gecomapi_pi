@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version Sep  8 2010)
+// C++ code generated with wxFormBuilder (version Mar 22 2011)
 // http://www.wxformbuilder.org/
 //
 // PLEASE DO "NOT" EDIT THIS FILE!
@@ -23,6 +23,9 @@
 #include <wx/button.h>
 #include <wx/statbox.h>
 #include <wx/dialog.h>
+#include <wx/textctrl.h>
+#include <wx/radiobox.h>
+#include <wx/filepicker.h>
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -63,8 +66,31 @@ class GEPrefsDlg : public wxDialog
 		wxButton* m_sdbButtonsSizerOK;
 		wxButton* m_sdbButtonsSizerCancel;
 		
-		GEPrefsDlg( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("GoogleEarth Preferences"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 400,534 ), long style = wxDEFAULT_DIALOG_STYLE );
+		GEPrefsDlg( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("GoogleEarth Preferences"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 400,534 ), long style = wxDEFAULT_DIALOG_STYLE ); 
 		~GEPrefsDlg();
+	
+};
+
+///////////////////////////////////////////////////////////////////////////////
+/// Class GESaveViewDlg
+///////////////////////////////////////////////////////////////////////////////
+class GESaveViewDlg : public wxDialog 
+{
+	private:
+	
+	protected:
+		wxStaticText* m_staticText5;
+		wxStdDialogButtonSizer* m_sdbSizer2;
+		wxButton* m_sdbSizer2OK;
+		wxButton* m_sdbSizer2Cancel;
+	
+	public:
+		wxTextCtrl* m_tViewName;
+		wxRadioBox* m_rFormat;
+		wxFilePickerCtrl* m_fpPath;
+		
+		GESaveViewDlg( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("Save view"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 426,296 ), long style = wxDEFAULT_DIALOG_STYLE ); 
+		~GESaveViewDlg();
 	
 };
 

@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version Sep  8 2010)
+// C++ code generated with wxFormBuilder (version Mar 22 2011)
 // http://www.wxformbuilder.org/
 //
 // PLEASE DO "NOT" EDIT THIS FILE!
@@ -124,4 +124,50 @@ GEPrefsDlg::~GEPrefsDlg()
 	m_radioFlwCursor->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( GEPrefsDlg::BtnTogled ), NULL, this );
 	m_btnResetToDefaults->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GEPrefsDlg::ResetToDefaults ), NULL, this );
 	
+}
+
+GESaveViewDlg::GESaveViewDlg( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+{
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+	
+	wxBoxSizer* bSizer5;
+	bSizer5 = new wxBoxSizer( wxVERTICAL );
+	
+	wxBoxSizer* bSizer6;
+	bSizer6 = new wxBoxSizer( wxVERTICAL );
+	
+	m_staticText5 = new wxStaticText( this, wxID_ANY, _("View name"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText5->Wrap( -1 );
+	bSizer6->Add( m_staticText5, 0, wxALL, 5 );
+	
+	m_tViewName = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer6->Add( m_tViewName, 0, wxALL|wxEXPAND, 5 );
+	
+	wxString m_rFormatChoices[] = { _("Save as JPG"), _("Save as KML"), _("Save as JPG + GPX for GE2KAP") };
+	int m_rFormatNChoices = sizeof( m_rFormatChoices ) / sizeof( wxString );
+	m_rFormat = new wxRadioBox( this, wxID_ANY, _("Format"), wxDefaultPosition, wxDefaultSize, m_rFormatNChoices, m_rFormatChoices, 1, wxRA_SPECIFY_COLS );
+	m_rFormat->SetSelection( 0 );
+	bSizer6->Add( m_rFormat, 0, wxALL|wxEXPAND, 5 );
+	
+	m_fpPath = new wxFilePickerCtrl( this, wxID_ANY, wxEmptyString, _("Select a file"), wxT("*.*"), wxDefaultPosition, wxDefaultSize, wxFLP_DEFAULT_STYLE );
+	bSizer6->Add( m_fpPath, 0, wxALL|wxEXPAND, 5 );
+	
+	bSizer5->Add( bSizer6, 1, wxEXPAND, 5 );
+	
+	m_sdbSizer2 = new wxStdDialogButtonSizer();
+	m_sdbSizer2OK = new wxButton( this, wxID_OK );
+	m_sdbSizer2->AddButton( m_sdbSizer2OK );
+	m_sdbSizer2Cancel = new wxButton( this, wxID_CANCEL );
+	m_sdbSizer2->AddButton( m_sdbSizer2Cancel );
+	m_sdbSizer2->Realize();
+	bSizer5->Add( m_sdbSizer2, 0, wxALL|wxEXPAND, 5 );
+	
+	this->SetSizer( bSizer5 );
+	this->Layout();
+	
+	this->Centre( wxBOTH );
+}
+
+GESaveViewDlg::~GESaveViewDlg()
+{
 }

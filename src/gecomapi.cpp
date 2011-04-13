@@ -81,11 +81,8 @@ GEUIDialog::GEUIDialog(wxWindow *pparent, wxWindowID id, wxAuiManager *auimgr, i
       m_cbConnected = new wxCheckBox( this, wxID_ANY, _("Connected to chart viewport"), wxDefaultPosition, wxDefaultSize, 0 );
 	itemBoxSizer1->Add( m_cbConnected, 0, wxALIGN_RIGHT|wxALL, 10 );
 
-      m_buttonSaveJPG = new wxButton( this, wxID_ANY, _("Save view as JPG"), wxDefaultPosition, wxDefaultSize, 0 );
-      itemBoxSizer1->Add( m_buttonSaveJPG, 0, wxALIGN_RIGHT|wxBOTTOM|wxLEFT|wxRIGHT|wxTOP, 5 );
-	
-	m_buttonSaveKml = new wxButton( this, wxID_ANY, _("Save view as KML"), wxDefaultPosition, wxDefaultSize, 0 );
-      itemBoxSizer1->Add( m_buttonSaveKml, 0, wxALIGN_RIGHT|wxBOTTOM|wxLEFT|wxRIGHT|wxTOP, 5 );
+      m_buttonSave = new wxButton( this, wxID_ANY, _("Save view..."), wxDefaultPosition, wxDefaultSize, 0 );
+      itemBoxSizer1->Add( m_buttonSave, 0, wxALIGN_RIGHT|wxBOTTOM|wxLEFT|wxRIGHT|wxTOP, 5 );
 	
 	this->Layout();
 	
@@ -103,8 +100,7 @@ GEUIDialog::GEUIDialog(wxWindow *pparent, wxWindowID id, wxAuiManager *auimgr, i
 
       //LogDebugMessage(_T("GE plugin window created, going to start GE"));
       //GEInitialize();
-      m_buttonSaveKml->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GEUIDialog::SaveViewAsKml ), NULL, this );
-      m_buttonSaveJPG->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GEUIDialog::SaveViewAsJPG ), NULL, this );
+      m_buttonSave->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GEUIDialog::SaveView ), NULL, this );
       m_cbConnected->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( GEUIDialog::ConnectedClicked ), NULL, this );
 
       ConnectToGE();
@@ -120,7 +116,7 @@ GEUIDialog::~GEUIDialog( )
 {
       delete m_pPositions;
       LogDebugMessage(_T("Destroying the GE plugin window"));
-      m_buttonSaveKml->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GEUIDialog::SaveViewAsKml ), NULL, this );
+      m_buttonSave->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GEUIDialog::SaveView ), NULL, this );
       LogDebugMessage(_T("Going to close GE"));
       GEClose();
 }
@@ -623,6 +619,12 @@ void GEUIDialog::SaveViewAsJPG( wxCommandEvent& event )
             m_pfocusedwindow->SetFocus();
 
       event.Skip(); 
+}
+
+void GEUIDialog::SaveView( wxCommandEvent& event ) 
+{
+      GESaveViewDlg * dialog = new GESaveViewDlg(this);
+      dialog->ShowModal();
 }
 
 void GEUIDialog::ConnectedClicked( wxCommandEvent& event ) 

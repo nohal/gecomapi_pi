@@ -104,10 +104,10 @@ class GEUIDialog: public wxPanel
             wxBoxSizer       *itemBoxSizer;
             wxBoxSizer       *itemBoxSizer1;
             wxCheckBox       *m_cbConnected;
-            wxButton         *m_buttonSaveJPG;
-            wxButton         *m_buttonSaveKml;
+            wxButton         *m_buttonSave;
             void              SaveViewAsKml( wxCommandEvent& event );
             void              SaveViewAsJPG( wxCommandEvent& event );
+            void              SaveView( wxCommandEvent& event );
             void              ConnectedClicked( wxCommandEvent& event );
             bool              m_bgeisuseable;
             bool              m_binitializing;
