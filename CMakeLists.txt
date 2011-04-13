@@ -68,7 +68,7 @@ FIND_PACKAGE(Gettext REQUIRED)
 # header files and cpp/c files and CMake will sort them out
 
 
-SET(SRC_POIMAN
+SET(SRC_GECOMAPI
             src/gecomapi_pi.h
             src/gecomapi_pi.cpp
             src/icons.h
@@ -77,8 +77,16 @@ SET(SRC_POIMAN
 	    src/gecomapi.cpp
 	    src/gecomapicfgdlg.h
 	    src/gecomapicfgdlg.cpp
+	    ../../../include/tinystr.h
+	    ../../../src/tinystr.cpp
+	    ../../../include/tinyxml.h
+	    ../../../src/tinyxml.cpp
+	    ../../../src/tinyxmlparser.cpp
+	    ../../../src/tinyxmlerror.cpp
+	    ../../../include/gpxdocument.h
+	    ../../../src/gpxdocument.cpp
 	)
-ADD_LIBRARY(${PACKAGE_NAME} SHARED ${SRC_POIMAN})
+ADD_LIBRARY(${PACKAGE_NAME} SHARED ${SRC_GECOMAPI})
 
 IF(WIN32)
   SET(OPENCPN_IMPORT_LIB "../../${CMAKE_CFG_INTDIR}/${PARENT}")
