@@ -604,11 +604,11 @@ void GEUIDialog::SaveViewAsGpx( wxString filename, wxString viewname )
       //TODO: read
       gpxroot->AddWaypoint(new GpxWptElement(GPX_WPT_WAYPOINT, lat, lon, 0, &wxDateTime::Now(), 0, -1, _T("UpperLeft"), wxEmptyString, viewname, wxEmptyString, NULL, _T("triangle"), _T("WPT")));
       //TODO: read
+      gpxroot->AddWaypoint(new GpxWptElement(GPX_WPT_WAYPOINT, lat, lon, 0, &wxDateTime::Now(), 0, -1, _T("LowerRight"), wxEmptyString, viewname, wxEmptyString, NULL, _T("triangle"), _T("WPT")));
+      //TODO: read
       gpxroot->AddWaypoint(new GpxWptElement(GPX_WPT_WAYPOINT, lat, lon, 0, &wxDateTime::Now(), 0, -1, _T("UpperRight"), wxEmptyString, viewname, wxEmptyString, NULL, _T("triangle"), _T("WPT")));
       //TODO: read
       gpxroot->AddWaypoint(new GpxWptElement(GPX_WPT_WAYPOINT, lat, lon, 0, &wxDateTime::Now(), 0, -1, _T("LowerLeft"), wxEmptyString, viewname, wxEmptyString, NULL, _T("triangle"), _T("WPT")));
-      //TODO: read
-      gpxroot->AddWaypoint(new GpxWptElement(GPX_WPT_WAYPOINT, lat, lon, 0, &wxDateTime::Now(), 0, -1, _T("LowerRight"), wxEmptyString, viewname, wxEmptyString, NULL, _T("triangle"), _T("WPT")));
       //TODO: read
       gpxroot->AddWaypoint(new GpxWptElement(GPX_WPT_WAYPOINT, lat, lon, 0, &wxDateTime::Now(), 0, -1, _T("Center"), wxEmptyString, viewname, wxEmptyString, NULL, _T("triangle"), _T("WPT")));
       gpx->SaveFile(filename);
