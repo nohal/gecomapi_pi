@@ -52,9 +52,11 @@
 #define SAVE_JPG              0
 #define SAVE_KML              1
 #define SAVE_GE2KAP           2
+#define SAVE_IMGKAP           3
 
 class gecomapi_pi;
 class PositionsList;
+class GESaveViewDlgImpl;
 
 class GEUIDialog: public wxPanel
 {
@@ -96,6 +98,7 @@ class GEUIDialog: public wxPanel
             void OnSize( wxSizeEvent& event );
             void OnShow( wxShowEvent& event );
             void SaveViewAsKml( wxString filename, wxString viewname );
+            void SaveViewAsKmz( wxString filename, wxString viewname );
             void SaveViewAsJPG( wxString filename );
             void SaveViewAsGpx( wxString filename, wxString viewname );
 
@@ -126,6 +129,8 @@ class GEUIDialog: public wxPanel
             wxString          m_sEnvelopeKmlFilename;
             wxString          m_sLiveKmlFilename;
             bool              m_bisfollowingboat;
+
+            GESaveViewDlgImpl *m_pdialog;
 };
 
 class GESaveViewDlgImpl : public GESaveViewDlg

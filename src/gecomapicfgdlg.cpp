@@ -144,7 +144,7 @@ GESaveViewDlg::GESaveViewDlg( wxWindow* parent, wxWindowID id, const wxString& t
 	m_tViewName = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer6->Add( m_tViewName, 0, wxALL|wxEXPAND, 5 );
 	
-	wxString m_rFormatChoices[] = { _("Save as JPG"), _("Save as KML"), _("Save as JPG + GPX for GE2KAP") };
+	wxString m_rFormatChoices[] = { _("Save as JPG"), _("Save as KML"), _("Save as JPG + GPX for GE2KAP"), _("Save as KMZ for imgkap") };
 	int m_rFormatNChoices = sizeof( m_rFormatChoices ) / sizeof( wxString );
 	m_rFormat = new wxRadioBox( this, wxID_ANY, _("Format"), wxDefaultPosition, wxDefaultSize, m_rFormatNChoices, m_rFormatChoices, 1, 0 );
 	m_rFormat->SetSelection( 0 );
@@ -152,7 +152,7 @@ GESaveViewDlg::GESaveViewDlg( wxWindow* parent, wxWindowID id, const wxString& t
 	
 	bSizer6->Add( m_rFormat, 0, wxALL|wxEXPAND, 5 );
 	
-	m_fpPath = new wxFilePickerCtrl( this, wxID_ANY, wxEmptyString, _("Select a file"), wxT("All files (*.*)|*.*|JPG files (*.jpg)|*.jpg|KML files (*.kml)|*.kml"), wxDefaultPosition, wxDefaultSize, wxFLP_DEFAULT_STYLE|wxFLP_OVERWRITE_PROMPT|wxFLP_SAVE );
+	m_fpPath = new wxFilePickerCtrl( this, wxID_ANY, wxEmptyString, _("Select a file"), wxT("All files (*.*)|*.*|JPG files (*.jpg)|*.jpg|KML files (*.kml)|*.kml|KMZ files (*.kmz)|*.kmz"), wxDefaultPosition, wxDefaultSize, wxFLP_OVERWRITE_PROMPT|wxFLP_SAVE|wxFLP_USE_TEXTCTRL );
 	bSizer6->Add( m_fpPath, 0, wxALL|wxEXPAND, 5 );
 	
 	bSizer5->Add( bSizer6, 1, wxEXPAND, 5 );

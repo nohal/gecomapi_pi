@@ -2086,7 +2086,7 @@
                                 <property name="caption"></property>
                                 <property name="caption_visible">1</property>
                                 <property name="center_pane">0</property>
-                                <property name="choices">&quot;Save as JPG&quot; &quot;Save as KML&quot; &quot;Save as JPG + GPX for GE2KAP&quot;</property>
+                                <property name="choices">&quot;Save as JPG&quot; &quot;Save as KML&quot; &quot;Save as JPG + GPX for GE2KAP&quot; &quot;Save as KMZ for imgkap&quot;</property>
                                 <property name="close_button">1</property>
                                 <property name="context_help"></property>
                                 <property name="context_menu">1</property>
@@ -2211,7 +2211,7 @@
                                 <property name="row"></property>
                                 <property name="show">1</property>
                                 <property name="size"></property>
-                                <property name="style">wxFLP_DEFAULT_STYLE|wxFLP_OVERWRITE_PROMPT|wxFLP_SAVE</property>
+                                <property name="style">wxFLP_OVERWRITE_PROMPT|wxFLP_SAVE|wxFLP_USE_TEXTCTRL</property>
                                 <property name="subclass"></property>
                                 <property name="toolbar_pane">0</property>
                                 <property name="tooltip"></property>
@@ -2220,7 +2220,7 @@
                                 <property name="validator_type">wxDefaultValidator</property>
                                 <property name="validator_variable"></property>
                                 <property name="value"></property>
-                                <property name="wildcard">All files (*.*)|*.*|JPG files (*.jpg)|*.jpg|KML files (*.kml)|*.kml</property>
+                                <property name="wildcard">All files (*.*)|*.*|JPG files (*.jpg)|*.jpg|KML files (*.kml)|*.kml|KMZ files (*.kmz)|*.kmz</property>
                                 <property name="window_extra_style"></property>
                                 <property name="window_name"></property>
                                 <property name="window_style"></property>

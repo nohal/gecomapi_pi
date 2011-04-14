@@ -111,11 +111,15 @@ GEUIDialog::GEUIDialog(wxWindow *pparent, wxWindowID id, wxAuiManager *auimgr, i
       m_pPositions = new PositionsList();
       m_sEnvelopeKmlFilename = wxStandardPaths().GetTempDir() + _T("\\gecomapi.kml");
       m_sLiveKmlFilename = wxStandardPaths().GetTempDir() + _T("\\gecomapilive.kml");
+
+      m_pdialog = new GESaveViewDlgImpl(this,  wxID_ANY, _("Save view"), wxDefaultPosition, wxSize( -1,-1 ), wxDEFAULT_DIALOG_STYLE );
 }
 
 GEUIDialog::~GEUIDialog( )
 {
       delete m_pPositions;
+      m_pdialog->Destroy();
+      wxDELETE(m_pdialog);
       LogDebugMessage(_T("Destroying the GE plugin window"));
       m_buttonSave->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GEUIDialog::SaveView ), NULL, this );
       LogDebugMessage(_T("Going to close GE"));
@@ -574,6 +578,22 @@ void GEUIDialog::SaveViewAsKml( wxString filename, wxString viewname )
       }
 }
 
+void GEUIDialog::SaveViewAsKmz( wxString filename, wxString viewname ) 
+{
+      //TODO: - kml, jpg, zip it
+      double lat, lon, alt, azimuth, rng, tilt;
+      //We have to read the camera as there is no other way to tell whether user modified the GE view or not
+      if (GEReadViewParameters(lat, lon, alt, azimuth, rng, tilt))
+      {
+            wxTextFile file( filename );
+            file.Open();
+            file.AddLine(wxString::Format(_T("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<kml xmlns=\"http://earth.google.com/kml/2.0\">\n<Placemark>\n<name>%s</name>\n<LookAt>\n<longitude>%f</longitude>\n<latitude>%f</latitude>\n<range>%f</range>\n<tilt>%f</tilt>\n<heading>%f</heading>\n</LookAt>\n</Placemark>\n</kml>"), 
+                  encodeXMLEntities(viewname), lon, lat, rng, tilt, azimuth));
+            file.Write();
+            file.Close();
+      }
+}
+
 void GEUIDialog::SaveViewAsGpx( wxString filename, wxString viewname ) 
 { 
       double lat, lon;
@@ -603,34 +623,40 @@ void GEUIDialog::SaveViewAsJPG( wxString filename )
             wxMessageBox(_("Screenshot can't be created, GE looks uninitialized..."), _("Problem!"));
             return;
       }
-      
+
       RECT rect;
       GetWindowRect((HWND) LongToHandle(app->GetRenderHwnd()), &rect);
-      
       int width, height, x, y;
       width = rect.right - rect.left - 1;
       height = rect.bottom - rect.top - 1;
       x = rect.left;
       y = rect.top;
-      
-      wxBitmap screenshot(width, height,-1);
 
-      wxScreenDC dcScreen;      wxMemoryDC memDC;      memDC.SelectObject(screenshot);      memDC.Blit( 0, 0, width, height, &dcScreen, x, y  );            memDC.SelectObject(wxNullBitmap);      screenshot.SaveFile(filename, wxBITMAP_TYPE_JPEG);
+      wxSize screenSize = wxGetDisplaySize();
+	wxBitmap bitmap(screenSize.x, screenSize.y);
+	wxScreenDC dc;
+	wxMemoryDC memDC;
+	memDC.SelectObject(bitmap);
+      memDC.Blit(0, 0, screenSize.x, screenSize.y, & dc, 0, 0);
+	memDC.SelectObject(wxNullBitmap);
+      wxMemoryDC cropDC(bitmap);
+      wxBitmap screenshot(width, height, -1);
+      memDC.SelectObject(screenshot);
+      memDC.Blit( 0, 0, width, height, &cropDC, x, y  );
+	memDC.SelectObject(wxNullBitmap);
+      screenshot.SaveFile(filename, wxBITMAP_TYPE_JPEG);
 }
 
 void GEUIDialog::SaveView( wxCommandEvent & event ) 
 {
-      GESaveViewDlgImpl * dialog = new GESaveViewDlgImpl(this);
-      if (dialog->ShowModal() == wxID_OK)
+      if (m_pdialog->ShowModal() == wxID_OK)
       {
-            wxFileName fn(dialog->m_fpPath->GetPath());
-            wxString viewname = dialog->m_tViewName->GetValue();
-            int format = dialog->m_rFormat->GetSelection();
-            dialog->Destroy();
-            wxDELETE(dialog);
-            ((wxFrame*)this)->Restore();
-            if (m_pfocusedwindow)
-                  m_pfocusedwindow->SetFocus();
+            wxFileName fn(m_pdialog->m_fpPath->GetPath());
+            wxString viewname = m_pdialog->m_tViewName->GetValue();
+            int format = m_pdialog->m_rFormat->GetSelection();
+            m_pdialog->Close();
+            Update();
+            
             if ( format == SAVE_KML )
             {
                   if ( fn.GetExt().Upper() != _T("KML") )
@@ -651,11 +677,16 @@ void GEUIDialog::SaveView( wxCommandEvent & event )
                   fn.SetExt(_T("gpx"));
                   SaveViewAsGpx( fn.GetFullPath(), viewname );
             }
+            else if ( format == SAVE_IMGKAP )
+            {
+                  if ( fn.GetExt().Upper() != _T("KMZ") )
+                        fn.SetExt(_T("kmz"));
+                  SaveViewAsKmz( fn.GetFullPath(), viewname );
+            }
       }
       else
       {
-            dialog->Destroy();
-            wxDELETE(dialog);
+            m_pdialog->Close();
       }
       if (m_pfocusedwindow)
             m_pfocusedwindow->SetFocus();
