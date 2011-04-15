@@ -40,6 +40,9 @@
 #include <wx/gdiobj.h>
 #include <wx/bitmap.h>
 #include <wx/listimpl.cpp>
+#include <wx/filesys.h>
+#include <wx/fs_zip.h>
+#include <wx/zipstrm.h>
 
 #include <stdlib.h>
 #include <math.h>
@@ -581,17 +584,27 @@ void GEUIDialog::SaveViewAsKml( wxString filename, wxString viewname )
 void GEUIDialog::SaveViewAsKmz( wxString filename, wxString viewname ) 
 {
       //TODO: - kml, jpg, zip it
-      double lat, lon, alt, azimuth, rng, tilt;
-      //We have to read the camera as there is no other way to tell whether user modified the GE view or not
-      if (GEReadViewParameters(lat, lon, alt, azimuth, rng, tilt))
-      {
-            wxTextFile file( filename );
-            file.Open();
-            file.AddLine(wxString::Format(_T("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<kml xmlns=\"http://earth.google.com/kml/2.0\">\n<Placemark>\n<name>%s</name>\n<LookAt>\n<longitude>%f</longitude>\n<latitude>%f</latitude>\n<range>%f</range>\n<tilt>%f</tilt>\n<heading>%f</heading>\n</LookAt>\n</Placemark>\n</kml>"), 
-                  encodeXMLEntities(viewname), lon, lat, rng, tilt, azimuth));
-            file.Write();
-            file.Close();
-      }
+      wxFileName fn(filename);
+      wxFFileOutputStream out(filename);
+      wxZipOutputStream zip(out);
+      double west, east, north, south, lat, lon, alt;
+      bool proj, exa;
+
+      GEGetPointOnTerrain(GE_SCR_UPCENTER, north, lon, alt, proj, exa);
+      GEGetPointOnTerrain(GE_SCR_LOWCENTER, south, lon, alt, proj, exa);
+      GEGetPointOnTerrain(GE_SCR_LEFTCENTER, lat, west, alt, proj, exa);
+      GEGetPointOnTerrain(GE_SCR_RIGHTCENTER, lat, east, alt, proj, exa);
+
+      wxString tempimg = wxFileName::CreateTempFileName(_T("gecomapi"));
+      SaveViewAsJPG(tempimg);
+      zip.PutNextEntry(wxString::Format(_T("files/%s.jpg"), fn.GetName()));
+      wxFileInputStream stream(tempimg);
+	zip.Write(stream);
+      zip.PutNextEntry(_T("doc.kml"));
+      wxCharBuffer buffer;
+      buffer = wxConvertWX2MB(wxString::Format(_T("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><kml xmlns=\"http://www.opengis.net/kml/2.2\"><GroundOverlay><name>%s</name><Icon><href>files/%s.jpg</href><drawOrder>0</drawOrder></Icon><LatLonBox><north>%f</north><south>%f</south><east>%f</east><west>%f</west><rotation>%f</rotation></LatLonBox></GroundOverlay></kml>"), encodeXMLEntities(viewname), fn.GetName(), north, south, east, west, 0.0));
+      zip.Write(buffer.data(), strlen(buffer.data()));
+      wxRemoveFile(tempimg);
 }
 
 void GEUIDialog::SaveViewAsGpx( wxString filename, wxString viewname ) 
