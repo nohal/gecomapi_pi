@@ -596,20 +596,19 @@ void GEUIDialog::SaveViewAsKmz( wxString filename, wxString viewname )
 
 void GEUIDialog::SaveViewAsGpx( wxString filename, wxString viewname ) 
 { 
-      double lat, lon;
-      lat = 0;
-      lon = 0;
+      double lat, lon, alt;
+      bool proj, exa;
       GpxDocument * gpx = new GpxDocument();
       GpxRootElement *gpxroot = (GpxRootElement *)gpx->RootElement();
-      //TODO: read
+      GEGetPointOnTerrain(GE_SCR_UPLEFT, lat, lon, alt, proj, exa);
       gpxroot->AddWaypoint(new GpxWptElement(GPX_WPT_WAYPOINT, lat, lon, 0, &wxDateTime::Now(), 0, -1, _T("UpperLeft"), wxEmptyString, viewname, wxEmptyString, NULL, _T("triangle"), _T("WPT")));
-      //TODO: read
+      GEGetPointOnTerrain(GE_SCR_LOWRIGHT, lat, lon, alt, proj, exa);
       gpxroot->AddWaypoint(new GpxWptElement(GPX_WPT_WAYPOINT, lat, lon, 0, &wxDateTime::Now(), 0, -1, _T("LowerRight"), wxEmptyString, viewname, wxEmptyString, NULL, _T("triangle"), _T("WPT")));
-      //TODO: read
+      GEGetPointOnTerrain(GE_SCR_UPRIGHT, lat, lon, alt, proj, exa);
       gpxroot->AddWaypoint(new GpxWptElement(GPX_WPT_WAYPOINT, lat, lon, 0, &wxDateTime::Now(), 0, -1, _T("UpperRight"), wxEmptyString, viewname, wxEmptyString, NULL, _T("triangle"), _T("WPT")));
-      //TODO: read
+      GEGetPointOnTerrain(GE_SCR_LOWLEFT, lat, lon, alt, proj, exa);
       gpxroot->AddWaypoint(new GpxWptElement(GPX_WPT_WAYPOINT, lat, lon, 0, &wxDateTime::Now(), 0, -1, _T("LowerLeft"), wxEmptyString, viewname, wxEmptyString, NULL, _T("triangle"), _T("WPT")));
-      //TODO: read
+      GEGetPointOnTerrain(GE_SCR_CENTER, lat, lon, alt, proj, exa);
       gpxroot->AddWaypoint(new GpxWptElement(GPX_WPT_WAYPOINT, lat, lon, 0, &wxDateTime::Now(), 0, -1, _T("Center"), wxEmptyString, viewname, wxEmptyString, NULL, _T("triangle"), _T("WPT")));
       gpx->SaveFile(filename);
       gpx->Clear();
@@ -721,14 +720,9 @@ wxString GEUIDialog::encodeXMLEntities(wxString str)
 bool GEUIDialog::GEReadViewParameters(double& lat, double& lon, double& alt, double& azimuth, double& range, double& tilt)
 {
       LogDebugMessage(_T("GE View parameters requested"));
-      int interval = m_stopwatch.Time();
-      if (interval < CAMERA_MOVE_INTERVAL) // If it is less than CAMERA_MOVE_INTERVAL since last request, don't move the camera
-      {
-            LogDebugMessage(_T("GE View parameters request discarded - too soon after the previous action"));
-            return false;
-      }
       while ( m_bbusy ) ;
       m_bbusy = true;
+      int interval = m_stopwatch.Time();
       if (interval > CAMERA_MOVE_INTERVAL * 10)
             m_stopwatch.Start(); //Things got crazy, it's time to let it settle down...
       if(NULL != app && m_bgeisuseable)
@@ -749,6 +743,38 @@ bool GEUIDialog::GEReadViewParameters(double& lat, double& lon, double& alt, dou
                   LogDebugMessage(_T("Error geting GE view parameters"));
             }
             LogDebugMessage(wxString::Format(_T("GE view parameters obtained: lat=%f, lon=%f, alt=%f, azimuth=%f, range=%f, tilt=%f"), lat, lon, alt, azimuth, range, tilt));
+            m_bbusy = false;
+            return true;
+      }
+      m_bbusy = false;
+      return false;
+}
+
+bool GEUIDialog::GEGetPointOnTerrain(double x, double y, double& lat, double& lon, double &alt, bool& projected, bool& exagerated)
+{
+      LogDebugMessage(_T("GE Point on terrain requested"));
+      while ( m_bbusy ) ;
+      m_bbusy = true;
+      int interval = m_stopwatch.Time();
+      if (interval > CAMERA_MOVE_INTERVAL * 10)
+            m_stopwatch.Start(); //Things got crazy, it's time to let it settle down...
+      if(NULL != app && m_bgeisuseable)
+      {
+            LogDebugMessage(_T("Getting GE point on terrain"));
+            try
+            {
+                  IPointOnTerrainGE* point;
+                  app->raw_GetPointOnTerrainFromScreenCoords(x, y, &point);
+                  lat = point->Latitude;
+                  lon = point->Longitude;
+                  alt = point->Altitude;
+                  projected = (0 == point->ProjectedOntoGlobe);
+                  exagerated = (0 == point->ZeroElevationExaggeration);
+            }
+            catch(...) {
+                  LogDebugMessage(_T("Error geting GE point on terrain"));
+            }
+            LogDebugMessage(wxString::Format(_T("GE view point on terrain obtained: x=%f, y=%f, lat=%f, lon=%f, alt=%f, proj=%i, exag=%i"), x, y, lat, lon, alt, projected, exagerated));
             m_bbusy = false;
             return true;
       }

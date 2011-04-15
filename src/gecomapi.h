@@ -54,6 +54,16 @@
 #define SAVE_GE2KAP           2
 #define SAVE_IMGKAP           3
 
+#define GE_SCR_UPRIGHT        1,1
+#define GE_SCR_LOWLEFT        -1,-1
+#define GE_SCR_UPLEFT         -1,1
+#define GE_SCR_LOWRIGHT       1,-1
+#define GE_SCR_CENTER         0,0
+#define GE_SCR_UPCENTER       0,1
+#define GE_SCR_LOWCENTER      0,-1
+#define GE_SCR_LEFTCENTER     -1,0
+#define GE_SCR_RIGHTCENTER    1,0
+
 class gecomapi_pi;
 class PositionsList;
 class GESaveViewDlgImpl;
@@ -89,6 +99,7 @@ class GEUIDialog: public wxPanel
             void GEResize();
             bool GEMoveCamera();
             bool GEReadViewParameters(double& lat, double& lon, double& alt, double& azimuth, double& range, double& tilt);
+            bool GEGetPointOnTerrain(double x, double y, double& lat, double& lon, double &alt, bool& projected, bool& exagerated);
             void GEAttachWindow();
             void GEShowBoat(double lat, double lon);
 
