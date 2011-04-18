@@ -220,6 +220,25 @@ void GEUIDialog::GEResize()
             LogDebugMessage(_T("Resizing GE"));
             try
             {
+                  this->Layout();
+                  //Calculate the window extents
+                  RECT rect;
+                  GetWindowRect((HWND) LongToHandle(app->GetMainHwnd()), &rect);
+                  int mwidth, mheight, mx, my;
+                  mwidth = rect.right - rect.left - 1;
+                  mheight = rect.bottom - rect.top - 1;
+                  mx = rect.left;
+                  my = rect.top;
+                  GetWindowRect((HWND) LongToHandle(app->GetRenderHwnd()), &rect);
+                  int rwidth, rheight, rx, ry;
+                  rwidth = rect.right - rect.left - 1;
+                  rheight = rect.bottom - rect.top - 1;
+                  rx = rect.left;
+                  ry = rect.top;
+                  int deltawidth = mwidth - rwidth;
+                  int deltaheight = mheight - rheight;
+                  wxSize panelsize = this->m_panel1->GetSize();
+                  //Resize
                   SendMessage((HWND) LongToHandle(app->GetMainHwnd()), WM_COMMAND, WM_PAINT, 0);
                   PostMessage((HWND) LongToHandle(app->GetMainHwnd()), WM_QT_PAINT, 0, 0);
 
@@ -228,8 +247,8 @@ void GEUIDialog::GEResize()
                         HWND_TOP,
                         0,
                         0,
-                        this->GetSize().GetX(),
-                        this->GetSize().GetY() + 4, //FIXME: those 4 are just a wild guess based on observation - we should resize RenderHwnd - but how to not confuse GE? Like this we get bad size when tolbar or sidebar are shown in GE
+                        panelsize.GetX() + deltawidth,
+                        panelsize.GetY() + deltaheight,
                         SWP_FRAMECHANGED);
 
                   SendMessage((HWND) LongToHandle(app->GetRenderHwnd()), WM_COMMAND, WM_SIZE, 0);
@@ -668,6 +687,8 @@ void GEUIDialog::SaveView( wxCommandEvent & event )
             int format = m_pdialog->m_rFormat->GetSelection();
             m_pdialog->Close();
             Update();
+            InvalidateRect ((HWND) LongToHandle(app->GetRenderHwnd()), NULL, TRUE);
+            UpdateWindow ((HWND) LongToHandle(app->GetRenderHwnd()));
             
             if ( format == SAVE_KML )
             {
