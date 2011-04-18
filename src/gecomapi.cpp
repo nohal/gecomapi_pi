@@ -593,6 +593,7 @@ void GEUIDialog::SaveViewAsKml( wxString filename, wxString viewname )
       {
             wxTextFile file( filename );
             file.Open();
+            file.Clear();
             file.AddLine(wxString::Format(_T("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<kml xmlns=\"http://earth.google.com/kml/2.0\">\n<Placemark>\n<name>%s</name>\n<LookAt>\n<longitude>%f</longitude>\n<latitude>%f</latitude>\n<range>%f</range>\n<tilt>%f</tilt>\n<heading>%f</heading>\n</LookAt>\n</Placemark>\n</kml>"), 
                   encodeXMLEntities(viewname), lon, lat, rng, tilt, azimuth));
             file.Write();
