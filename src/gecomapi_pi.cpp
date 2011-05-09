@@ -568,5 +568,5 @@ void GEPrefsDlg::BtnTogled(wxCommandEvent& event)
 void LogDebugMessage(wxString msg)
 {
       if (DEBUG_MESSAGES)
-            wxLogMessage(msg);
+            wxLogMessage(_T("[GECOMAPI] %s"), msg.c_str());
 }
