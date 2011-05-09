@@ -778,12 +778,20 @@ bool GEUIDialog::GEReadViewParameters(double& lat, double& lon, double& alt, dou
             {
                   ICameraInfoGE* camera;
                   app->raw_GetCamera(false, &camera);
-                  lat = camera->FocusPointLatitude;
-                  lon = camera->FocusPointLongitude;
-                  alt = camera->FocusPointAltitude;
-                  azimuth = camera->Azimuth;
-                  range = camera->Range;
-                  tilt = camera->Tilt;
+                  if (NULL != camera)
+                  {
+                        lat = camera->FocusPointLatitude;
+                        lon = camera->FocusPointLongitude;
+                        alt = camera->FocusPointAltitude;
+                        azimuth = camera->Azimuth;
+                        range = camera->Range;
+                        tilt = camera->Tilt;
+                  }
+                  else
+                  {
+                        m_bgeisuseable = false;
+                        app = NULL;
+                  }
             }
             catch(...) {
                   LogDebugMessage(_T("Error geting GE view parameters"));
