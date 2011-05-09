@@ -8,25 +8,19 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gecomapi_pi 0.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-03-19 18:35+0100\n"
-"PO-Revision-Date: 2011-03-19 18:35+0100\n"
+"POT-Creation-Date: 2011-05-09 12:10+0200\n"
+"PO-Revision-Date: 2011-05-09 12:12+0100\n"
 "Last-Translator: Pavel Kalian <pavel@kalian.cz>\n"
 "Language-Team: nohal <pavel@kalian.cz>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/gecomapi_pi.cpp:98
-#: src/gecomapi_pi.cpp:102
-#: src/gecomapi_pi.cpp:170
-msgid "GoogleEarth"
-msgstr "Google Earth"
-
-#: src/gecomapi_pi.cpp:176
+#: src/gecomapi_pi.cpp:186
 msgid "GoogleEarth PlugIn for OpenCPN"
 msgstr "Google Earth PlugIn pro  OpenCPN"
 
-#: src/gecomapi_pi.cpp:181
+#: src/gecomapi_pi.cpp:191
 msgid ""
 "GoogleEarth PlugIn for OpenCPN\n"
 "Conquers the world"
@@ -34,44 +28,29 @@ msgstr ""
 "Google Earth PlugIn pro OpenCPN\n"
 "Tohle naprogramovat byl fakt vopruz..."
 
-#: src/gecomapi.cpp:77
+#: src/gecomapi.h:151
+#: src/gecomapi.cpp:119
+#: src/gecomapicfgdlg.h:98
+msgid "Save view"
+msgstr "Uložit pohled"
+
+#: src/gecomapi.cpp:86
 msgid "Connected to chart viewport"
 msgstr "Připojeno k pohledu na mapu"
 
-#: src/gecomapi.cpp:80
-msgid "Save view as JPG"
-msgstr "Uložit jako JPG"
+#: src/gecomapi.cpp:89
+msgid "Save view..."
+msgstr "Uložit pohled..."
 
-#: src/gecomapi.cpp:83
-msgid "Save view as KML"
-msgstr "Uložit jako KML"
-
-#: src/gecomapi.cpp:421
-msgid "Enter the name for the view"
-msgstr "Zadej název pohledu"
-
-#: src/gecomapi.cpp:421
-msgid "Enter view name"
-msgstr "Zadej název pohledu"
-
-#: src/gecomapi.cpp:421
-msgid "View name"
-msgstr "Název pohledu"
-
-#: src/gecomapi.cpp:430
-#: src/gecomapi.cpp:459
-msgid "Where to save?"
-msgstr "Kam uložit?"
-
-#: src/gecomapi.cpp:456
+#: src/gecomapi.cpp:664
 msgid "Screenshot can't be created, GE looks uninitialized..."
 msgstr "Snímek obrazovky nelze uložit, zdá se, že GE neběží..."
 
-#: src/gecomapi.cpp:456
+#: src/gecomapi.cpp:664
 msgid "Problem!"
 msgstr "Problém!"
 
-#: src/gecomapicfgdlg.h:66
+#: src/gecomapicfgdlg.h:69
 msgid "GoogleEarth Preferences"
 msgstr "Nastavení Google Earth"
 
@@ -135,3 +114,42 @@ msgstr "Tovární nastavení"
 msgid "Floating window transparency"
 msgstr "Průhlednost plovoucího okna"
 
+#: src/gecomapicfgdlg.cpp:140
+msgid "View name"
+msgstr "Název pohledu"
+
+#: src/gecomapicfgdlg.cpp:147
+msgid "Save as JPG"
+msgstr "Uložit jako JPG"
+
+#: src/gecomapicfgdlg.cpp:147
+msgid "Save as KML"
+msgstr "Uložit jako KML"
+
+#: src/gecomapicfgdlg.cpp:147
+msgid "Save as GPX for GE2KAP"
+msgstr "Ulož jako GPX pro GE2KAP"
+
+#: src/gecomapicfgdlg.cpp:147
+msgid "Save as KMZ for imgkap"
+msgstr "Ulož jako KMZ pro imgkap"
+
+#: src/gecomapicfgdlg.cpp:149
+msgid "Format"
+msgstr "Formát"
+
+#: src/gecomapicfgdlg.cpp:155
+msgid "Select a file"
+msgstr "Vyber soubor"
+
+#~ msgid "GoogleEarth"
+#~ msgstr "Google Earth"
+
+#~ msgid "Enter the name for the view"
+#~ msgstr "Zadej název pohledu"
+
+#~ msgid "Enter view name"
+#~ msgstr "Zadej název pohledu"
+
+#~ msgid "Where to save?"
+#~ msgstr "Kam uložit?"

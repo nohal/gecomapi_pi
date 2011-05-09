@@ -1,72 +1,52 @@
-# Google Earth plugin for OpenCPN.
-# Copyright (C) 2011 Pavel Kalian
-# This file is distributed under the same license as the OpenCPN package.
-# Pavel Kalian <pavel@kalian.cz>, 2011.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: gecomapi_pi 0.4\n"
+"Project-Id-Version: gecomapi_pi 2.4.506\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-03-19 18:35+0100\n"
-"PO-Revision-Date: 2011-03-19 18:35+0100\n"
-"Last-Translator: Pavel Kalian <pavel@kalian.cz>\n"
-"Language-Team: nohal <pavel@kalian.cz>\n"
+"POT-Creation-Date: 2011-05-09 12:10+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/gecomapi_pi.cpp:98 src/gecomapi_pi.cpp:102 src/gecomapi_pi.cpp:170
-msgid "GoogleEarth"
-msgstr ""
-
-#: src/gecomapi_pi.cpp:176
+#: src/gecomapi_pi.cpp:186
 msgid "GoogleEarth PlugIn for OpenCPN"
 msgstr ""
 
-#: src/gecomapi_pi.cpp:181
+#: src/gecomapi_pi.cpp:191
 msgid ""
 "GoogleEarth PlugIn for OpenCPN\n"
 "Conquers the world"
 msgstr ""
 
-#: src/gecomapi.cpp:77
+#: src/gecomapi.h:151 src/gecomapi.cpp:119 src/gecomapicfgdlg.h:98
+msgid "Save view"
+msgstr ""
+
+#: src/gecomapi.cpp:86
 msgid "Connected to chart viewport"
 msgstr ""
 
-#: src/gecomapi.cpp:80
-msgid "Save view as JPG"
+#: src/gecomapi.cpp:89
+msgid "Save view..."
 msgstr ""
 
-#: src/gecomapi.cpp:83
-msgid "Save view as KML"
-msgstr ""
-
-#: src/gecomapi.cpp:421
-msgid "Enter the name for the view"
-msgstr ""
-
-#: src/gecomapi.cpp:421
-msgid "Enter view name"
-msgstr ""
-
-#: src/gecomapi.cpp:421
-msgid "View name"
-msgstr ""
-
-#: src/gecomapi.cpp:430 src/gecomapi.cpp:459
-msgid "Where to save?"
-msgstr ""
-
-#: src/gecomapi.cpp:456
+#: src/gecomapi.cpp:664
 msgid "Screenshot can't be created, GE looks uninitialized..."
 msgstr ""
 
-#: src/gecomapi.cpp:456
+#: src/gecomapi.cpp:664
 msgid "Problem!"
 msgstr ""
 
-#: src/gecomapicfgdlg.h:66
+#: src/gecomapicfgdlg.h:69
 msgid "GoogleEarth Preferences"
 msgstr ""
 
@@ -128,4 +108,32 @@ msgstr ""
 
 #: src/gecomapicfgdlg.cpp:90
 msgid "Floating window transparency"
+msgstr ""
+
+#: src/gecomapicfgdlg.cpp:140
+msgid "View name"
+msgstr ""
+
+#: src/gecomapicfgdlg.cpp:147
+msgid "Save as JPG"
+msgstr ""
+
+#: src/gecomapicfgdlg.cpp:147
+msgid "Save as KML"
+msgstr ""
+
+#: src/gecomapicfgdlg.cpp:147
+msgid "Save as GPX for GE2KAP"
+msgstr ""
+
+#: src/gecomapicfgdlg.cpp:147
+msgid "Save as KMZ for imgkap"
+msgstr ""
+
+#: src/gecomapicfgdlg.cpp:149
+msgid "Format"
+msgstr ""
+
+#: src/gecomapicfgdlg.cpp:155
+msgid "Select a file"
 msgstr ""
