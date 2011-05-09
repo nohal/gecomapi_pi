@@ -152,7 +152,7 @@ GESaveViewDlg::GESaveViewDlg( wxWindow* parent, wxWindowID id, const wxString& t
 	
 	bSizer6->Add( m_rFormat, 0, wxALL|wxEXPAND, 5 );
 	
-	m_fpPath = new wxFilePickerCtrl( this, wxID_ANY, wxEmptyString, _("Select a file"), wxT("All files (*.*)|*.*|JPG files (*.jpg)|*.jpg|KML files (*.kml)|*.kml|KMZ files (*.kmz)|*.kmz"), wxDefaultPosition, wxDefaultSize, wxFLP_OVERWRITE_PROMPT|wxFLP_SAVE|wxFLP_USE_TEXTCTRL );
+	m_fpPath = new wxFilePickerCtrl( this, wxID_ANY, wxEmptyString, _("Select a file"), wxT("All files (*.*)|*.*|JPG files (*.jpg)|*.jpg|GPX files (*.gpx)|*.gpx|KML files (*.kml)|*.kml|KMZ files (*.kmz)|*.kmz"), wxDefaultPosition, wxDefaultSize, wxFLP_OVERWRITE_PROMPT|wxFLP_SAVE|wxFLP_USE_TEXTCTRL );
 	bSizer6->Add( m_fpPath, 0, wxALL|wxEXPAND, 5 );
 	
 	bSizer5->Add( bSizer6, 1, wxEXPAND, 5 );
