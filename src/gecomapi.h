@@ -100,7 +100,7 @@ class GEUIDialog: public wxPanel
             bool GEMoveCamera();
             bool GEReadViewParameters(double& lat, double& lon, double& alt, double& azimuth, double& range, double& tilt);
             bool GEGetPointOnTerrain(double x, double y, double& lat, double& lon, double &alt, bool& projected, bool& exagerated);
-            void GEAttachWindow();
+            void GEAttachWindow(bool attach = true);
             void GEShowBoat(double lat, double lon);
 
             wxString encodeXMLEntities(wxString str);
@@ -116,6 +116,7 @@ class GEUIDialog: public wxPanel
             //    Data
             wxWindow         *pParent;
             gecomapi_pi      *pPlugIn;
+            HWND              GEParentHwnd;
 
             double            m_hotspot_lat, m_hotspot_lon;
             double            m_camera_range, m_camera_azimuth, m_camera_tilt;

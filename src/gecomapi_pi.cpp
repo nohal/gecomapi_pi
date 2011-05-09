@@ -235,11 +235,13 @@ void gecomapi_pi::OnToolbarToolCallback(int id)
                   m_iWindowHeight = m_pgecomapi_window->GetSize().GetHeight();
                   pane.window->SetSize(m_iWindowWidth, m_iWindowHeight);
                   pane.BestSize(m_iWindowWidth, m_iWindowHeight);
+                  m_pgecomapi_window->GEAttachWindow(false);
             }
             else
             {
                     pane.window->SetSize(m_iWindowWidth, m_iWindowHeight);
                     pane.BestSize(m_iWindowWidth, m_iWindowHeight);
+                    m_pgecomapi_window->GEAttachWindow(true);
             }
       }
       else

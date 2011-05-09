@@ -70,6 +70,7 @@ GEUIDialog::GEUIDialog(wxWindow *pparent, wxWindowID id, wxAuiManager *auimgr, i
       m_bbusy = false;
 
       m_pfocusedwindow = FindFocus();
+      GEParentHwnd = NULL;
 
       this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 
@@ -183,25 +184,33 @@ void GEUIDialog::GEInitialize()
       }
 }
 
-void GEUIDialog::GEAttachWindow()
+void GEUIDialog::GEAttachWindow(bool attach)
 {
-      LogDebugMessage(_T("Attaching to GE window requested"));
+      LogDebugMessage(_T("Attaching/detaching to GE window requested"));
       if (NULL != app && m_bgeisuseable)
       {
-            LogDebugMessage(_T("Attaching to the GE window"));
             try
             {
-                 ShowWindowAsync((HWND) LongToHandle(app->GetMainHwnd()), 0);
+                  if (attach)
+                  {
+                        LogDebugMessage(_T("Attaching to the GE window"));
+                        ShowWindowAsync((HWND) LongToHandle(app->GetMainHwnd()), 0);
 
-                  //::SetParent((HWND) LongToHandle(app->GetRenderHwnd()), (HWND)this->GetHWND());
-                  ::SetParent((HWND) LongToHandle(app->GetRenderHwnd()), (HWND)this->m_panel1->GetHWND());
-                  GEResize();
+                        GEParentHwnd = ::GetParent((HWND) LongToHandle(app->GetRenderHwnd()));
+                        ::SetParent((HWND) LongToHandle(app->GetRenderHwnd()), (HWND)this->m_panel1->GetHWND());
+                        GEResize();
+                  }
+                  else
+                  {
+                        LogDebugMessage(_T("Detaching from the GE window"));
+                        ::SetParent((HWND) LongToHandle(app->GetRenderHwnd()), GEParentHwnd);
+                  }
             }
             catch(...) {
-                  LogDebugMessage(_T("Error attaching to GE window"));
+                  LogDebugMessage(_T("Error attaching/detaching the GE window"));
                   return;
             }
-            LogDebugMessage(_T("GE window attached"));
+            LogDebugMessage(_T("GE window attached/detached"));
       }
 }
 
