@@ -2086,7 +2086,7 @@
                                 <property name="caption"></property>
                                 <property name="caption_visible">1</property>
                                 <property name="center_pane">0</property>
-                                <property name="choices">&quot;Save as JPG&quot; &quot;Save as KML&quot; &quot;Save as JPG + GPX for GE2KAP&quot; &quot;Save as KMZ for imgkap&quot;</property>
+                                <property name="choices">&quot;Save as JPG&quot; &quot;Save as KML&quot; &quot;Save as GPX for GE2KAP&quot; &quot;Save as KMZ for imgkap&quot;</property>
                                 <property name="close_button">1</property>
                                 <property name="context_help"></property>
                                 <property name="context_menu">1</property>
@@ -2121,7 +2121,7 @@
                                 <property name="position"></property>
                                 <property name="resize">Resizable</property>
                                 <property name="row"></property>
-                                <property name="selection">0</property>
+                                <property name="selection">2</property>
                                 <property name="show">1</property>
                                 <property name="size"></property>
                                 <property name="style"></property>

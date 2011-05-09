@@ -705,9 +705,10 @@ void GEUIDialog::SaveView( wxCommandEvent & event )
             }
             else if ( format == SAVE_GE2KAP )
             {
-                  if ( fn.GetExt().Upper() != _T("JPG") )
-                        fn.SetExt(_T("jpg"));
-                  SaveViewAsJPG( fn.GetFullPath() );
+                  //Paul doesn't need the JPG anymore
+                  //if ( fn.GetExt().Upper() != _T("JPG") )
+                  //      fn.SetExt(_T("jpg"));
+                  //SaveViewAsJPG( fn.GetFullPath() );
                   fn.SetExt(_T("gpx"));
                   SaveViewAsGpx( fn.GetFullPath(), viewname );
             }

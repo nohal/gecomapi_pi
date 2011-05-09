@@ -144,10 +144,10 @@ GESaveViewDlg::GESaveViewDlg( wxWindow* parent, wxWindowID id, const wxString& t
 	m_tViewName = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer6->Add( m_tViewName, 0, wxALL|wxEXPAND, 5 );
 	
-	wxString m_rFormatChoices[] = { _("Save as JPG"), _("Save as KML"), _("Save as JPG + GPX for GE2KAP"), _("Save as KMZ for imgkap") };
+	wxString m_rFormatChoices[] = { _("Save as JPG"), _("Save as KML"), _("Save as GPX for GE2KAP"), _("Save as KMZ for imgkap") };
 	int m_rFormatNChoices = sizeof( m_rFormatChoices ) / sizeof( wxString );
 	m_rFormat = new wxRadioBox( this, wxID_ANY, _("Format"), wxDefaultPosition, wxDefaultSize, m_rFormatNChoices, m_rFormatChoices, 1, 0 );
-	m_rFormat->SetSelection( 0 );
+	m_rFormat->SetSelection( 2 );
 	m_rFormat->SetMinSize( wxSize( 300,-1 ) );
 	
 	bSizer6->Add( m_rFormat, 0, wxALL|wxEXPAND, 5 );
