@@ -150,6 +150,7 @@ class GESaveViewDlgImpl : public GESaveViewDlg
 public:
       GESaveViewDlgImpl( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("Save view"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxDEFAULT_DIALOG_STYLE ) :
             GESaveViewDlg( parent, id, title, pos, size, style ) { m_sdbSizer2OK->Disable(); }
+      void Clean();
 protected:
       void OnOkClick( wxCommandEvent& event );
       void CheckInput( wxCommandEvent& event );

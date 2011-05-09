@@ -690,6 +690,7 @@ void GEUIDialog::SaveViewAsJPG( wxString filename )
 
 void GEUIDialog::SaveView( wxCommandEvent & event ) 
 {
+      m_pdialog->Clean();
       if (m_pdialog->ShowModal() == wxID_OK)
       {
             wxFileName fn(m_pdialog->m_fpPath->GetPath());
@@ -869,5 +870,12 @@ void GESaveViewDlgImpl::DoCheckInput()
             m_sdbSizer2OK->Enable();
             return;
       }
+      m_sdbSizer2OK->Disable();
+}
+
+void GESaveViewDlgImpl::Clean()
+{
+      m_tViewName->SetValue(wxEmptyString);
+      m_fpPath->SetPath(wxEmptyString);
       m_sdbSizer2OK->Disable();
 }
