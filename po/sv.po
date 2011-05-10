@@ -1,0 +1,145 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Version 2.4 build 506\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-05-09 12:10+0200\n"
+"PO-Revision-Date: 2011-05-09 21:55+0100\n"
+"Last-Translator: Anders Arnell <anders.arnell@bredband.net>\n"
+"Language-Team: AB Torsk & Bäver <N/A>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Swedish\n"
+"X-Poedit-Country: SWEDEN\n"
+
+#: src/gecomapi_pi.cpp:186
+msgid "GoogleEarth PlugIn for OpenCPN"
+msgstr "GoogleEarth för OpenCPN"
+
+#: src/gecomapi_pi.cpp:191
+msgid ""
+"GoogleEarth PlugIn for OpenCPN\n"
+"Conquers the world"
+msgstr ""
+"GoogleEarth för OpenCPN\n"
+"Erövrar världen"
+
+#: src/gecomapi.h:151
+#: src/gecomapi.cpp:119
+#: src/gecomapicfgdlg.h:98
+msgid "Save view"
+msgstr "Spara vy"
+
+#: src/gecomapi.cpp:86
+msgid "Connected to chart viewport"
+msgstr "Kopplad till sjökortets visningsläge"
+
+#: src/gecomapi.cpp:89
+msgid "Save view..."
+msgstr "Spara vy..."
+
+#: src/gecomapi.cpp:664
+msgid "Screenshot can't be created, GE looks uninitialized..."
+msgstr "Skärmbild kan inte sparas, GE är eventuellt inte initialiserad..."
+
+#: src/gecomapi.cpp:664
+msgid "Problem!"
+msgstr "Problem!"
+
+#: src/gecomapicfgdlg.h:69
+msgid "GoogleEarth Preferences"
+msgstr "GoogleEarth inställningar"
+
+#: src/gecomapicfgdlg.cpp:20
+msgid "Preferences"
+msgstr "Inställningar"
+
+#: src/gecomapicfgdlg.cpp:28
+msgid "Follow chart viewport"
+msgstr "Följ sjökortets visningsläge"
+
+#: src/gecomapicfgdlg.cpp:31
+msgid "Follow boat"
+msgstr "Följ båt"
+
+#: src/gecomapicfgdlg.cpp:34
+msgid "Follow cursor"
+msgstr "Följ muspekare"
+
+#: src/gecomapicfgdlg.cpp:37
+msgid "Don't connect to OpenCPN"
+msgstr "Koppla inte till OpenCPN"
+
+#: src/gecomapicfgdlg.cpp:45
+msgid "Always start hidden"
+msgstr "Starta alltid i dolt läge"
+
+#: src/gecomapicfgdlg.cpp:48
+msgid "Disconnect from Viewport on GE action"
+msgstr "Koppla bort från sjökortets visningsläge vid GE åtgärd"
+
+#: src/gecomapicfgdlg.cpp:51
+msgid "Update plugin settings from GE"
+msgstr "Uppdatera modulinställningar från GE"
+
+#: src/gecomapicfgdlg.cpp:54
+msgid "Show boat in GE"
+msgstr "Visa båt i GE"
+
+#: src/gecomapicfgdlg.cpp:62
+msgid "View properties"
+msgstr "Vyinställningar"
+
+#: src/gecomapicfgdlg.cpp:64
+msgid "Camera azimuth"
+msgstr "Kamera azimuth"
+
+#: src/gecomapicfgdlg.cpp:71
+msgid "Camera Tilt"
+msgstr "Kameralutning"
+
+#: src/gecomapicfgdlg.cpp:78
+msgid "Camera Range"
+msgstr "Kameraavstånd"
+
+#: src/gecomapicfgdlg.cpp:85
+msgid "Reset to defaults"
+msgstr "Återgå till standardinställning"
+
+#: src/gecomapicfgdlg.cpp:90
+msgid "Floating window transparency"
+msgstr "Transparens för fönster"
+
+#: src/gecomapicfgdlg.cpp:140
+msgid "View name"
+msgstr "Vynamn"
+
+#: src/gecomapicfgdlg.cpp:147
+msgid "Save as JPG"
+msgstr "Spara som JPG"
+
+#: src/gecomapicfgdlg.cpp:147
+msgid "Save as KML"
+msgstr "Spara som KML"
+
+#: src/gecomapicfgdlg.cpp:147
+msgid "Save as GPX for GE2KAP"
+msgstr "Spara som GPX för GE2KAP"
+
+#: src/gecomapicfgdlg.cpp:147
+msgid "Save as KMZ for imgkap"
+msgstr "Spara som KMZ för imgkap"
+
+#: src/gecomapicfgdlg.cpp:149
+msgid "Format"
+msgstr "Format"
+
+#: src/gecomapicfgdlg.cpp:155
+msgid "Select a file"
+msgstr "Välj fil"
+

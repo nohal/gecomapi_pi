@@ -1,0 +1,144 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gecomapi_pi 2.4.506\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-05-09 12:10+0200\n"
+"PO-Revision-Date: 2011-05-09 23:49+0100\n"
+"Last-Translator: Gilletarom <gilletarom@netpratique.fr>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: French\n"
+
+#: src/gecomapi_pi.cpp:186
+msgid "GoogleEarth PlugIn for OpenCPN"
+msgstr "Complément Google Earth pour OpenCPN"
+
+#: src/gecomapi_pi.cpp:191
+msgid ""
+"GoogleEarth PlugIn for OpenCPN\n"
+"Conquers the world"
+msgstr ""
+"Complément Google Earth pour OpenCPN\n"
+"Conquérir le monde."
+
+#: src/gecomapi.h:151
+#: src/gecomapi.cpp:119
+#: src/gecomapicfgdlg.h:98
+msgid "Save view"
+msgstr "Sauver la vue"
+
+#: src/gecomapi.cpp:86
+msgid "Connected to chart viewport"
+msgstr "Connexion avec la zone de carte"
+
+#: src/gecomapi.cpp:89
+msgid "Save view..."
+msgstr "Sauver la vue ..."
+
+#: src/gecomapi.cpp:664
+msgid "Screenshot can't be created, GE looks uninitialized..."
+msgstr "La copie d'écran ne peut être créée, mauvaise intitialisation de GE"
+
+#: src/gecomapi.cpp:664
+msgid "Problem!"
+msgstr "Problème !"
+
+#: src/gecomapicfgdlg.h:69
+msgid "GoogleEarth Preferences"
+msgstr "Préférences de Google Earth"
+
+#: src/gecomapicfgdlg.cpp:20
+msgid "Preferences"
+msgstr "Préférences"
+
+#: src/gecomapicfgdlg.cpp:28
+msgid "Follow chart viewport"
+msgstr "Suivre la vue de la carte"
+
+#: src/gecomapicfgdlg.cpp:31
+msgid "Follow boat"
+msgstr "Suivre le bateau"
+
+#: src/gecomapicfgdlg.cpp:34
+msgid "Follow cursor"
+msgstr "Suivre le curseur"
+
+#: src/gecomapicfgdlg.cpp:37
+msgid "Don't connect to OpenCPN"
+msgstr "Ne pas connecter avec OpenCPN"
+
+#: src/gecomapicfgdlg.cpp:45
+msgid "Always start hidden"
+msgstr "Toujours démarrer caché"
+
+#: src/gecomapicfgdlg.cpp:48
+msgid "Disconnect from Viewport on GE action"
+msgstr "Déconnecter de la vue de la carte en cas d'action GE"
+
+#: src/gecomapicfgdlg.cpp:51
+msgid "Update plugin settings from GE"
+msgstr "Mettre à jour les propriétés du plug-in depuis GE"
+
+#: src/gecomapicfgdlg.cpp:54
+msgid "Show boat in GE"
+msgstr "Montrer le bateau dans GE"
+
+#: src/gecomapicfgdlg.cpp:62
+msgid "View properties"
+msgstr "Propriétés de la vue"
+
+#: src/gecomapicfgdlg.cpp:64
+msgid "Camera azimuth"
+msgstr "Azimut de la caméra"
+
+#: src/gecomapicfgdlg.cpp:71
+msgid "Camera Tilt"
+msgstr "Inclinaison de la caméra"
+
+#: src/gecomapicfgdlg.cpp:78
+msgid "Camera Range"
+msgstr "Champs de la caméra"
+
+#: src/gecomapicfgdlg.cpp:85
+msgid "Reset to defaults"
+msgstr "Options par défaut"
+
+#: src/gecomapicfgdlg.cpp:90
+msgid "Floating window transparency"
+msgstr "Niveau de transparence de la fenêtre"
+
+#: src/gecomapicfgdlg.cpp:140
+msgid "View name"
+msgstr "Nom de la v ue"
+
+#: src/gecomapicfgdlg.cpp:147
+msgid "Save as JPG"
+msgstr "Sauver en format JPG"
+
+#: src/gecomapicfgdlg.cpp:147
+msgid "Save as KML"
+msgstr "Sauver en format KML"
+
+#: src/gecomapicfgdlg.cpp:147
+msgid "Save as GPX for GE2KAP"
+msgstr "Sauver au format GPX pour GE2KAP"
+
+#: src/gecomapicfgdlg.cpp:147
+msgid "Save as KMZ for imgkap"
+msgstr "Sauver au format KMZ pour imgkap"
+
+#: src/gecomapicfgdlg.cpp:149
+msgid "Format"
+msgstr "Format"
+
+#: src/gecomapicfgdlg.cpp:155
+msgid "Select a file"
+msgstr "Sélectionnez un fichier"
+
