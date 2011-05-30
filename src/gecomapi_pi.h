@@ -42,7 +42,7 @@
 #define     PLUGIN_VERSION_MINOR    7
 
 #define     MY_API_VERSION_MAJOR    1
-#define     MY_API_VERSION_MINOR    4
+#define     MY_API_VERSION_MINOR    5
 
 #define     GECOMAPI_TOOL_POSITION -1          // Request default positioning of toolbar tool
 
