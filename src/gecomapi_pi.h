@@ -39,7 +39,7 @@
 #include <wx/aui/aui.h>
 
 #define     PLUGIN_VERSION_MAJOR    0
-#define     PLUGIN_VERSION_MINOR    7
+#define     PLUGIN_VERSION_MINOR    8
 
 #define     MY_API_VERSION_MAJOR    1
 #define     MY_API_VERSION_MINOR    5
@@ -51,8 +51,9 @@
 #include "gecomapi.h"
 #include "gecomapicfgdlg.h"
 
-#define     DEBUG_MESSAGES          true
+#define  DEBUG_MESSAGES       false
 
+void LogDebugMessage(wxString msg);
 
 //----------------------------------------------------------------------------------------------------------
 //    The PlugIn Class Definition
@@ -66,8 +67,6 @@
 #define DEFAULT_WIDTH               300
 #define DEFAULT_HEIGHT              300
 #define DEFAULT_FLOATING            false
-
-void LogDebugMessage(wxString msg);
 
 class gecomapi_pi : public wxEvtHandler, opencpn_plugin
 {
