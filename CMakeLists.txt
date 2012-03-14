@@ -54,8 +54,6 @@ SET(SRC_GECOMAPI
 	    src/gecomapi.cpp
 	    src/gecomapicfgdlg.h
 	    src/gecomapicfgdlg.cpp
-	    ../../../include/tinystr.h
-	    ../../../src/tinystr.cpp
 	    ../../../include/tinyxml.h
 	    ../../../src/tinyxml.cpp
 	    ../../../src/tinyxmlparser.cpp

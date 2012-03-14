@@ -22,7 +22,7 @@
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
- *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,  USA.             *
  ***************************************************************************
  */
 
@@ -39,10 +39,10 @@
 #include <wx/aui/aui.h>
 
 #define     PLUGIN_VERSION_MAJOR    0
-#define     PLUGIN_VERSION_MINOR    8
+#define     PLUGIN_VERSION_MINOR    9
 
 #define     MY_API_VERSION_MAJOR    1
-#define     MY_API_VERSION_MINOR    5
+#define     MY_API_VERSION_MINOR    6
 
 #define     GECOMAPI_TOOL_POSITION -1          // Request default positioning of toolbar tool
 
@@ -51,7 +51,7 @@
 #include "gecomapi.h"
 #include "gecomapicfgdlg.h"
 
-#define  DEBUG_MESSAGES       false
+#define  DEBUG_MESSAGES       true
 
 void LogDebugMessage(wxString msg);
 
@@ -68,7 +68,7 @@ void LogDebugMessage(wxString msg);
 #define DEFAULT_HEIGHT              300
 #define DEFAULT_FLOATING            false
 
-class gecomapi_pi : public wxEvtHandler, opencpn_plugin
+class gecomapi_pi : public wxEvtHandler, opencpn_plugin_16
 {
 public:
       gecomapi_pi(void *ppimgr);
