@@ -1,0 +1,142 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gecomapi_pi 2.4.506\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-05-09 12:10+0200\n"
+"PO-Revision-Date: 2012-05-26 18:23+0200\n"
+"Last-Translator: Hasan Çetin <boraxtr@yahoo.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: French\n"
+
+#: src/gecomapi_pi.cpp:186
+msgid "GoogleEarth PlugIn for OpenCPN"
+msgstr "OpenCPN GoogleEarth eklentisi"
+
+#: src/gecomapi_pi.cpp:191
+msgid ""
+"GoogleEarth PlugIn for OpenCPN\n"
+"Conquers the world"
+msgstr "OpenCPN GoogleEarth eklentisiyle dünyayı keşfedin !"
+
+#: src/gecomapi.h:151
+#: src/gecomapi.cpp:119
+#: src/gecomapicfgdlg.h:98
+msgid "Save view"
+msgstr "Görüntüyü sakla"
+
+#: src/gecomapi.cpp:86
+msgid "Connected to chart viewport"
+msgstr "Haritanın bakış yönüne göre"
+
+#: src/gecomapi.cpp:89
+msgid "Save view..."
+msgstr "Görüntüyü sakla ..."
+
+#: src/gecomapi.cpp:664
+msgid "Screenshot can't be created, GE looks uninitialized..."
+msgstr "Ekran alıntısı yapıalamadı, GE başlatılmamış görünüyor..."
+
+#: src/gecomapi.cpp:664
+msgid "Problem!"
+msgstr "Sorun !"
+
+#: src/gecomapicfgdlg.h:69
+msgid "GoogleEarth Preferences"
+msgstr "Google Earth seçenekleri"
+
+#: src/gecomapicfgdlg.cpp:20
+msgid "Preferences"
+msgstr "Seçenekler"
+
+#: src/gecomapicfgdlg.cpp:28
+msgid "Follow chart viewport"
+msgstr "Haritanın bakış yönünü koru"
+
+#: src/gecomapicfgdlg.cpp:31
+msgid "Follow boat"
+msgstr "Tekneyi izle"
+
+#: src/gecomapicfgdlg.cpp:34
+msgid "Follow cursor"
+msgstr "Fareyi izle"
+
+#: src/gecomapicfgdlg.cpp:37
+msgid "Don't connect to OpenCPN"
+msgstr "OpenCPN'e bağlanma"
+
+#: src/gecomapicfgdlg.cpp:45
+msgid "Always start hidden"
+msgstr "Her zaman gizli olarak başlat"
+
+#: src/gecomapicfgdlg.cpp:48
+msgid "Disconnect from Viewport on GE action"
+msgstr "GE hareketinin bakış yönüyle bağlantısını kes."
+
+#: src/gecomapicfgdlg.cpp:51
+msgid "Update plugin settings from GE"
+msgstr "Eklenti yapılandırmasını GE den güncelle."
+
+#: src/gecomapicfgdlg.cpp:54
+msgid "Show boat in GE"
+msgstr "Tekneyi GE de göster."
+
+#: src/gecomapicfgdlg.cpp:62
+msgid "View properties"
+msgstr "Görünüm seçenekleri"
+
+#: src/gecomapicfgdlg.cpp:64
+msgid "Camera azimuth"
+msgstr "Kamera yükseklği"
+
+#: src/gecomapicfgdlg.cpp:71
+msgid "Camera Tilt"
+msgstr "Kamera eğimi"
+
+#: src/gecomapicfgdlg.cpp:78
+msgid "Camera Range"
+msgstr "Kamera uzaklığı"
+
+#: src/gecomapicfgdlg.cpp:85
+msgid "Reset to defaults"
+msgstr "Varsayılan seçenekler"
+
+#: src/gecomapicfgdlg.cpp:90
+msgid "Floating window transparency"
+msgstr "Pencerenin geçirgenlik derecesi."
+
+#: src/gecomapicfgdlg.cpp:140
+msgid "View name"
+msgstr "Görünüm adı"
+
+#: src/gecomapicfgdlg.cpp:147
+msgid "Save as JPG"
+msgstr " JPG olarak sakla"
+
+#: src/gecomapicfgdlg.cpp:147
+msgid "Save as KML"
+msgstr " KML dosyası olarak sakla"
+
+#: src/gecomapicfgdlg.cpp:147
+msgid "Save as GPX for GE2KAP"
+msgstr "\"GE2KAP\"de kullanmak için GPX dosyası olarak sakla"
+
+#: src/gecomapicfgdlg.cpp:147
+msgid "Save as KMZ for imgkap"
+msgstr "\"imgkap\" için KMZ dosyası olarak sakla"
+
+#: src/gecomapicfgdlg.cpp:149
+msgid "Format"
+msgstr "Dosya uzantısı"
+
+#: src/gecomapicfgdlg.cpp:155
+msgid "Select a file"
+msgstr "Dosya seç"
+
