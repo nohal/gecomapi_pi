@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gecomapi_pi 2.4.506\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-05-09 12:10+0200\n"
-"PO-Revision-Date: 2012-05-26 18:23+0200\n"
+"PO-Revision-Date: 2012-06-03 20:15+0200\n"
 "Last-Translator: Hasan Çetin <boraxtr@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -18,13 +18,13 @@ msgstr ""
 
 #: src/gecomapi_pi.cpp:186
 msgid "GoogleEarth PlugIn for OpenCPN"
-msgstr "OpenCPN GoogleEarth eklentisi"
+msgstr "OpenCPN GoogleEarth Eklentisi"
 
 #: src/gecomapi_pi.cpp:191
 msgid ""
 "GoogleEarth PlugIn for OpenCPN\n"
 "Conquers the world"
-msgstr "OpenCPN GoogleEarth eklentisiyle dünyayı keşfedin !"
+msgstr "OpenCPN GoogleEarth Eklentisiyle dünyayı keşfedin !"
 
 #: src/gecomapi.h:151
 #: src/gecomapi.cpp:119
@@ -139,4 +139,5 @@ msgstr "Dosya uzantısı"
 #: src/gecomapicfgdlg.cpp:155
 msgid "Select a file"
 msgstr "Dosya seç"
+
 
