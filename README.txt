@@ -5,9 +5,9 @@ It does NOT work with OpenCPN 2.3.1 as it relies on the API extensions introduce
 
 Before you use it:
 - Make sure you are using Microsoft Windows. Sorry, there is no chance to get this running on any normal operating system :(
-- Download OpenCPN, version 2.4.0310 beta from http://www.opencpn.org/download and install it
+- Download OpenCPN, version 2.4.0310 beta or later from http://www.opencpn.org/download and install it
 - To make the view sizing work reasonably, run Google Earth and turn of the toolbar and the sidebar in the View menu or Ctrl + Alt + T and Ctrl + Alt + B respectively
-- Download the attached file gecomapi_pi.doc, change the extension to .dll and place it into the plugin directory in your OpenCPN installation
+- Download the plugin .dll and place it into the plugin directory in your OpenCPN installation
 
 Run OpenCPN, go to Toolbox and enable the GE plugin on the Plugins tab
 After a short while the plugin icon will appear on your toolbar - be a bit patient as GE has to be started and it takes time.
