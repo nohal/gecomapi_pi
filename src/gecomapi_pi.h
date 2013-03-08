@@ -51,7 +51,7 @@
 #include "gecomapi.h"
 #include "gecomapicfgdlg.h"
 
-#define  DEBUG_MESSAGES       true
+#define  DEBUG_MESSAGES       false
 
 void LogDebugMessage(wxString msg);
 
