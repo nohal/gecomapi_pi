@@ -45,7 +45,7 @@
 
 #define     GECOMAPI_TOOL_POSITION -1          // Request default positioning of toolbar tool
 
-#include "include/ocpn_plugin.h"
+#include "ocpn_plugin.h"
 
 #include "gecomapi.h"
 #include "gecomapicfgdlg.h"
