@@ -52,7 +52,7 @@
 #include "wx/msw/ole/activex.h"
 
 #include "gecomapi_pi.h"
-#include "../../../include/gpxdocument.h"
+#include "gpxdocument.h"
 
 #define WM_QT_PAINT 0xC2DC
 

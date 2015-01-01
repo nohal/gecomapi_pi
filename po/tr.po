@@ -1,34 +1,28 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
 msgid ""
 msgstr ""
-"Project-Id-Version: gecomapi_pi 2.4.506\n"
+"Project-Id-Version: opencpn\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-05-09 12:10+0200\n"
-"PO-Revision-Date: 2012-07-01 18:24+0200\n"
-"Last-Translator: Hasan Çetin <boraxtr@yahoo.com>\n"
-"Language-Team: \n"
+"PO-Revision-Date: 2014-12-02 11:05-0500\n"
+"Last-Translator: nohal <pavel@kalian.cz>\n"
+"Language-Team: Turkish\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: French\n"
+"\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: crowdin.com\n"
+"Language: tr_TR\n"
 
 #: src/gecomapi_pi.cpp:186
 msgid "GoogleEarth PlugIn for OpenCPN"
 msgstr "OpenCPN GoogleEarth Eklentisi"
 
 #: src/gecomapi_pi.cpp:191
-msgid ""
-"GoogleEarth PlugIn for OpenCPN\n"
-"Conquers the world"
+msgid "GoogleEarth PlugIn for OpenCPN\nConquers the world"
 msgstr "OpenCPN GoogleEarth Eklentisiyle dünyayı keşfedin !"
 
-#: src/gecomapi.h:151
-#: src/gecomapi.cpp:119
-#: src/gecomapicfgdlg.h:98
+#: src/gecomapi.h:151 src/gecomapi.cpp:119 src/gecomapicfgdlg.h:98
 msgid "Save view"
 msgstr "Görüntüyü sakla"
 

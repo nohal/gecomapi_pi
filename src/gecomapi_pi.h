@@ -38,15 +38,14 @@
 #include <wx/fileconf.h>
 #include <wx/aui/aui.h>
 
-#define     PLUGIN_VERSION_MAJOR    0
-#define     PLUGIN_VERSION_MINOR    10
+#include "version.h"
 
 #define     MY_API_VERSION_MAJOR    1
 #define     MY_API_VERSION_MINOR    6
 
 #define     GECOMAPI_TOOL_POSITION -1          // Request default positioning of toolbar tool
 
-#include "../../../include/ocpn_plugin.h"
+#include "include/ocpn_plugin.h"
 
 #include "gecomapi.h"
 #include "gecomapicfgdlg.h"
