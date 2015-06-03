@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: opencpn\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-05-09 12:10+0200\n"
-"PO-Revision-Date: 2014-12-30 08:59-0500\n"
+"PO-Revision-Date: 2015-04-07 11:22-0400\n"
 "Last-Translator: nohal <pavel@kalian.cz>\n"
 "Language-Team: Greek\n"
 "MIME-Version: 1.0\n"
@@ -12,6 +12,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: crowdin.com\n"
 "X-Crowdin-Project: opencpn\n"
+"X-Crowdin-Language: el\n"
 "X-Crowdin-File: /plugins/gecomapi_pi/po/gecomapi_pi.pot\n"
 "Language: el_GR\n"
 
@@ -21,67 +22,67 @@ msgstr "Πρόσθετο GoogleEarth"
 
 #: src/gecomapi_pi.cpp:191
 msgid "GoogleEarth PlugIn for OpenCPN\nConquers the world"
-msgstr ""
+msgstr "Πρόσθετο GoogleEarth για το OpenCPN\nΚατάκτησε τον κόσμο"
 
 #: src/gecomapi.h:151 src/gecomapi.cpp:119 src/gecomapicfgdlg.h:98
 msgid "Save view"
-msgstr ""
+msgstr "Αποθήκευση προβολής"
 
 #: src/gecomapi.cpp:86
 msgid "Connected to chart viewport"
-msgstr ""
+msgstr "Συνδεδεμένο με το viewport του χάρτη"
 
 #: src/gecomapi.cpp:89
 msgid "Save view..."
-msgstr ""
+msgstr "Αποθήκευση προβολής..."
 
 #: src/gecomapi.cpp:664
 msgid "Screenshot can't be created, GE looks uninitialized..."
-msgstr ""
+msgstr "Το Screenshot δεν μπορεί να δημιουργηθεί, το GE φαίνεται ότι δεν έχει προετοιμαστεί..."
 
 #: src/gecomapi.cpp:664
 msgid "Problem!"
-msgstr ""
+msgstr "Πρόβλημα!"
 
 #: src/gecomapicfgdlg.h:69
 msgid "GoogleEarth Preferences"
-msgstr ""
+msgstr "Προτιμήσεις του GoogleEarth"
 
 #: src/gecomapicfgdlg.cpp:20
 msgid "Preferences"
-msgstr ""
+msgstr "Προτιμήσεις"
 
 #: src/gecomapicfgdlg.cpp:28
 msgid "Follow chart viewport"
-msgstr ""
+msgstr "Ακολούθησε το viewport του χάρτη"
 
 #: src/gecomapicfgdlg.cpp:31
 msgid "Follow boat"
-msgstr ""
+msgstr "Ακολούθησε το πλοίο"
 
 #: src/gecomapicfgdlg.cpp:34
 msgid "Follow cursor"
-msgstr ""
+msgstr "Ακολούθησε τον δρομέα"
 
 #: src/gecomapicfgdlg.cpp:37
 msgid "Don't connect to OpenCPN"
-msgstr ""
+msgstr "Μην συνδεθείτε με το OpenCPN"
 
 #: src/gecomapicfgdlg.cpp:45
 msgid "Always start hidden"
-msgstr ""
+msgstr "Πάντα κρυμμένο στην αρχή"
 
 #: src/gecomapicfgdlg.cpp:48
 msgid "Disconnect from Viewport on GE action"
-msgstr ""
+msgstr "Αποσυνδέστε από το Viewport για δράση του GE"
 
 #: src/gecomapicfgdlg.cpp:51
 msgid "Update plugin settings from GE"
-msgstr ""
+msgstr "Ανανέωση των ρυθμίσεων του προσθέτου από το GE"
 
 #: src/gecomapicfgdlg.cpp:54
 msgid "Show boat in GE"
-msgstr ""
+msgstr "Να φαίνεται το πλοίο στο GE"
 
 #: src/gecomapicfgdlg.cpp:62
 msgid "View properties"

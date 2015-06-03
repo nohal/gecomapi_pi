@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: opencpn\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-05-09 12:10+0200\n"
-"PO-Revision-Date: 2015-01-01 15:19-0500\n"
+"PO-Revision-Date: 2015-06-02 20:34-0400\n"
 "Last-Translator: nohal <pavel@kalian.cz>\n"
 "Language-Team: Finnish\n"
 "MIME-Version: 1.0\n"
@@ -12,126 +12,129 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: crowdin.com\n"
 "X-Crowdin-Project: opencpn\n"
+"X-Crowdin-Language: fi\n"
 "X-Crowdin-File: /plugins/gecomapi_pi/po/gecomapi_pi.pot\n"
 "Language: fi_FI\n"
 
 #: src/gecomapi_pi.cpp:186
 msgid "GoogleEarth PlugIn for OpenCPN"
-msgstr ""
+msgstr "GoogleEarth lisäosa OpenCPN:lle"
 
 #: src/gecomapi_pi.cpp:191
-msgid "GoogleEarth PlugIn for OpenCPN\nConquers the world"
-msgstr ""
+msgid "GoogleEarth PlugIn for OpenCPN\n"
+"Conquers the world"
+msgstr "GoogleEarth lisäosa OpenCPN:lle\n"
+"Valloittaa maailman"
 
 #: src/gecomapi.h:151 src/gecomapi.cpp:119 src/gecomapicfgdlg.h:98
 msgid "Save view"
-msgstr ""
+msgstr "Talleta näkymä"
 
 #: src/gecomapi.cpp:86
 msgid "Connected to chart viewport"
-msgstr ""
+msgstr "Liitetty kartan ikkunaan"
 
 #: src/gecomapi.cpp:89
 msgid "Save view..."
-msgstr ""
+msgstr "Talleta näkymä..."
 
 #: src/gecomapi.cpp:664
 msgid "Screenshot can't be created, GE looks uninitialized..."
-msgstr ""
+msgstr "Kuvankaappausta ei voida luoda, GE näyttää alustamattomalta..."
 
 #: src/gecomapi.cpp:664
 msgid "Problem!"
-msgstr ""
+msgstr "Ongelma!"
 
 #: src/gecomapicfgdlg.h:69
 msgid "GoogleEarth Preferences"
-msgstr ""
+msgstr "GoogleEarth asetukset"
 
 #: src/gecomapicfgdlg.cpp:20
 msgid "Preferences"
-msgstr ""
+msgstr "Asetukset"
 
 #: src/gecomapicfgdlg.cpp:28
 msgid "Follow chart viewport"
-msgstr ""
+msgstr "Seuraa karttaikkunaa"
 
 #: src/gecomapicfgdlg.cpp:31
 msgid "Follow boat"
-msgstr ""
+msgstr "Seuraa venettä"
 
 #: src/gecomapicfgdlg.cpp:34
 msgid "Follow cursor"
-msgstr ""
+msgstr "Seuraa kohdistinta"
 
 #: src/gecomapicfgdlg.cpp:37
 msgid "Don't connect to OpenCPN"
-msgstr ""
+msgstr "Älä liitä OpenCPN:ään"
 
 #: src/gecomapicfgdlg.cpp:45
 msgid "Always start hidden"
-msgstr ""
+msgstr "Aloita aina piilotettuna"
 
 #: src/gecomapicfgdlg.cpp:48
 msgid "Disconnect from Viewport on GE action"
-msgstr ""
+msgstr "Irrota ikkunasta GE:n toimiessa"
 
 #: src/gecomapicfgdlg.cpp:51
 msgid "Update plugin settings from GE"
-msgstr ""
+msgstr "Päivitä lisäosa-asetukset GE:stä"
 
 #: src/gecomapicfgdlg.cpp:54
 msgid "Show boat in GE"
-msgstr ""
+msgstr "Näytä vene GE:ssä"
 
 #: src/gecomapicfgdlg.cpp:62
 msgid "View properties"
-msgstr ""
+msgstr "Näytä ominaisuudet"
 
 #: src/gecomapicfgdlg.cpp:64
 msgid "Camera azimuth"
-msgstr ""
+msgstr "Kamerakulma"
 
 #: src/gecomapicfgdlg.cpp:71
 msgid "Camera Tilt"
-msgstr ""
+msgstr "Kameran kallistus"
 
 #: src/gecomapicfgdlg.cpp:78
 msgid "Camera Range"
-msgstr ""
+msgstr "Kameran korkeus"
 
 #: src/gecomapicfgdlg.cpp:85
 msgid "Reset to defaults"
-msgstr ""
+msgstr "Palauta oletukset"
 
 #: src/gecomapicfgdlg.cpp:90
 msgid "Floating window transparency"
-msgstr ""
+msgstr "Kelluvan ikkunan läpinäkyvyys"
 
 #: src/gecomapicfgdlg.cpp:140
 msgid "View name"
-msgstr ""
+msgstr "Näytä nimi"
 
 #: src/gecomapicfgdlg.cpp:147
 msgid "Save as JPG"
-msgstr ""
+msgstr "Tallenna JPG:nä"
 
 #: src/gecomapicfgdlg.cpp:147
 msgid "Save as KML"
-msgstr ""
+msgstr "Tallenna KML:nä"
 
 #: src/gecomapicfgdlg.cpp:147
 msgid "Save as GPX for GE2KAP"
-msgstr ""
+msgstr "Tallenna GPX:nä GE2KAP:ia varten"
 
 #: src/gecomapicfgdlg.cpp:147
 msgid "Save as KMZ for imgkap"
-msgstr ""
+msgstr "Tallenna KMZ:nä imgkap:ia varten"
 
 #: src/gecomapicfgdlg.cpp:149
 msgid "Format"
-msgstr ""
+msgstr "Formaatti"
 
 #: src/gecomapicfgdlg.cpp:155
 msgid "Select a file"
-msgstr ""
+msgstr "Valitse tiedosto"
 
