@@ -113,8 +113,8 @@ GEUIDialog::GEUIDialog(wxWindow *pparent, wxWindowID id, wxAuiManager *auimgr, i
       m_stopwatch.Start();
       m_stopwatch_boat.Start();
       m_pPositions = new PositionsList();
-      m_sEnvelopeKmlFilename = wxStandardPaths().GetTempDir() + _T("\\gecomapi.kml");
-      m_sLiveKmlFilename = wxStandardPaths().GetTempDir() + _T("\\gecomapilive.kml");
+      m_sEnvelopeKmlFilename = wxStandardPaths::Get().GetTempDir() + _T("\\gecomapi.kml");
+      m_sLiveKmlFilename = wxStandardPaths::Get().GetTempDir() + _T("\\gecomapilive.kml");
 
       m_pdialog = new GESaveViewDlgImpl(this,  wxID_ANY, _("Save view"), wxDefaultPosition, wxSize( -1,-1 ), wxDEFAULT_DIALOG_STYLE );
 }
