@@ -122,7 +122,7 @@ GEUIDialog::GEUIDialog(wxWindow *pparent, wxWindowID id, wxAuiManager *auimgr, i
 GEUIDialog::~GEUIDialog( )
 {
       delete m_pPositions;
-      m_pdialog->Destroy();
+      m_pdialog->Close(true);
       wxDELETE(m_pdialog);
       LogDebugMessage(_T("Destroying the GE plugin window"));
       m_buttonSave->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( GEUIDialog::SaveView ), NULL, this );
@@ -546,10 +546,14 @@ void GEUIDialog::GEClose()
             {
                   SendMessage((HWND) LongToHandle(app->GetMainHwnd()), WM_COMMAND, WM_QUIT, 0);
                   PostMessage((HWND) LongToHandle(app->GetMainHwnd()), WM_QUIT, 0, 0);
-                  /*long is_initialized;
+                  long is_initialized;
+				  int cnt;
+				  cnt = 0;
                   do {
 	                  is_initialized = app->IsInitialized();
-                  } while ( is_initialized != 0 );*/
+					  cnt++;
+					  wxMicroSleep(1000);
+                  } while ( is_initialized != 0 && cnt < 1000 );
                   app->Release();
                   //delete app;
                   app = NULL;
