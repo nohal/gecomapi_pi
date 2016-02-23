@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: opencpn\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-05-09 12:10+0200\n"
-"PO-Revision-Date: 2015-04-23 13:12-0400\n"
+"PO-Revision-Date: 2016-02-07 02:49-0500\n"
 "Last-Translator: nohal <pavel@kalian.cz>\n"
 "Language-Team: Italian\n"
 "MIME-Version: 1.0\n"
@@ -21,8 +21,10 @@ msgid "GoogleEarth PlugIn for OpenCPN"
 msgstr "GoogleEarth PlugIn per OpenCPN"
 
 #: src/gecomapi_pi.cpp:191
-msgid "GoogleEarth PlugIn for OpenCPN\nConquers the world"
-msgstr "GoogleEarth PlugIn per OpenCPN\nConquista il Mondo"
+msgid "GoogleEarth PlugIn for OpenCPN\n"
+"Conquers the world"
+msgstr "GoogleEarth PlugIn per OpenCPN\n"
+"Conquista il Mondo"
 
 #: src/gecomapi.h:151 src/gecomapi.cpp:119 src/gecomapicfgdlg.h:98
 msgid "Save view"

@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: opencpn\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-05-09 12:10+0200\n"
-"PO-Revision-Date: 2015-06-02 20:34-0400\n"
+"PO-Revision-Date: 2016-02-22 08:44-0500\n"
 "Last-Translator: nohal <pavel@kalian.cz>\n"
 "Language-Team: Dutch\n"
 "MIME-Version: 1.0\n"
@@ -18,12 +18,12 @@ msgstr ""
 
 #: src/gecomapi_pi.cpp:186
 msgid "GoogleEarth PlugIn for OpenCPN"
-msgstr "GoogleEarth PlugIn voor OpenCPN"
+msgstr "Google Earth PlugIn voor OpenCPN"
 
 #: src/gecomapi_pi.cpp:191
 msgid "GoogleEarth PlugIn for OpenCPN\n"
 "Conquers the world"
-msgstr "GoogleEarth PlugIn voor OpenCPN\n"
+msgstr "Google Earth PlugIn voor OpenCPN\n"
 "Verovert de wereld!"
 
 #: src/gecomapi.h:151 src/gecomapi.cpp:119 src/gecomapicfgdlg.h:98
@@ -48,7 +48,7 @@ msgstr "Probleem!"
 
 #: src/gecomapicfgdlg.h:69
 msgid "GoogleEarth Preferences"
-msgstr "GoogleEarth voorkeuren"
+msgstr "Google Earth voorkeuren"
 
 #: src/gecomapicfgdlg.cpp:20
 msgid "Preferences"
@@ -80,7 +80,7 @@ msgstr "Verbreek verbinding met beeldpoort bij GE actie"
 
 #: src/gecomapicfgdlg.cpp:51
 msgid "Update plugin settings from GE"
-msgstr "Bijwerken plugin instellingen vanuit GE"
+msgstr "Bijwerken PlugIn instellingen vanuit GE"
 
 #: src/gecomapicfgdlg.cpp:54
 msgid "Show boat in GE"

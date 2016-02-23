@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: opencpn\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-05-09 12:10+0200\n"
-"PO-Revision-Date: 2015-03-02 22:15-0500\n"
+"PO-Revision-Date: 2016-01-25 19:58-0500\n"
 "Last-Translator: nohal <pavel@kalian.cz>\n"
 "Language-Team: Russian\n"
 "MIME-Version: 1.0\n"
@@ -12,6 +12,7 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: crowdin.com\n"
 "X-Crowdin-Project: opencpn\n"
+"X-Crowdin-Language: ru\n"
 "X-Crowdin-File: /plugins/gecomapi_pi/po/gecomapi_pi.pot\n"
 "Language: ru_RU\n"
 
@@ -20,7 +21,8 @@ msgid "GoogleEarth PlugIn for OpenCPN"
 msgstr ""
 
 #: src/gecomapi_pi.cpp:191
-msgid "GoogleEarth PlugIn for OpenCPN\nConquers the world"
+msgid "GoogleEarth PlugIn for OpenCPN\n"
+"Conquers the world"
 msgstr ""
 
 #: src/gecomapi.h:151 src/gecomapi.cpp:119 src/gecomapicfgdlg.h:98

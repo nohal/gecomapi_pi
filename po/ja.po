@@ -3,138 +3,137 @@ msgstr ""
 "Project-Id-Version: opencpn\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-05-09 12:10+0200\n"
-"PO-Revision-Date: 2016-01-16 20:59-0500\n"
+"PO-Revision-Date: 2016-01-06 09:11-0500\n"
 "Last-Translator: nohal <pavel@kalian.cz>\n"
-"Language-Team: Czech\n"
+"Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: crowdin.com\n"
 "X-Crowdin-Project: opencpn\n"
-"X-Crowdin-Language: cs\n"
+"X-Crowdin-Language: ja\n"
 "X-Crowdin-File: /plugins/gecomapi_pi/po/gecomapi_pi.pot\n"
-"Language: cs_CZ\n"
+"Language: ja_JP\n"
 
 #: src/gecomapi_pi.cpp:186
 msgid "GoogleEarth PlugIn for OpenCPN"
-msgstr "Google Earth PlugIn pro  OpenCPN"
+msgstr ""
 
 #: src/gecomapi_pi.cpp:191
 msgid "GoogleEarth PlugIn for OpenCPN\n"
 "Conquers the world"
-msgstr "Google Earth PlugIn pro OpenCPN\n"
-"Tohle naprogramovat byl fakt vopruz..."
+msgstr ""
 
 #: src/gecomapi.h:151 src/gecomapi.cpp:119 src/gecomapicfgdlg.h:98
 msgid "Save view"
-msgstr "Uložit pohled"
+msgstr ""
 
 #: src/gecomapi.cpp:86
 msgid "Connected to chart viewport"
-msgstr "Připojeno k pohledu na mapu"
+msgstr ""
 
 #: src/gecomapi.cpp:89
 msgid "Save view..."
-msgstr "Uložit pohled..."
+msgstr ""
 
 #: src/gecomapi.cpp:664
 msgid "Screenshot can't be created, GE looks uninitialized..."
-msgstr "Snímek obrazovky nelze uložit, zdá se, že GE neběží..."
+msgstr ""
 
 #: src/gecomapi.cpp:664
 msgid "Problem!"
-msgstr "Problém!"
+msgstr ""
 
 #: src/gecomapicfgdlg.h:69
 msgid "GoogleEarth Preferences"
-msgstr "Nastavení Google Earth"
+msgstr ""
 
 #: src/gecomapicfgdlg.cpp:20
 msgid "Preferences"
-msgstr "Nastavení"
+msgstr "設定"
 
 #: src/gecomapicfgdlg.cpp:28
 msgid "Follow chart viewport"
-msgstr "Sledovat mapu"
+msgstr ""
 
 #: src/gecomapicfgdlg.cpp:31
 msgid "Follow boat"
-msgstr "Sledovat loď"
+msgstr ""
 
 #: src/gecomapicfgdlg.cpp:34
 msgid "Follow cursor"
-msgstr "Sledovat kurzor"
+msgstr ""
 
 #: src/gecomapicfgdlg.cpp:37
 msgid "Don't connect to OpenCPN"
-msgstr "Nenapojovat na OpenCPN"
+msgstr ""
 
 #: src/gecomapicfgdlg.cpp:45
 msgid "Always start hidden"
-msgstr "Vždy skrýt při startu"
+msgstr ""
 
 #: src/gecomapicfgdlg.cpp:48
 msgid "Disconnect from Viewport on GE action"
-msgstr "Odpojit od mapy při akci v GE"
+msgstr ""
 
 #: src/gecomapicfgdlg.cpp:51
 msgid "Update plugin settings from GE"
-msgstr "Aktualizovat nastavení z GE"
+msgstr ""
 
 #: src/gecomapicfgdlg.cpp:54
 msgid "Show boat in GE"
-msgstr "Zobrazovat loď"
+msgstr ""
 
 #: src/gecomapicfgdlg.cpp:62
 msgid "View properties"
-msgstr "Nastavení pohledu"
+msgstr ""
 
 #: src/gecomapicfgdlg.cpp:64
 msgid "Camera azimuth"
-msgstr "Azimut kamery"
+msgstr ""
 
 #: src/gecomapicfgdlg.cpp:71
 msgid "Camera Tilt"
-msgstr "Sklon kamery"
+msgstr ""
 
 #: src/gecomapicfgdlg.cpp:78
 msgid "Camera Range"
-msgstr "Vzdálenost kamery"
+msgstr ""
 
 #: src/gecomapicfgdlg.cpp:85
 msgid "Reset to defaults"
-msgstr "Tovární nastavení"
+msgstr ""
 
 #: src/gecomapicfgdlg.cpp:90
 msgid "Floating window transparency"
-msgstr "Průhlednost plovoucího okna"
+msgstr ""
 
 #: src/gecomapicfgdlg.cpp:140
 msgid "View name"
-msgstr "Název pohledu"
+msgstr ""
 
 #: src/gecomapicfgdlg.cpp:147
 msgid "Save as JPG"
-msgstr "Uložit jako JPG"
+msgstr "JPGで保存"
 
 #: src/gecomapicfgdlg.cpp:147
 msgid "Save as KML"
-msgstr "Uložit jako KML"
+msgstr "KMLで保存"
 
 #: src/gecomapicfgdlg.cpp:147
 msgid "Save as GPX for GE2KAP"
-msgstr "Ulož jako GPX pro GE2KAP"
+msgstr ""
 
 #: src/gecomapicfgdlg.cpp:147
 msgid "Save as KMZ for imgkap"
-msgstr "Ulož jako KMZ pro imgkap"
+msgstr ""
 
 #: src/gecomapicfgdlg.cpp:149
 msgid "Format"
-msgstr "Formát"
+msgstr ""
 
 #: src/gecomapicfgdlg.cpp:155
 msgid "Select a file"
-msgstr "Vyber soubor"
+msgstr ""
 

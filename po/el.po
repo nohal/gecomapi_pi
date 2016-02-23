@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: opencpn\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-05-09 12:10+0200\n"
-"PO-Revision-Date: 2015-04-07 11:22-0400\n"
+"PO-Revision-Date: 2016-02-18 16:08-0500\n"
 "Last-Translator: nohal <pavel@kalian.cz>\n"
 "Language-Team: Greek\n"
 "MIME-Version: 1.0\n"
@@ -21,8 +21,10 @@ msgid "GoogleEarth PlugIn for OpenCPN"
 msgstr "Πρόσθετο GoogleEarth"
 
 #: src/gecomapi_pi.cpp:191
-msgid "GoogleEarth PlugIn for OpenCPN\nConquers the world"
-msgstr "Πρόσθετο GoogleEarth για το OpenCPN\nΚατάκτησε τον κόσμο"
+msgid "GoogleEarth PlugIn for OpenCPN\n"
+"Conquers the world"
+msgstr "Πρόσθετο GoogleEarth για το OpenCPN\n"
+"Κατακτά τον κόσμο"
 
 #: src/gecomapi.h:151 src/gecomapi.cpp:119 src/gecomapicfgdlg.h:98
 msgid "Save view"
@@ -74,7 +76,7 @@ msgstr "Πάντα κρυμμένο στην αρχή"
 
 #: src/gecomapicfgdlg.cpp:48
 msgid "Disconnect from Viewport on GE action"
-msgstr "Αποσυνδέστε από το Viewport για δράση του GE"
+msgstr "Αποσύνδεση από το Viewport με ενέργεια του GE"
 
 #: src/gecomapicfgdlg.cpp:51
 msgid "Update plugin settings from GE"
@@ -82,57 +84,57 @@ msgstr "Ανανέωση των ρυθμίσεων του προσθέτου α�
 
 #: src/gecomapicfgdlg.cpp:54
 msgid "Show boat in GE"
-msgstr "Να φαίνεται το πλοίο στο GE"
+msgstr "Εμφάνιση πλοίου στο GE"
 
 #: src/gecomapicfgdlg.cpp:62
 msgid "View properties"
-msgstr ""
+msgstr "Προβολή ιδιοτήτων"
 
 #: src/gecomapicfgdlg.cpp:64
 msgid "Camera azimuth"
-msgstr ""
+msgstr "Αζιμούθιο κάμερας"
 
 #: src/gecomapicfgdlg.cpp:71
 msgid "Camera Tilt"
-msgstr ""
+msgstr "Κλίση κάμερας"
 
 #: src/gecomapicfgdlg.cpp:78
 msgid "Camera Range"
-msgstr ""
+msgstr "Εύρος κάμερας"
 
 #: src/gecomapicfgdlg.cpp:85
 msgid "Reset to defaults"
-msgstr ""
+msgstr "Επαναφορά στην προεπιλογή"
 
 #: src/gecomapicfgdlg.cpp:90
 msgid "Floating window transparency"
-msgstr ""
+msgstr "Διαφάνεια επιπλέοντος παράθυρου"
 
 #: src/gecomapicfgdlg.cpp:140
 msgid "View name"
-msgstr ""
+msgstr "Προβολή ονόματος"
 
 #: src/gecomapicfgdlg.cpp:147
 msgid "Save as JPG"
-msgstr ""
+msgstr "Αποθήκευση σε JPG"
 
 #: src/gecomapicfgdlg.cpp:147
 msgid "Save as KML"
-msgstr ""
+msgstr "Αποθήκευση σε KML"
 
 #: src/gecomapicfgdlg.cpp:147
 msgid "Save as GPX for GE2KAP"
-msgstr ""
+msgstr "Αποθήκευση σε GPX για GE2KAP"
 
 #: src/gecomapicfgdlg.cpp:147
 msgid "Save as KMZ for imgkap"
-msgstr ""
+msgstr "Αποθήκευση σε KMZ για imgkap"
 
 #: src/gecomapicfgdlg.cpp:149
 msgid "Format"
-msgstr ""
+msgstr "Διαμόρφωση (Format)"
 
 #: src/gecomapicfgdlg.cpp:155
 msgid "Select a file"
-msgstr ""
+msgstr "Επιλέξτε αρχείο"
 
