@@ -41,7 +41,7 @@
 #include "version.h"
 
 #define     MY_API_VERSION_MAJOR    1
-#define     MY_API_VERSION_MINOR    6
+#define     MY_API_VERSION_MINOR    13
 
 #define     GECOMAPI_TOOL_POSITION -1          // Request default positioning of toolbar tool
 
@@ -67,7 +67,7 @@ void LogDebugMessage(wxString msg);
 #define DEFAULT_HEIGHT              300
 #define DEFAULT_FLOATING            false
 
-class gecomapi_pi : public wxEvtHandler, opencpn_plugin_16
+class gecomapi_pi : public wxEvtHandler, opencpn_plugin_113
 {
 public:
       gecomapi_pi(void *ppimgr);

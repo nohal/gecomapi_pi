@@ -12,4 +12,10 @@ extern void initialize_images(void);
 extern wxBitmap *_img_gecomapi;
 extern wxBitmap *_img_gecomapi_pi;
 
+#ifdef GECOMAPI_USE_SVG
+extern wxString _svg_gecomapi;
+extern wxString _svg_gecomapi_rollover;
+extern wxString _svg_gecomapi_toggled;
+#endif
+
 #endif /* ICONS_H */

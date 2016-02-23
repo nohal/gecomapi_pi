@@ -68,7 +68,7 @@ extern "C" DECL_EXP void destroy_pi(opencpn_plugin* p)
 //---------------------------------------------------------------------------------------------------------
 
 gecomapi_pi::gecomapi_pi(void *ppimgr)
-      :opencpn_plugin_16(ppimgr)
+      :opencpn_plugin_113(ppimgr)
 {
       // Create the PlugIn icons
       initialize_images();
@@ -98,8 +98,13 @@ int gecomapi_pi::Init(void)
       LoadConfig();
 
       //    This PlugIn needs a toolbar icon
-      m_toolbar_item_id  = InsertPlugInTool(_T(""), _img_gecomapi, _img_gecomapi, wxITEM_CHECK,
-            _T("GoogleEarth"), _T(""), NULL, GECOMAPI_TOOL_POSITION, 0, this);
+#ifdef GECOMAPI_USE_SVG
+	  m_toolbar_item_id = InsertPlugInToolSVG(_T("GoogleEarth"), _svg_gecomapi, _svg_gecomapi_rollover, _svg_gecomapi_toggled, wxITEM_CHECK,
+		  _T("GoogleEarth"), _T(""), NULL, GECOMAPI_TOOL_POSITION, 0, this);
+#else           
+	  m_toolbar_item_id = InsertPlugInTool(_T("GoogleEarth"), _img_gecomapi, _img_gecomapi, wxITEM_CHECK,
+		  _T("GoogleEarth"), _T(""), NULL, GECOMAPI_TOOL_POSITION, 0, this); 
+#endif
 
       m_pgecomapi_window = new GEUIDialog(GetOCPNCanvasWindow(), wxID_ANY, m_pauimgr, m_toolbar_item_id, this);
 
