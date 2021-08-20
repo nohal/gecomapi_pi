@@ -1,7 +1,7 @@
 site:
   title: Google Earth Plugin Manual
   url:  https://nowhere.net
-  start_page: googleearth:ROOT:googleearth.adoc
+  start_page: googleearth:ROOT:index.adoc
 
 content:
   sources:
