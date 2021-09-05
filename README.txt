@@ -1,3 +1,8 @@
+*******************
+This project is discontinued, the APIs used were removed from current versions of GE and old versions do not work after the changes on server side
+*******************
+
+
 to get the c stuff from the IDL use:
 midl earth.idl
 
